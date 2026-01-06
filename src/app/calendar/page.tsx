@@ -14,6 +14,8 @@ interface CalendarEvent {
 
 const API_URL = "/api/calendar";
 
+const normalizeDate = (dateStr: string) => dateStr.split("T")[0];
+
 const CalendarPage: React.FC = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>("");
@@ -48,7 +50,7 @@ const CalendarPage: React.FC = () => {
       const data = await res.json();
       console.log("POST response:", data);
 
-      setSelectedDate(info.dateStr);
+      setSelectedDate(normalizeDate(info.dateStr));
       await fetchEvents();
     } catch (err) {
       console.error("Hiba új esemény létrehozásakor:", err);
@@ -79,14 +81,14 @@ const CalendarPage: React.FC = () => {
         const res = await fetch(`${API_URL}/${id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ title: newTitle, date: info.event.startStr }),
+          body: JSON.stringify({ title: newTitle, date: normalizeDate(info.event.startStr) }),
         });
         const data = await res.json();
         console.log("PUT response:", data);
       }
 
       await fetchEvents();
-      setSelectedDate(info.event.startStr);
+      setSelectedDate(normalizeDate(info.event.startStr));
     } catch (err) {
       console.error("Hiba szerkesztés/törlés során:", err);
     }
@@ -94,7 +96,7 @@ const CalendarPage: React.FC = () => {
 
   
   const handleDaySelect = (info: DateClickArg) => {
-    setSelectedDate(info.dateStr);
+    setSelectedDate(normalizeDate(info.dateStr));
     setDailyEvents(events.filter(e => e.date === info.dateStr));
   };
 
