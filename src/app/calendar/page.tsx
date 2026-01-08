@@ -14,11 +14,8 @@ interface CalendarEvent {
 
 const API_URL = "/api/calendar";
 
-<<<<<<< HEAD
-=======
 const normalizeDate = (dateStr: string) => dateStr.split("T")[0];
 
->>>>>>> 6892180fdf8e192aeba6352879a2dbbd1ef65b7a
 const CalendarPage: React.FC = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>("");
@@ -53,11 +50,7 @@ const CalendarPage: React.FC = () => {
       const data = await res.json();
       console.log("POST response:", data);
 
-<<<<<<< HEAD
-      setSelectedDate(info.dateStr);
-=======
       setSelectedDate(normalizeDate(info.dateStr));
->>>>>>> 6892180fdf8e192aeba6352879a2dbbd1ef65b7a
       await fetchEvents();
     } catch (err) {
       console.error("Hiba új esemény létrehozásakor:", err);
@@ -88,22 +81,14 @@ const CalendarPage: React.FC = () => {
         const res = await fetch(`${API_URL}/${id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-<<<<<<< HEAD
-          body: JSON.stringify({ title: newTitle, date: info.event.startStr }),
-=======
           body: JSON.stringify({ title: newTitle, date: normalizeDate(info.event.startStr) }),
->>>>>>> 6892180fdf8e192aeba6352879a2dbbd1ef65b7a
         });
         const data = await res.json();
         console.log("PUT response:", data);
       }
 
       await fetchEvents();
-<<<<<<< HEAD
-      setSelectedDate(info.event.startStr);
-=======
       setSelectedDate(normalizeDate(info.event.startStr));
->>>>>>> 6892180fdf8e192aeba6352879a2dbbd1ef65b7a
     } catch (err) {
       console.error("Hiba szerkesztés/törlés során:", err);
     }
@@ -111,11 +96,7 @@ const CalendarPage: React.FC = () => {
 
   
   const handleDaySelect = (info: DateClickArg) => {
-<<<<<<< HEAD
-    setSelectedDate(info.dateStr);
-=======
     setSelectedDate(normalizeDate(info.dateStr));
->>>>>>> 6892180fdf8e192aeba6352879a2dbbd1ef65b7a
     setDailyEvents(events.filter(e => e.date === info.dateStr));
   };
 

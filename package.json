@@ -9,10 +9,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-<<<<<<< HEAD
-    "@fullcalendar/core": "^6.1.20",
-=======
->>>>>>> 6892180fdf8e192aeba6352879a2dbbd1ef65b7a
     "@fullcalendar/daygrid": "^6.1.20",
     "@fullcalendar/interaction": "^6.1.20",
     "@fullcalendar/react": "^6.1.20",
