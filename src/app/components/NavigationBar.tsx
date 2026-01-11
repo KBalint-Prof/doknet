@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useContext } from 'react';
-import { GlobalContext } from '../context/GlobalContext';
-import { toast } from 'react-toastify';
+import { useContext } from "react";
+import { GlobalContext } from "../context/GlobalContext";
+import { toast } from "react-toastify";
 
 export default function NavigationBar() {
   const ctx = useContext(GlobalContext);
@@ -13,23 +13,19 @@ export default function NavigationBar() {
         <a href="/first-page">First page</a>
         <a href="/second-page">Second page</a>
         <a href="/news">News</a>
-<<<<<<< HEAD
-        <a href="calendar">Calendar</a>
-=======
         <a href="/calendar">Calendar</a>
->>>>>>> 4e105ad (Kommentek 3)
       </div>
 
       <div className="nav-right">
-        <span className="username">{ctx?.user?.username || 'Vendég'}</span>
+        <span className="username">{ctx?.user?.username || "Vendég"}</span>
 
         {ctx?.user ? (
           <button
             className="logout-btn"
             onClick={() => {
               ctx?.setUser(null);
-              localStorage.removeItem('user');
-              toast.info('Kijelentkeztél.');
+              localStorage.removeItem("user");
+              toast.info("Kijelentkeztél.");
             }}
           >
             Kijelentkezés
