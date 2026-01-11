@@ -13,7 +13,11 @@ export default function NavigationBar() {
         <a href="/first-page">First page</a>
         <a href="/second-page">Second page</a>
         <a href="/news">News</a>
+<<<<<<< HEAD
         <a href="calendar">Calendar</a>
+=======
+        <a href="/calendar">Calendar</a>
+>>>>>>> 4e105ad (Kommentek 3)
       </div>
 
       <div className="nav-right">
