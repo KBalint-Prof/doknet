@@ -3,7 +3,7 @@ import { db } from "@/app/api/db";
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = await params; 
+    const { id } = await params;
     const idNum = Number(id);
     if (isNaN(idNum)) return NextResponse.json({ error: "Érvénytelen ID" }, { status: 400 });
 
