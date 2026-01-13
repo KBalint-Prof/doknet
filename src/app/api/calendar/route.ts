@@ -3,7 +3,10 @@ import { db } from "@/app/api/db";
 
 export async function GET() {
   try {
-    const [rows] = await db.query("SELECT * FROM events");
+    
+    const [rows] = await db.query(
+      "SELECT id, title, DATE_FORMAT(date, '%Y-%m-%d') as date FROM events ORDER BY date ASC"
+    );
     return NextResponse.json(rows);
   } catch (err) {
     console.error("GET ERROR:", err);
@@ -18,7 +21,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Hiányzó adat" }, { status: 400 });
     }
 
-    const result: any = await db.query(
+    const [result]: any = await db.query(
       "INSERT INTO events (title, date) VALUES (?, ?)",
       [title, date]
     );
