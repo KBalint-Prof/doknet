@@ -1,11 +1,13 @@
+// src\app\api\calendar route.ts
 import { NextResponse } from "next/server";
 import { db } from "@/app/api/db";
 
 export async function GET() {
   try {
     
+    // Lekérdezzük a description mezőt is
     const [rows] = await db.query(
-      "SELECT id, title, DATE_FORMAT(date, '%Y-%m-%d') as date FROM events ORDER BY date ASC"
+      "SELECT id, title, description, DATE_FORMAT(date, '%Y-%m-%d') as date FROM events ORDER BY date ASC"
     );
     return NextResponse.json(rows);
   } catch (err) {
@@ -16,17 +18,19 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    const { title, date } = await req.json();
+    // Fogadjuk a description mezőt is
+    const { title, date, description } = await req.json();
     if (!title || !date) {
-      return NextResponse.json({ error: "Hiányzó adat" }, { status: 400 });
+      return NextResponse.json({ error: "Hiányzó adat (cím vagy dátum)" }, { status: 400 });
     }
 
+    // Beillesztjük a description mezőt is
     const [result]: any = await db.query(
-      "INSERT INTO events (title, date) VALUES (?, ?)",
-      [title, date]
+      "INSERT INTO events (title, date, description) VALUES (?, ?, ?)",
+      [title, date, description || ""] // Ha a leírás üres, üres stringet mentünk
     );
 
-    return NextResponse.json({ id: result.insertId, title, date }, { status: 201 });
+    return NextResponse.json({ id: result.insertId, title, date, description }, { status: 201 });
   } catch (err) {
     console.error("POST ERROR:", err);
     return NextResponse.json({ error: "Adatbázis hiba" }, { status: 500 });

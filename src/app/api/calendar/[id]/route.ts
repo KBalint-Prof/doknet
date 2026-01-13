@@ -1,3 +1,4 @@
+// src\app\api\calendar\[id] route.ts
 import { NextResponse } from "next/server";
 import { db } from "@/app/api/db";
 
@@ -7,10 +8,12 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     const idNum = Number(id);
     if (isNaN(idNum)) return NextResponse.json({ error: "Érvénytelen ID" }, { status: 400 });
 
-    const { title, date } = await req.json();
+    // Fogadjuk a description mezőt is
+    const { title, date, description } = await req.json();
     if (!title || !date) return NextResponse.json({ error: "Hiányzó adat" }, { status: 400 });
 
-    await db.query("UPDATE events SET title = ?, date = ? WHERE id = ?", [title, date, idNum]);
+    // Frissítjük a description mezőt is
+    await db.query("UPDATE events SET title = ?, date = ?, description = ? WHERE id = ?", [title, date, description || "", idNum]);
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("PUT ERROR:", err);
