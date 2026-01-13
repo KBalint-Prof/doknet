@@ -1,9 +1,10 @@
+
 'use client';
 
 import Image from 'next/image';
 import { useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { EffectFade } from 'swiper/modules';
+import { EffectFade, Autoplay } from 'swiper/modules';
 import type { Swiper as SwiperType } from 'swiper';
 
 import 'swiper/css';
@@ -18,90 +19,100 @@ const images = [
 export default function Carousel() {
   const swiperRef = useRef<SwiperType | null>(null);
 
+  // Egységesített, magasított konténer stílus a párhuzamos megjelenéshez
+  const logoBaseStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    zIndex: 30,
+    pointerEvents: 'none',
+    
+    // Fix, egyforma méretek a párhuzamossághoz
+    width: '480px', 
+    height: '480px',
+    
+    border: '1px solid #000',
+    borderRadius: '24px',
+    padding: '20px',
+    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+    boxShadow: '0 20px 45px rgba(0,0,0,0.35), 0 10px 20px rgba(0,0,0,0.15)',
+    
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+
   const arrowStyle: React.CSSProperties = {
     position: 'absolute',
     top: '50%',
     transform: 'translateY(-50%)',
-    zIndex: 10,
-    background: 'transparent',
+    zIndex: 40,
+    background: 'rgba(0, 0, 0, 0.3)',
+    backdropFilter: 'blur(4px)',
     border: 'none',
     color: '#fff',
     fontSize: 52,
     fontWeight: 800,
     cursor: 'pointer',
-    userSelect: 'none',
-    lineHeight: 1,
-    textShadow: '0 4px 16px rgba(0,0,0,0.8)',
-    padding: 0,
+    padding: '10px',
+    borderRadius: '50%',
+    width: '64px',
+    height: '64px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   };
 
   return (
-    <div style={{ width: '100%' }}>
-      {/* FELIRAT A KÉPEK FÖLÖTT */}
-      <h1
-        style={{
-          textAlign: 'center',
-          fontSize: 32,
-          fontWeight: 600,
-          marginBottom: 16,
-          letterSpacing: '0.05em',
-        }}
-      >
+    // Megnövelt padding a hatalmas, párhuzamos kereteknek
+    <div style={{ width: '100%', padding: '0 25%', boxSizing: 'border-box', overflow: 'visible' }}>
+      <h1 style={{ textAlign: 'center', fontSize: 36, fontWeight: 700, marginBottom: 40, letterSpacing: '0.05em' }}>
         Üdvözlünk!
       </h1>
 
-      {/* CAROUSEL */}
-      <div
-        style={{
-          position: 'relative',
-          width: '100%',
-          maxWidth: 900,
-          margin: '0 auto',
-          aspectRatio: '16 / 9',
-          overflow: 'hidden',
-          borderRadius: 12,
-        }}
-      >
-        {/* BAL NYÍL */}
-        <button
-          type="button"
-          onClick={() => swiperRef.current?.slidePrev()}
-          aria-label="Előző kép"
-          style={{ ...arrowStyle, left: 12 }}
-        >
-          ‹
-        </button>
+      <div style={{ position: 'relative', width: '100%', maxWidth: 1000, margin: '0 auto', aspectRatio: '16 / 9' }}>
+        
+        {/* BAL LOGÓ (SZTGJ) - Párhuzamos keretben */}
+        <div style={{ ...logoBaseStyle, left: '-60%' }}>
+          <Image 
+            src="/logo/sztjglogo.png" 
+            alt="SZTGJ logo" 
+            width={440} 
+            height={440} 
+            style={{ objectFit: 'contain' }}
+            priority 
+          />
+        </div>
 
-        {/* JOBB NYÍL */}
-        <button
-          type="button"
-          onClick={() => swiperRef.current?.slideNext()}
-          aria-label="Következő kép"
-          style={{ ...arrowStyle, right: 12 }}
-        >
-          ›
-        </button>
+        {/* JOBB LOGÓ (DOK) - Párhuzamos keretben */}
+        <div style={{ ...logoBaseStyle, right: '-60%' }}>
+          <Image
+            src="/logo/doklogo2.png"
+            alt="DOK logo"
+            width={400}
+            height={400}
+            style={{ objectFit: 'contain', mixBlendMode: 'multiply' }}
+            priority
+          />
+        </div>
+
+        {/* NAVIGÁCIÓ */}
+        <button type="button" onClick={() => swiperRef.current?.slidePrev()} style={{ ...arrowStyle, left: 20 }}>‹</button>
+        <button type="button" onClick={() => swiperRef.current?.slideNext()} style={{ ...arrowStyle, right: 20 }}>›</button>
 
         <Swiper
-          modules={[EffectFade]}
+          modules={[EffectFade, Autoplay]}
           effect="fade"
-          fadeEffect={{ crossFade: true }}
-          speed={600}
+          speed={800}
           loop
+          autoplay={{ delay: 4500, disableOnInteraction: false }}
           onSwiper={(swiper) => (swiperRef.current = swiper)}
-          style={{ height: '100%' }}
+          style={{ height: '100%', borderRadius: 24, overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.3)' }}
         >
           {images.map((src, index) => (
-            <SwiperSlide key={index} style={{ height: '100%' }}>
+            <SwiperSlide key={index}>
               <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                <Image
-                  src={src}
-                  alt={`Slide ${index + 1}`}
-                  fill
-                  priority={index === 0}
-                  sizes="(max-width: 900px) 100vw, 900px"
-                  style={{ objectFit: 'cover' }}
-                />
+                <Image src={src} alt={`Slide ${index + 1}`} fill style={{ objectFit: 'cover' }} />
               </div>
             </SwiperSlide>
           ))}
