@@ -14,123 +14,106 @@ interface CalendarEvent {
 
 const API_URL = "/api/calendar";
 
+
+const normalizeDate = (dateStr: any) => {
+  if (!dateStr) return "";
+  const s = String(dateStr);
+  return s.includes("T") ? s.split("T")[0] : s;
+};
+
 const CalendarPage: React.FC = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [dailyEvents, setDailyEvents] = useState<CalendarEvent[]>([]);
 
-  
   const fetchEvents = async () => {
     try {
       const res = await fetch(API_URL);
-      const data: CalendarEvent[] = await res.json();
+      const data = await res.json();
+      
       setEvents(data);
-
-      if (selectedDate) {
-        setDailyEvents(data.filter(e => e.date === selectedDate));
-      }
     } catch (err) {
-      console.error("Hiba az események lekérésénél:", err);
+      console.error("Hiba:", err);
     }
   };
 
-  
   const handleDateClick = async (info: DateClickArg) => {
-    const title = prompt("Esemény neve:");
+    
+    const clickedDate = info.dateStr; 
+    setSelectedDate(clickedDate);
+
+    const title = prompt(`${clickedDate} - Új esemény:`);
     if (!title) return;
 
     try {
-      const res = await fetch(API_URL, {
+      await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, date: info.dateStr }),
+        body: JSON.stringify({ title, date: clickedDate }),
       });
-      const data = await res.json();
-      console.log("POST response:", data);
-
-      setSelectedDate(info.dateStr);
       await fetchEvents();
     } catch (err) {
-      console.error("Hiba új esemény létrehozásakor:", err);
+      console.error("Hiba:", err);
     }
   };
 
-  
   const handleEventClick = async (info: EventClickArg) => {
-    console.log("Clicked event:", info.event.id, info.event.title);
+    const id = info.event.id;
+    const currentTitle = info.event.title;
+    
+    const eventDate = normalizeDate(info.event.startStr);
 
-    const id = Number(info.event.id);
-    if (isNaN(id)) {
-      console.error("Érvénytelen ID:", info.event.id);
-      return;
-    }
-
-    const newTitle = prompt("Új esemény neve (üres = törlés):", info.event.title);
+    const newTitle = prompt("Módosítás (üres = törlés):", currentTitle);
     if (newTitle === null) return;
 
     try {
       if (newTitle === "") {
-        
-        const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-        const data = await res.json();
-        console.log("DELETE response:", data);
+        await fetch(`${API_URL}/${id}`, { method: "DELETE" });
       } else {
-        
-        const res = await fetch(`${API_URL}/${id}`, {
+        await fetch(`${API_URL}/${id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ title: newTitle, date: info.event.startStr }),
+          body: JSON.stringify({ title: newTitle, date: eventDate }),
         });
-        const data = await res.json();
-        console.log("PUT response:", data);
       }
-
       await fetchEvents();
-      setSelectedDate(info.event.startStr);
     } catch (err) {
-      console.error("Hiba szerkesztés/törlés során:", err);
+      console.error("Hiba:", err);
     }
   };
 
-  
-  const handleDaySelect = (info: DateClickArg) => {
-    setSelectedDate(info.dateStr);
-    setDailyEvents(events.filter(e => e.date === info.dateStr));
-  };
+  useEffect(() => { fetchEvents(); }, []);
 
-  
   useEffect(() => {
-    fetchEvents();
-  }, []);
-
-  
-  useEffect(() => {
-    setDailyEvents(events.filter(e => e.date === selectedDate));
+    setDailyEvents(events.filter(e => normalizeDate(e.date) === selectedDate));
   }, [selectedDate, events]);
 
   return (
-    <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+    <div style={{ maxWidth: "950px", margin: "20px auto" }}>
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         locale="hu"
         headerToolbar={{ left: "prev,next today", center: "title", right: "" }}
-        events={events.map(e => ({ id: String(e.id), title: e.title, date: e.date }))}
-        dateClick={info => { handleDateClick(info); handleDaySelect(info); }}
+        eventDisplay="block"
+        eventColor="#d1417a"
+        events={events.map(e => ({
+          id: String(e.id),
+          title: e.title,
+          start: e.date,
+          allDay: true
+        }))}
+        dateClick={handleDateClick}
         eventClick={handleEventClick}
         height="auto"
       />
 
       {selectedDate && (
-        <div style={{ marginTop: 20, padding: 10, border: "1px solid #ccc" }}>
-          <h3>Események {selectedDate} napra:</h3>
-          {dailyEvents.length === 0 ? (
-            <p>Nincs esemény.</p>
-          ) : (
+        <div style={{ marginTop: 20, padding: 15, border: "1px solid #ccc", borderRadius: "8px" }}>
+          <h3>Események - {selectedDate}</h3>
+          {dailyEvents.length === 0 ? <p>Nincs esemény.</p> : (
             <ul>
-              {dailyEvents.map(e => (
-                <li key={e.id}>{e.title}</li>
-              ))}
+              {dailyEvents.map(e => <li key={e.id}>{e.title}</li>)}
             </ul>
           )}
         </div>
