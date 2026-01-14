@@ -50,34 +50,42 @@ export default function Comments({
   };
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h3>Komment:</h3>
-
-      <input
-        style={{ width: '30%' }}
-        type="text"
-        placeholder="Írd be a kommentet..."
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-      />
-
+    <div style={{ paddingTop: '2rem' }}>
       <button
         style={{ marginLeft: '1rem' }}
         onClick={handleSave}
         disabled={saving}
       >
-        {saving ? 'Kommentelés folyamatban...' : 'Komment'}
+        {saving ? 'Kommentelés folyamatban...' : 'Like'}
       </button>
-
-      {news.comments.map((comment) => (
-        <div key={comment.id} style={{ marginBottom: '1rem' }}>
-          <p>{comment.content}</p>
-          <small style={{ color: '#666' }}>
-            {comment.author_name} -{' '}
-            {new Date(comment.created_at).toLocaleString('hu-HU')}
-          </small>
-        </div>
-      ))}
+      <button
+        style={{ marginLeft: '1rem' }}
+        onClick={handleSave}
+        disabled={saving}
+      >
+        {saving ? 'Kommentelés folyamatban...' : 'Dislike'}
+      </button>
+      <button
+        style={{ marginLeft: '1rem' }}
+        onClick={handleSave}
+        disabled={saving}
+      >
+        {saving ? 'Kommentelés folyamatban...' : 'Love'}
+      </button>
+      <button
+        style={{ marginLeft: '1rem' }}
+        onClick={handleSave}
+        disabled={saving}
+      >
+        {saving ? 'Kommentelés folyamatban...' : 'Wow'}
+      </button>
+      <button
+        style={{ marginLeft: '1rem' }}
+        onClick={handleSave}
+        disabled={saving}
+      >
+        {saving ? 'Kommentelés folyamatban...' : 'Sad'}
+      </button>
     </div>
   );
 }
