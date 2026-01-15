@@ -2,7 +2,7 @@
 
 import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../context/GlobalContext";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {

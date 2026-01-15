@@ -1,34 +1,30 @@
-'use client';
+"use client";
 
-import { useContext, useState } from 'react';
-import { GlobalContext } from '../../context/GlobalContext';
-import { NewsType } from './page';
+import { useContext, useState } from "react";
+import { GlobalContext } from "../../context/GlobalContext";
+import { NewsType } from "./page";
 
-export default function Comments({
+export default function rections({
   news,
   getNewsById,
 }: {
   news: NewsType;
   getNewsById: () => Promise<void>;
 }) {
-  const [content, setContent] = useState('');
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const ctx = useContext(GlobalContext);
 
   const handleSave = async () => {
     setSaving(true);
-    setMessage('');
+    setMessage("");
 
     try {
       console.log(ctx?.user?.id);
-      const res = await fetch('/api/comments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json; charset=utf-8',
-        },
+      const res = await fetch("/api/rections", {
+        method: "POST",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({
-          content,
           news_id: news.id,
           user_id: ctx?.user?.id,
         }),
@@ -37,54 +33,54 @@ export default function Comments({
       const data = await res.json();
 
       if (!res.ok)
-        throw new Error(data.error || 'Hiba történt a komment mentése során.');
+        throw new Error(data.error || "Hiba történt a reakció mentése során.");
 
       setMessage(`Sikeres mentés! (ID: ${data.id})`);
       getNewsById();
     } catch (err: any) {
       console.error(err);
-      setMessage('Hiba a mentés során!');
+      setMessage("Hiba a mentés során!");
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div style={{ paddingTop: '2rem' }}>
+    <div style={{ paddingTop: "2rem" }}>
       <button
-        style={{ marginLeft: '1rem' }}
+        style={{ marginLeft: "1rem" }}
         onClick={handleSave}
         disabled={saving}
       >
-        {saving ? 'Kommentelés folyamatban...' : 'Like'}
+        {saving ? "Kommentelés folyamatban..." : "Like"}
       </button>
       <button
-        style={{ marginLeft: '1rem' }}
+        style={{ marginLeft: "1rem" }}
         onClick={handleSave}
         disabled={saving}
       >
-        {saving ? 'Kommentelés folyamatban...' : 'Dislike'}
+        {saving ? "Kommentelés folyamatban..." : "Dislike"}
       </button>
       <button
-        style={{ marginLeft: '1rem' }}
+        style={{ marginLeft: "1rem" }}
         onClick={handleSave}
         disabled={saving}
       >
-        {saving ? 'Kommentelés folyamatban...' : 'Love'}
+        {saving ? "Kommentelés folyamatban..." : "Love"}
       </button>
       <button
-        style={{ marginLeft: '1rem' }}
+        style={{ marginLeft: "1rem" }}
         onClick={handleSave}
         disabled={saving}
       >
-        {saving ? 'Kommentelés folyamatban...' : 'Wow'}
+        {saving ? "Kommentelés folyamatban..." : "Wow"}
       </button>
       <button
-        style={{ marginLeft: '1rem' }}
+        style={{ marginLeft: "1rem" }}
         onClick={handleSave}
         disabled={saving}
       >
-        {saving ? 'Kommentelés folyamatban...' : 'Sad'}
+        {saving ? "Kommentelés folyamatban..." : "Sad"}
       </button>
     </div>
   );
