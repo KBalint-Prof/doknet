@@ -5,9 +5,9 @@ import { db } from "../db";
 
 export async function POST(req: Request) {
   try {
-    const { email, username, password, eduID } = await req.json();
+    const { email, username, password } = await req.json();
 
-    if (!email || !username || !password || !eduID) {
+    if (!email || !username || !password) {
       return NextResponse.json(
         { error: "MInden mező kitöltése kötelező!" },
         { status: 400 }
@@ -29,8 +29,8 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const [result] = await db.query<ResultSetHeader>(
-      "INSERT INTO users (email, username, password, eduID) VALUES (?, ?, ?, ?)",
-      [email, username, hashedPassword, eduID]
+      "INSERT INTO users (email, username, password) VALUES (?, ?, ?)",
+      [email, username, hashedPassword]
     );
 
     return NextResponse.json({

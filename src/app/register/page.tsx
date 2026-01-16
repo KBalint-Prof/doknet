@@ -1,48 +1,47 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { useContext, useEffect, useState } from 'react';
-import { GlobalContext } from '../context/GlobalContext';
+import { useRouter } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
+import { GlobalContext } from "../context/GlobalContext";
 
 export default function RegisterPage() {
-  const [username, setUsername] = useState('');
-  const [eduID, setEduID] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const router = useRouter();
   const ctx = useContext(GlobalContext);
 
   useEffect(() => {
     if (ctx?.user) {
-      router.replace('/');
+      router.replace("/");
     }
   }, [ctx]);
 
   const handleSave = async () => {
     setSaving(true);
-    setMessage('');
+    setMessage("");
 
     try {
-      const res = await fetch('/api/register', {
-        method: 'POST',
+      const res = await fetch("/api/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json; charset=utf-8',
+          "Content-Type": "application/json; charset=utf-8",
         },
-        body: JSON.stringify({ username, eduID, email, password }),
+        body: JSON.stringify({ username, email, password }),
       });
 
       const data = await res.json();
 
       if (!res.ok)
-        throw new Error(data.error || 'Hiba történt a regisztráció során.');
+        throw new Error(data.error || "Hiba történt a regisztráció során.");
 
-      router.push('/login');
+      router.push("/login");
       setMessage(`Sikeres egisztráció! (ID: ${data.id})`);
     } catch (err: any) {
       console.error(err);
-      setMessage('Hiba a regisztráció során!');
+      setMessage("Hiba a regisztráció során!");
     } finally {
       setSaving(false);
     }
@@ -51,13 +50,13 @@ export default function RegisterPage() {
   return (
     <div
       style={{
-        padding: '2rem',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '1rem',
-        width: '400px',
-        margin: '0 auto',
-        alignItems: 'center',
+        padding: "2rem",
+        display: "flex",
+        flexDirection: "column",
+        gap: "1rem",
+        width: "400px",
+        margin: "0 auto",
+        alignItems: "center",
       }}
     >
       <h1>Regisztráció</h1>
@@ -82,7 +81,7 @@ export default function RegisterPage() {
       />
 
       <button onClick={handleSave} disabled={saving}>
-        {saving ? 'Regisztráció folyamatban...' : 'Regisztráció'}
+        {saving ? "Regisztráció folyamatban..." : "Regisztráció"}
       </button>
 
       <p>{message}</p>
