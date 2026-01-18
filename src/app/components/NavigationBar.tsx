@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useContext } from 'react';
-import { GlobalContext } from '../context/GlobalContext';
-import { toast } from 'react-toastify';
+import { useContext } from "react";
+import { GlobalContext } from "../context/GlobalContext";
+import { toast } from "react-toastify";
 
 export default function NavigationBar() {
   const ctx = useContext(GlobalContext);
@@ -15,15 +15,17 @@ export default function NavigationBar() {
       </div>
 
       <div className="nav-right">
-        <span className="username">{ctx?.user?.username || 'Vendég'}</span>
+        <span className="username">{ctx?.user?.username || "Vendég"}</span>
 
         {ctx?.user ? (
           <button
             className="logout-btn"
             onClick={() => {
               ctx?.setUser(null);
-              localStorage.removeItem('user');
-              toast.info('Kijelentkeztél.');
+              localStorage.removeItem("user");
+              toast.info("Kijelentkeztél.", {
+                style: { marginTop: "3.5rem" },
+              });
             }}
           >
             Kijelentkezés

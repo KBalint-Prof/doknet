@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../context/GlobalContext";
+import { toast } from "react-toastify";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -37,11 +38,18 @@ export default function RegisterPage() {
       if (!res.ok)
         throw new Error(data.error || "Hiba történt a regisztráció során.");
 
+      toast.success("Sikeres Regisztráció!", {
+        style: { marginTop: "3.5rem" },
+      });
+
       router.push("/login");
-      setMessage(`Sikeres egisztráció! (ID: ${data.id})`);
+      setMessage(`Sikeres regisztráció! (ID: ${data.id})`);
     } catch (err: any) {
       console.error(err);
       setMessage("Hiba a regisztráció során!");
+      toast.error("Hiba a Regisztráció során!", {
+        style: { marginTop: "3.5rem" },
+      });
     } finally {
       setSaving(false);
     }

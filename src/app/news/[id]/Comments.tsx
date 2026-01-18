@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import { useContext, useState } from 'react';
-import { GlobalContext } from '../../context/GlobalContext';
-import { NewsType } from './page';
+import { useContext, useState } from "react";
+import { GlobalContext } from "../../context/GlobalContext";
+import { NewsType } from "./page";
+import { toast } from "react-toastify";
 
 export default function Comments({
   news,
@@ -11,21 +12,21 @@ export default function Comments({
   news: NewsType;
   getNewsById: () => Promise<void>;
 }) {
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const ctx = useContext(GlobalContext);
 
   const handleSave = async () => {
     setSaving(true);
-    setMessage('');
+    setMessage("");
 
     try {
       console.log(ctx?.user?.id);
-      const res = await fetch('/api/comments', {
-        method: 'POST',
+      const res = await fetch("/api/comments", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json; charset=utf-8',
+          "Content-Type": "application/json; charset=utf-8",
         },
         body: JSON.stringify({
           content,
@@ -37,24 +38,26 @@ export default function Comments({
       const data = await res.json();
 
       if (!res.ok)
-        throw new Error(data.error || 'Hiba történt a komment mentése során.');
+        throw new Error(data.error || "Hiba történt a komment mentése során.");
 
       setMessage(`Sikeres mentés! (ID: ${data.id})`);
       getNewsById();
     } catch (err: any) {
       console.error(err);
-      setMessage('Hiba a mentés során!');
+      toast.error("Kommenteléshez írj a mezőbe!", {
+        style: { marginTop: "3.5rem" },
+      });
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div style={{ padding: '2rem' }}>
+    <div style={{ padding: "2rem" }}>
       <h3>Komment:</h3>
 
       <input
-        style={{ width: '30%' }}
+        style={{ width: "30%" }}
         type="text"
         placeholder="Írd be a kommentet..."
         value={content}
@@ -62,19 +65,19 @@ export default function Comments({
       />
 
       <button
-        style={{ marginLeft: '1rem' }}
+        style={{ marginLeft: "1rem" }}
         onClick={handleSave}
         disabled={saving}
       >
-        {saving ? 'Kommentelés folyamatban...' : 'Komment'}
+        {saving ? "Kommentelés folyamatban..." : "Komment"}
       </button>
 
       {news.comments.map((comment) => (
-        <div key={comment.id} style={{ marginBottom: '1rem' }}>
+        <div key={comment.id} style={{ marginBottom: "1rem" }}>
           <p>{comment.content}</p>
-          <small style={{ color: '#666' }}>
-            {comment.author_name} -{' '}
-            {new Date(comment.created_at).toLocaleString('hu-HU')}
+          <small style={{ color: "#666" }}>
+            {comment.author_name} -{" "}
+            {new Date(comment.created_at).toLocaleString("hu-HU")}
           </small>
         </div>
       ))}

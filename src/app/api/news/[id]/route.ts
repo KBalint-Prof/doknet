@@ -37,9 +37,28 @@ export async function GET(
       [id]
     );
 
-    (news as any)[0].comments = comments;
+    const [reaction_types] = await db.query(`SELECT * FROM reaction_types`);
 
-    return NextResponse.json(news);
+    const [reactions] = await db.query(
+      `SELECT
+        news_reactions.id,
+        news_reactions.user_id,
+        reaction_types.id AS reaction_type_id,
+        reaction_types.key,
+        reaction_types.label,
+        reaction_types.icon,
+        reaction_types.sort_order
+       FROM news_reactions
+       INNER JOIN reaction_types ON reaction_types.id = news_reactions.reaction_type_id
+       WHERE news_reactions.news_id = ?
+       ORDER BY reaction_types.sort_order ASC`,
+      [id]
+    );
+
+    (news as any)[0].comments = comments;
+    (news as any)[0].reactions = reactions;
+
+    return NextResponse.json({ news, reaction_types });
   } catch (err) {
     console.error("Hiba a lekérdezés során:", err);
     return NextResponse.json({ error: "Adatbázis hiba!" }, { status: 500 });
@@ -71,4 +90,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Adatbázis hiba!" }, { status: 500 });
   }
 }
-
