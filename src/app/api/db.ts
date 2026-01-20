@@ -11,7 +11,7 @@ if (!global.pool) {
     host: "localhost",
     user: "root",
     password: "",
-    database: "test2",
+    database: "doknetdb",
     waitForConnections: true,
     connectionLimit: 10,
     charset: "utf8mb4",

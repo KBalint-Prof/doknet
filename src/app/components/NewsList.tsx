@@ -45,7 +45,7 @@ export default function NewsList() {
     <>
       {newsList.map((news) => {
         const plainText =
-          news.content.replace(/<[^>]+>/g, "").slice(0, 150) + "...";
+          news.content.replace(/<[^>]+>/g, "").slice(0, 600) + "...";
 
         return (
           <Link
