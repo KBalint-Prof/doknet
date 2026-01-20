@@ -30,11 +30,10 @@ export default function Carousel() {
     width: "480px",
     height: "480px",
 
-    border: "1px solid #000",
     borderRadius: "24px",
     padding: "20px",
     backgroundColor: "rgba(255, 255, 255, 0.02)",
-    boxShadow: "0 20px 45px rgba(0,0,0,0.35), 0 10px 20px rgba(0,0,0,0.15)",
+   
 
     display: "flex",
     alignItems: "center",
