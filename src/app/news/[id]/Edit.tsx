@@ -44,7 +44,7 @@ export default function Edit({ open, onClose }: Props) {
 
     try {
       console.log(ctx?.user?.id);
-      const res = await fetch('/api/news', {
+      const res = await fetch('/api/edit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
@@ -95,7 +95,7 @@ export default function Edit({ open, onClose }: Props) {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <h3>Szerkesztés</h3>
+        <h3>Hír szerkesztése</h3>
 
         <input
           style={{
@@ -108,6 +108,32 @@ export default function Edit({ open, onClose }: Props) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
+
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          {defaultCovers.map((img) => (
+            <div
+              key={img}
+              onClick={() => setSelectedCover(img)}
+              style={{
+                width: '15rem',
+                height: '10rem',
+                border:
+                  selectedCover === img
+                    ? '3px solid #0070f3'
+                    : '1px solid #ccc',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                overflow: 'hidden',
+              }}
+            >
+              <img
+                src={img}
+                alt="Borítókép"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            </div>
+          ))}
+        </div>
 
         {
           <TinyMCEEditor
@@ -171,6 +197,7 @@ export default function Edit({ open, onClose }: Props) {
           `,
               placeholder: 'Írd ide a hír tartalmát...',
             }}
+            onEditorChange={(newContent) => setContent(newContent)}
           />
         }
 
