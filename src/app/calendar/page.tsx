@@ -10,7 +10,7 @@ interface CalendarEvent {
   id: number;
   title: string;
   date: string;
-  description: string; // Hozzáadva: Leírás támogatása
+  description: string; 
 }
 
 const API_URL = "/api/calendar";
@@ -26,7 +26,7 @@ const CalendarPage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [dailyEvents, setDailyEvents] = useState<CalendarEvent[]>([]);
 
-  // ÚJ ÁLLAPOTOK AZ EGYEDI MODAL KEZELÉSÉHEZ
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newEventTitle, setNewEventTitle] = useState("");
   const [newEventDescription, setNewEventDescription] = useState("");
@@ -46,13 +46,13 @@ const CalendarPage: React.FC = () => {
     const clickedDate = info.dateStr; 
     setSelectedDate(clickedDate);
     
-    // Megnyitjuk az egyedi modalt a prompt() helyett
+    
     setNewEventTitle("");
     setNewEventDescription("");
     setIsModalOpen(true);
   };
 
-  // ÚJ FÜGGVÉNY: Esemény mentése a modalból
+  
   const handleSaveEvent = async () => {
     if (!newEventTitle || !selectedDate) {
       alert("Az esemény címe és dátuma kötelező.");
@@ -66,11 +66,11 @@ const CalendarPage: React.FC = () => {
         body: JSON.stringify({ 
           title: newEventTitle, 
           date: selectedDate,
-          description: newEventDescription // Átadjuk a leírást is a backendnek
+          description: newEventDescription 
         }),
       });
       
-      handleCloseModal(); // Bezárás
+      handleCloseModal(); 
       await fetchEvents();
     } catch (err) {
       console.error("Hiba a mentés során:", err);
@@ -97,9 +97,7 @@ const CalendarPage: React.FC = () => {
       if (newTitle === "") {
         await fetch(`${API_URL}/${id}`, { method: "DELETE" });
       } else {
-        // Megjegyzés: A leírás módosításához be kellene vezetni egy másik, 
-        // komplexebb modalt, de a prompt() korlátai miatt most csak a címet változtatjuk.
-        // A PUT API-t viszont frissítjük, hogy kezelje a leírást is, ha van.
+        
         const eventToUpdate = events.find(e => String(e.id) === id);
         
         await fetch(`${API_URL}/${id}`, {
@@ -108,7 +106,7 @@ const CalendarPage: React.FC = () => {
           body: JSON.stringify({ 
               title: newTitle, 
               date: eventDate,
-              description: eventToUpdate ? eventToUpdate.description : "" // Ha módosítasz, küldd el a régi leírást, ha nem módosítod a UI-n
+              description: eventToUpdate ? eventToUpdate.description : "" 
           }),
         });
       }
@@ -155,11 +153,11 @@ const CalendarPage: React.FC = () => {
         </div>
       )}
 
-      {/* EGYEDI MODAL AZ ÚJ ESEMÉNY LÉTREHOZÁSÁHOZ */}
+      {}
       {isModalOpen && (
         <div style={modalOverlayStyle}>
           <div style={modalContentStyle}>
-            {/* Az ablak címe: egyedi, nem a "localhost:3000 közlendője" */}
+            {}
             <h3>Új esemény hozzáadása: {selectedDate}</h3>
             
             <div style={{ marginBottom: 15 }}>
@@ -173,7 +171,7 @@ const CalendarPage: React.FC = () => {
               />
             </div>
 
-            {/* Az új "Esemény leírása" mező */}
+            {}
             <div style={{ marginBottom: 25 }}>
               <label htmlFor="eventDescription">Esemény leírása:</label>
               <textarea
@@ -196,8 +194,6 @@ const CalendarPage: React.FC = () => {
 };
 
 export default CalendarPage;
-
-// --- EGYEDI STÍLUSOK (Inline a példa kedvéért) ---
 
 const modalOverlayStyle: React.CSSProperties = {
   position: "fixed",
