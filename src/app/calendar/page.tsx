@@ -10,7 +10,7 @@ interface CalendarEvent {
   id: number;
   title: string;
   date: string;
-  description: string; 
+  description: string;
 }
 
 const API_URL = "/api/calendar";
@@ -23,10 +23,9 @@ const normalizeDate = (dateStr: any) => {
 
 const CalendarPage: React.FC = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState("");
   const [dailyEvents, setDailyEvents] = useState<CalendarEvent[]>([]);
 
-  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newEventTitle, setNewEventTitle] = useState("");
   const [newEventDescription, setNewEventDescription] = useState("");
@@ -35,7 +34,6 @@ const CalendarPage: React.FC = () => {
     try {
       const res = await fetch(API_URL);
       const data = await res.json();
-      
       setEvents(data);
     } catch (err) {
       console.error("Hiba:", err);
@@ -43,16 +41,12 @@ const CalendarPage: React.FC = () => {
   };
 
   const handleDateClick = (info: DateClickArg) => {
-    const clickedDate = info.dateStr; 
-    setSelectedDate(clickedDate);
-    
-    
+    setSelectedDate(info.dateStr);
     setNewEventTitle("");
     setNewEventDescription("");
     setIsModalOpen(true);
   };
 
-  
   const handleSaveEvent = async () => {
     if (!newEventTitle || !selectedDate) {
       alert("Az esemény címe és dátuma kötelező.");
@@ -63,14 +57,14 @@ const CalendarPage: React.FC = () => {
       await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          title: newEventTitle, 
+        body: JSON.stringify({
+          title: newEventTitle,
           date: selectedDate,
-          description: newEventDescription 
+          description: newEventDescription,
         }),
       });
-      
-      handleCloseModal(); 
+
+      handleCloseModal();
       await fetchEvents();
     } catch (err) {
       console.error("Hiba a mentés során:", err);
@@ -83,11 +77,9 @@ const CalendarPage: React.FC = () => {
     setNewEventDescription("");
   };
 
-
   const handleEventClick = async (info: EventClickArg) => {
     const id = info.event.id;
     const currentTitle = info.event.title;
-    
     const eventDate = normalizeDate(info.event.startStr);
 
     const newTitle = prompt("Módosítás (üres = törlés):", currentTitle);
@@ -97,45 +89,53 @@ const CalendarPage: React.FC = () => {
       if (newTitle === "") {
         await fetch(`${API_URL}/${id}`, { method: "DELETE" });
       } else {
-        
         const eventToUpdate = events.find(e => String(e.id) === id);
-        
+
         await fetch(`${API_URL}/${id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
-              title: newTitle, 
-              date: eventDate,
-              description: eventToUpdate ? eventToUpdate.description : "" 
+          body: JSON.stringify({
+            title: newTitle,
+            date: eventDate,
+            description: eventToUpdate?.description ?? "",
           }),
         });
       }
+
       await fetchEvents();
     } catch (err) {
       console.error("Hiba:", err);
     }
   };
 
-  useEffect(() => { fetchEvents(); }, []);
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
   useEffect(() => {
-    setDailyEvents(events.filter(e => normalizeDate(e.date) === selectedDate));
+    setDailyEvents(
+      events.filter(e => normalizeDate(e.date) === selectedDate)
+    );
   }, [selectedDate, events]);
 
   return (
-    <div style={{ maxWidth: "950px", margin: "20px auto" }}>
+    <div style={{ maxWidth: 950, margin: "20px auto" }}>
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         locale="hu"
-        headerToolbar={{ left: "prev,next today", center: "title", right: "" }}
+        headerToolbar={{
+          left: "prev,next today",
+          center: "title",
+          right: "",
+        }}
         eventDisplay="block"
         eventColor="#d1417a"
         events={events.map(e => ({
           id: String(e.id),
           title: e.title,
           start: e.date,
-          allDay: true
+          allDay: true,
         }))}
         dateClick={handleDateClick}
         eventClick={handleEventClick}
@@ -143,48 +143,59 @@ const CalendarPage: React.FC = () => {
       />
 
       {selectedDate && (
-        <div style={{ marginTop: 20, padding: 15, border: "1px solid #ccc", borderRadius: "8px" }}>
-          <h3>Események - {selectedDate}</h3>
-          {dailyEvents.length === 0 ? <p>Nincs esemény.</p> : (
+        <div
+          style={{
+            marginTop: 20,
+            padding: 15,
+            border: "1px solid #ccc",
+            borderRadius: 8,
+          }}
+        >
+          <h3>Események – {selectedDate}</h3>
+          {dailyEvents.length === 0 ? (
+            <p>Nincs esemény.</p>
+          ) : (
             <ul>
-              {dailyEvents.map(e => <li key={e.id}>{e.title} - *{e.description}*</li>)}
+              {dailyEvents.map(e => (
+                <li key={e.id}>
+                  {e.title} – <em>{e.description}</em>
+                </li>
+              ))}
             </ul>
           )}
         </div>
       )}
 
-      {}
       {isModalOpen && (
         <div style={modalOverlayStyle}>
           <div style={modalContentStyle}>
-            {}
             <h3>Új esemény hozzáadása: {selectedDate}</h3>
-            
+
             <div style={{ marginBottom: 15 }}>
-              <label htmlFor="eventTitle">Esemény neve:</label>
-              <input 
-                id="eventTitle"
-                type="text" 
-                value={newEventTitle} 
-                onChange={(e) => setNewEventTitle(e.target.value)}
-                style={inputStyle}
+              <label>Esemény neve:</label>
+              <input
+                type="text"
+                value={newEventTitle}
+                onChange={e => setNewEventTitle(e.target.value)}
               />
             </div>
 
-            {}
-            <div style={{ marginBottom: 25 }}>
-              <label htmlFor="eventDescription">Esemény leírása:</label>
+            <div style={{ marginBottom: 20 }}>
+              <label>Esemény leírása:</label>
               <textarea
-                id="eventDescription"
                 value={newEventDescription}
-                onChange={(e) => setNewEventDescription(e.target.value)}
-                style={textareaStyle}
-              ></textarea>
+                onChange={e => setNewEventDescription(e.target.value)}
+              />
             </div>
 
             <div style={buttonGroupStyle}>
-              <button onClick={handleCloseModal} style={cancelButtonStyle}>Mégse</button>
-              <button onClick={handleSaveEvent} style={okButtonStyle} disabled={!newEventTitle}>OK</button>
+              <button onClick={handleCloseModal}>Mégse</button>
+              <button
+                onClick={handleSaveEvent}
+                disabled={!newEventTitle}
+              >
+                OK
+              </button>
             </div>
           </div>
         </div>
@@ -195,13 +206,12 @@ const CalendarPage: React.FC = () => {
 
 export default CalendarPage;
 
+/* ================= STYLES ================= */
+
 const modalOverlayStyle: React.CSSProperties = {
   position: "fixed",
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  backgroundColor: "rgba(0, 0, 0, 0.5)",
+  inset: 0,
+  backgroundColor: "rgba(0,0,0,0.5)",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
@@ -209,54 +219,15 @@ const modalOverlayStyle: React.CSSProperties = {
 };
 
 const modalContentStyle: React.CSSProperties = {
-  background: "white",
+  background: "#fff",
   padding: "30px",
-  borderRadius: "8px",
+  borderRadius: "16px",
   width: "90%",
-  maxWidth: "400px",
-  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-};
-
-const inputStyle: React.CSSProperties = {
-  width: "100%",
-  padding: "8px",
-  margin: "5px 0 0 0",
-  boxSizing: "border-box",
-  borderRadius: "4px",
-  border: "1px solid #ccc",
-};
-
-const textareaStyle: React.CSSProperties = {
-  width: "100%",
-  padding: "8px",
-  margin: "5px 0 0 0",
-  boxSizing: "border-box",
-  borderRadius: "4px",
-  border: "1px solid #ccc",
-  resize: "vertical",
-  minHeight: "80px",
+  maxWidth: "420px",
 };
 
 const buttonGroupStyle: React.CSSProperties = {
   display: "flex",
   justifyContent: "flex-end",
-  gap: "10px",
-  marginTop: "20px",
-};
-
-const okButtonStyle: React.CSSProperties = {
-  padding: "10px 15px",
-  border: "none",
-  borderRadius: "4px",
-  backgroundColor: "#d1417a",
-  color: "white",
-  cursor: "pointer",
-};
-
-const cancelButtonStyle: React.CSSProperties = {
-  padding: "10px 15px",
-  border: "1px solid #ccc",
-  borderRadius: "4px",
-  backgroundColor: "#f0f0f0",
-  cursor: "pointer",
+  gap: "12px",
 };
