@@ -54,12 +54,12 @@ const CalendarPage: React.FC = () => {
     const eventData = events.find(e => String(e.id) === id);
 
     if (eventData) {
-      // Frissítjük a dátumot, hogy a naptár alatti "Események" lista is frissüljön
+      
       setSelectedDate(normalizeDate(info.event.startStr));
       
       setEditingEventId(id);
       setNewEventTitle(eventData.title || "");
-      setNewEventDescription(eventData.description || ""); // Fix: nem lesz null
+      setNewEventDescription(eventData.description || ""); 
       setIsModalOpen(true);
     }
   };
@@ -153,7 +153,7 @@ const CalendarPage: React.FC = () => {
         height="auto"
       />
 
-      {/* Naptár alatti lista */}
+      {}
       {selectedDate && (
         <div style={dailyEventsContainerStyle}>
           <h3 style={{ borderBottom: "2px solid #eee", paddingBottom: "10px" }}>
@@ -174,7 +174,7 @@ const CalendarPage: React.FC = () => {
         </div>
       )}
 
-      {/* Modern Modál */}
+      {}
       {isModalOpen && (
         <div style={modalOverlayStyle}>
           <div style={modalContentStyle}>
