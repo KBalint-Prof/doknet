@@ -27,6 +27,7 @@ const CalendarPage: React.FC = () => {
   const [dailyEvents, setDailyEvents] = useState<CalendarEvent[]>([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingEventId, setEditingEventId] = useState<string | null>(null);
   const [newEventTitle, setNewEventTitle] = useState("");
   const [newEventDescription, setNewEventDescription] = useState("");
 
@@ -42,9 +43,25 @@ const CalendarPage: React.FC = () => {
 
   const handleDateClick = (info: DateClickArg) => {
     setSelectedDate(info.dateStr);
+    setEditingEventId(null);
     setNewEventTitle("");
     setNewEventDescription("");
     setIsModalOpen(true);
+  };
+
+  const handleEventClick = (info: EventClickArg) => {
+    const id = info.event.id;
+    const eventData = events.find(e => String(e.id) === id);
+
+    if (eventData) {
+      // Frissítjük a dátumot, hogy a naptár alatti "Események" lista is frissüljön
+      setSelectedDate(normalizeDate(info.event.startStr));
+      
+      setEditingEventId(id);
+      setNewEventTitle(eventData.title || "");
+      setNewEventDescription(eventData.description || ""); // Fix: nem lesz null
+      setIsModalOpen(true);
+    }
   };
 
   const handleSaveEvent = async () => {
@@ -54,15 +71,27 @@ const CalendarPage: React.FC = () => {
     }
 
     try {
-      await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: newEventTitle,
-          date: selectedDate,
-          description: newEventDescription,
-        }),
-      });
+      if (editingEventId) {
+        await fetch(`${API_URL}/${editingEventId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: newEventTitle,
+            date: selectedDate,
+            description: newEventDescription,
+          }),
+        });
+      } else {
+        await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: newEventTitle,
+            date: selectedDate,
+            description: newEventDescription,
+          }),
+        });
+      }
 
       handleCloseModal();
       await fetchEvents();
@@ -71,41 +100,24 @@ const CalendarPage: React.FC = () => {
     }
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setNewEventTitle("");
-    setNewEventDescription("");
-  };
-
-  const handleEventClick = async (info: EventClickArg) => {
-    const id = info.event.id;
-    const currentTitle = info.event.title;
-    const eventDate = normalizeDate(info.event.startStr);
-
-    const newTitle = prompt("Módosítás (üres = törlés):", currentTitle);
-    if (newTitle === null) return;
+  const handleDeleteEvent = async () => {
+    if (!editingEventId) return;
+    if (!confirm("Biztosan törölni szeretnéd ezt az eseményt?")) return;
 
     try {
-      if (newTitle === "") {
-        await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-      } else {
-        const eventToUpdate = events.find(e => String(e.id) === id);
-
-        await fetch(`${API_URL}/${id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            title: newTitle,
-            date: eventDate,
-            description: eventToUpdate?.description ?? "",
-          }),
-        });
-      }
-
+      await fetch(`${API_URL}/${editingEventId}`, { method: "DELETE" });
+      handleCloseModal();
       await fetchEvents();
     } catch (err) {
-      console.error("Hiba:", err);
+      console.error("Hiba a törlés során:", err);
     }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingEventId(null);
+    setNewEventTitle("");
+    setNewEventDescription("");
   };
 
   useEffect(() => {
@@ -113,17 +125,16 @@ const CalendarPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    setDailyEvents(
-      events.filter(e => normalizeDate(e.date) === selectedDate)
-    );
+    setDailyEvents(events.filter(e => normalizeDate(e.date) === selectedDate));
   }, [selectedDate, events]);
 
   return (
-    <div style={{ maxWidth: 950, margin: "20px auto" }}>
+    <div style={{ maxWidth: 950, margin: "20px auto", fontFamily: "sans-serif" }}>
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         locale="hu"
+        buttonText={{ today: "ma" }}
         headerToolbar={{
           left: "prev,next today",
           center: "title",
@@ -142,23 +153,20 @@ const CalendarPage: React.FC = () => {
         height="auto"
       />
 
+      {/* Naptár alatti lista */}
       {selectedDate && (
-        <div
-          style={{
-            marginTop: 20,
-            padding: 15,
-            border: "1px solid #ccc",
-            borderRadius: 8,
-          }}
-        >
-          <h3>Események – {selectedDate}</h3>
+        <div style={dailyEventsContainerStyle}>
+          <h3 style={{ borderBottom: "2px solid #eee", paddingBottom: "10px" }}>
+            Események – {selectedDate}
+          </h3>
           {dailyEvents.length === 0 ? (
-            <p>Nincs esemény.</p>
+            <p style={{ color: "#666" }}>Nincs esemény.</p>
           ) : (
-            <ul>
+            <ul style={{ listStyle: "none", padding: 0 }}>
               {dailyEvents.map(e => (
-                <li key={e.id}>
-                  {e.title} – <em>{e.description}</em>
+                <li key={e.id} style={eventListItemStyle}>
+                  <strong>{e.title}</strong>
+                  {e.description && <p style={{ margin: "5px 0 0", fontSize: "14px", color: "#555" }}>{e.description}</p>}
                 </li>
               ))}
             </ul>
@@ -166,35 +174,55 @@ const CalendarPage: React.FC = () => {
         </div>
       )}
 
+      {/* Modern Modál */}
       {isModalOpen && (
         <div style={modalOverlayStyle}>
           <div style={modalContentStyle}>
-            <h3>Új esemény hozzáadása: {selectedDate}</h3>
+            <h3 style={{ marginBottom: 20 }}>
+              {editingEventId ? "Esemény módosítása" : "Új esemény hozzáadása"}: {selectedDate}
+            </h3>
 
             <div style={{ marginBottom: 15 }}>
-              <label>Esemény neve:</label>
+              <label style={labelStyle}>Esemény neve:</label>
               <input
                 type="text"
+                style={inputStyle}
                 value={newEventTitle}
                 onChange={e => setNewEventTitle(e.target.value)}
               />
             </div>
 
             <div style={{ marginBottom: 20 }}>
-              <label>Esemény leírása:</label>
+              <label style={labelStyle}>Esemény leírása:</label>
               <textarea
+                style={{ ...inputStyle, minHeight: "80px", resize: "vertical" }}
                 value={newEventDescription}
                 onChange={e => setNewEventDescription(e.target.value)}
               />
             </div>
 
             <div style={buttonGroupStyle}>
-              <button onClick={handleCloseModal}>Mégse</button>
+              {editingEventId && (
+                <button 
+                  onClick={handleDeleteEvent} 
+                  style={{ ...buttonBaseStyle, backgroundColor: "#ff4d4d", marginRight: "auto" }}
+                >
+                  Törlés
+                </button>
+              )}
+              <button onClick={handleCloseModal} style={cancelButtonStyle}>
+                Mégse
+              </button>
               <button
                 onClick={handleSaveEvent}
                 disabled={!newEventTitle}
+                style={{
+                  ...okButtonStyle,
+                  opacity: newEventTitle ? 1 : 0.6,
+                  cursor: newEventTitle ? "pointer" : "not-allowed",
+                }}
               >
-                OK
+                {editingEventId ? "Mentés" : "OK"}
               </button>
             </div>
           </div>
@@ -211,7 +239,7 @@ export default CalendarPage;
 const modalOverlayStyle: React.CSSProperties = {
   position: "fixed",
   inset: 0,
-  backgroundColor: "rgba(0,0,0,0.5)",
+  backgroundColor: "rgba(0,0,0,0.6)",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
@@ -221,13 +249,70 @@ const modalOverlayStyle: React.CSSProperties = {
 const modalContentStyle: React.CSSProperties = {
   background: "#fff",
   padding: "30px",
-  borderRadius: "16px",
+  borderRadius: "20px",
   width: "90%",
-  maxWidth: "420px",
+  maxWidth: "450px",
+  boxShadow: "0 15px 35px rgba(0,0,0,0.2)",
+};
+
+const labelStyle: React.CSSProperties = {
+  display: "block",
+  marginBottom: 8,
+  fontWeight: "600",
+  fontSize: "14px",
+  color: "#444"
+};
+
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  padding: "12px",
+  borderRadius: "10px",
+  border: "1px solid #ddd",
+  fontSize: "15px",
+  outline: "none",
 };
 
 const buttonGroupStyle: React.CSSProperties = {
   display: "flex",
   justifyContent: "flex-end",
-  gap: "12px",
+  gap: "10px",
+  alignItems: "center"
+};
+
+const buttonBaseStyle: React.CSSProperties = {
+  padding: "10px 25px",
+  border: "none",
+  borderRadius: "25px",
+  color: "white",
+  fontWeight: "bold",
+  fontSize: "14px",
+  cursor: "pointer",
+  transition: "all 0.2s ease",
+};
+
+const cancelButtonStyle: React.CSSProperties = {
+  ...buttonBaseStyle,
+  background: "linear-gradient(135deg, #6a11cb, #2575fc)",
+};
+
+const okButtonStyle: React.CSSProperties = {
+  ...buttonBaseStyle,
+  background: "linear-gradient(135deg, #d1417a, #e91e63)",
+};
+
+const dailyEventsContainerStyle: React.CSSProperties = {
+  marginTop: 30,
+  padding: "20px",
+  backgroundColor: "#f9f9f9",
+  borderRadius: "12px",
+  border: "1px solid #eee",
+};
+
+const eventListItemStyle: React.CSSProperties = {
+  padding: "12px",
+  backgroundColor: "#fff",
+  marginBottom: "10px",
+  borderRadius: "8px",
+  boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+  borderLeft: "4px solid #d1417a"
 };
