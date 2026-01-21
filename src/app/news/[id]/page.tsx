@@ -88,9 +88,19 @@ export default function NewsPage() {
               }}
             />
           </div>
-          <h1 style={{ fontFamily: "Arial", marginBottom: "1rem" }}>
-            {news.title}
-          </h1>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "1rem",
+              marginBottom: "1rem",
+            }}
+          >
+            <h1 style={{ fontFamily: "Arial", margin: 0 }}>{news.title}</h1>
+
+            <button>Szerkesztés</button>
+          </div>
+
           <article
             className="news-content"
             dangerouslySetInnerHTML={{ __html: news.content }}
