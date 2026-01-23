@@ -17,9 +17,15 @@ export default function Comments({
   const [message, setMessage] = useState("");
   const ctx = useContext(GlobalContext);
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await handleSave();
+  };
+
   const handleSave = async () => {
     setSaving(true);
     setMessage("");
+    setContent("");
 
     try {
       console.log(ctx?.user?.id);
@@ -41,7 +47,11 @@ export default function Comments({
         throw new Error(data.error || "Hiba történt a komment mentése során.");
 
       setMessage(`Sikeres mentés! (ID: ${data.id})`);
+      setContent("");
       getNewsById();
+      toast.success("Komment közzétéve!", {
+        style: { marginTop: "3.5rem" },
+      });
     } catch (err: any) {
       console.error(err);
       toast.error("Kommenteléshez írj a mezőbe!", {
@@ -53,7 +63,7 @@ export default function Comments({
   };
 
   return (
-    <div style={{ padding: "2rem" }}>
+    <form onSubmit={handleSubmit} style={{ padding: "2rem" }}>
       <h3>Komment:</h3>
 
       <input
@@ -64,11 +74,7 @@ export default function Comments({
         onChange={(e) => setContent(e.target.value)}
       />
 
-      <button
-        style={{ marginLeft: "1rem" }}
-        onClick={handleSave}
-        disabled={saving}
-      >
+      <button style={{ marginLeft: "1rem" }} type="submit" disabled={saving}>
         {saving ? "Kommentelés folyamatban..." : "Komment"}
       </button>
 
@@ -81,6 +87,6 @@ export default function Comments({
           </small>
         </div>
       ))}
-    </div>
+    </form>
   );
 }

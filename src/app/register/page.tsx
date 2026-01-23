@@ -9,10 +9,16 @@ export default function RegisterPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordCheck, setPasswordCheck] = useState("");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const router = useRouter();
   const ctx = useContext(GlobalContext);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await handleSave();
+  };
 
   useEffect(() => {
     if (ctx?.user) {
@@ -21,6 +27,14 @@ export default function RegisterPage() {
   }, [ctx]);
 
   const handleSave = async () => {
+    if (password !== passwordCheck) {
+      toast.error("A két jelszó nem egyezik!", {
+        style: { marginTop: "3.5rem" },
+      });
+      setMessage("A két jelszó nem egyezik!");
+      return;
+    }
+
     setSaving(true);
     setMessage("");
 
@@ -56,7 +70,8 @@ export default function RegisterPage() {
   };
 
   return (
-    <div
+    <form
+      onSubmit={handleSubmit}
       style={{
         padding: "2rem",
         display: "flex",
@@ -87,12 +102,18 @@ export default function RegisterPage() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
+      <input
+        type="password"
+        placeholder="Jelszó megerősítése"
+        value={passwordCheck}
+        onChange={(e) => setPasswordCheck(e.target.value)}
+      />
 
-      <button onClick={handleSave} disabled={saving}>
+      <button type="submit" disabled={saving}>
         {saving ? "Regisztráció folyamatban..." : "Regisztráció"}
       </button>
 
       <p>{message}</p>
-    </div>
+    </form>
   );
 }

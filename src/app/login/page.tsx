@@ -10,6 +10,11 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [login, setLogin] = useState(false);
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await handleLogin();
+  };
+
   const router = useRouter();
 
   const ctx = useContext(GlobalContext);
@@ -58,7 +63,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div
+    <form
+      onSubmit={handleSubmit}
       style={{
         padding: "2rem",
         minHeight: "100vh",
@@ -88,9 +94,9 @@ export default function LoginPage() {
         onChange={(e) => setPassword(e.target.value)}
       />
 
-      <button onClick={handleLogin} disabled={login}>
+      <button type="submit" disabled={login}>
         {login ? "Bejelentkezés folyamatban..." : "Bejelentkezés"}
       </button>
-    </div>
+    </form>
   );
 }
