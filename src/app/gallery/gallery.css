@@ -1,0 +1,104 @@
+
+/* Galéria szakasz alapbeállítása */
+.galeria-section {
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* --- FELTÖLTŐ ZÓNA (SZAGGATOTT KERET) --- */
+.upload-container {
+    background: #ffffff;
+    border: 3px dashed #d1d5db; /* Alap szürke szaggatott vonal */
+    border-radius: 20px;
+    padding: 60px 20px;
+    text-align: center;
+    margin-bottom: 50px;
+    cursor: pointer;
+    transition: all 0.4s ease-in-out;
+    position: relative;
+}
+
+/* Hover a szaggatott vonalon belül */
+.upload-container:hover {
+    background: #fffafa;
+    border-color: #800020; /* DÖKNet Bordó */
+    box-shadow: 0 15px 30px rgba(128, 0, 32, 0.1);
+    transform: translateY(-8px); /* Megemelkedik a keret */
+}
+
+.upload-button {
+    background: #800020;
+    color: white;
+    padding: 14px 35px;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-block;
+    margin-top: 15px;
+    transition: 0.3s;
+    box-shadow: 0 4px 10px rgba(128, 0, 32, 0.2);
+}
+
+.upload-button:hover {
+    background: #5a0016;
+    transform: scale(1.05);
+}
+
+/* --- KÉP RÁCS ÉS KÁRTYÁK --- */
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.image-card {
+    background: #000;
+    border-radius: 18px;
+    overflow: hidden;
+    position: relative;
+    height: 380px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.image-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+/* Kép animáció: zoom és sötétítés */
+.image-card:hover img {
+    transform: scale(1.15);
+    filter: brightness(0.6);
+}
+
+/* Szöveg sáv (Overlay) */
+.image-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 25px;
+    background: linear-gradient(to top, rgba(128, 0, 32, 0.9) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.image-card:hover .image-overlay {
+    opacity: 1;
+}
+
+.image-name {
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+    transform: translateY(20px);
+    transition: transform 0.4s ease 0.1s;
+}
+
+.image-card:hover .image-name {
+    transform: translateY(0);
+}

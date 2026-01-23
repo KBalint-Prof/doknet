@@ -12,6 +12,7 @@ export default function NavigationBar() {
         <a href="/">Home</a>
         <a href="/news">News</a>
         <a href="/calendar">Calendar</a>
+        <a href="/gallery">Gallery</a>
       </div>
 
       <div className="nav-right">
