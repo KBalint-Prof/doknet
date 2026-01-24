@@ -1,9 +1,16 @@
 import { NextResponse } from "next/server";
-import { db } from "../db";
 
-export async function GET() {
+import { ResultSetHeader } from "mysql2";
+import { db } from "../../db";
+
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+
   try {
-    const [rows] = await db.query(
+    const [news] = await db.query(
       `SELECT
         news.id,
         news.title,
@@ -13,10 +20,11 @@ export async function GET() {
         users.username AS author_name
        FROM news 
        LEFT JOIN users ON users.id = news.user_id 
-       ORDER BY news.created_at DESC`,
+       WHERE news.id = ?`,
+      [id],
     );
 
-    return NextResponse.json(rows);
+    return NextResponse.json({ news });
   } catch (err) {
     console.error("Hiba a lekérdezés során:", err);
     return NextResponse.json({ error: "Adatbázis hiba!" }, { status: 500 });

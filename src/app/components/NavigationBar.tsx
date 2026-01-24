@@ -9,10 +9,11 @@ export default function NavigationBar() {
   return (
     <nav className="navbar">
       <div className="nav-left">
-        <a href="/">Home</a>
-        <a href="/news">News</a>
-        <a href="/calendar">Calendar</a>
-        <a href="/gallery">Gallery</a>
+        <a href="/">Főoldal</a>
+        {/* <a href="/news">Hírszerkesztő</a> */}
+        <a href="/news-editor">Hírszerkesztő</a>
+        <a href="/calendar">Naptár</a>
+        <a href="/gallery">Galéria</a>
       </div>
 
       <div className="nav-right">

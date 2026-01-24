@@ -1,16 +1,16 @@
 "use client";
 
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { GlobalContext } from "../context/GlobalContext";
 
 const TinyMCEEditor = dynamic(
   () => import("@tinymce/tinymce-react").then((mod) => mod.Editor),
-  { ssr: false }
+  { ssr: false },
 );
 
-export default function NewsPage() {
+export default function NewsEditor({ id }: { id?: number }) {
   const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
@@ -26,18 +26,13 @@ export default function NewsPage() {
   const router = useRouter();
   const ctx = useContext(GlobalContext);
 
-  console.log("MENTÉS:", {
-    title,
-    content,
-    selectedCover,
-  });
   const handleSave = async () => {
     setSaving(true);
     setMessage("");
 
     try {
       console.log(ctx?.user?.id);
-      const res = await fetch("/api/news", {
+      const res = await fetch("/api/news-editor", {
         method: "POST",
         headers: {
           "Content-Type": "application/json; charset=utf-8",
@@ -56,7 +51,7 @@ export default function NewsPage() {
         throw new Error(data.error || "Hiba történt a mentés során.");
 
       setMessage(`Sikeres mentés! (ID: ${data.id})`);
-      router.push("/");
+      router.push("/news/" + data.id);
     } catch (err: any) {
       console.error(err);
       setMessage("Hiba a mentés során!");
@@ -65,9 +60,66 @@ export default function NewsPage() {
     }
   };
 
+  const handleUpdate = async () => {
+    setSaving(true);
+    setMessage("");
+
+    try {
+      console.log(ctx?.user?.id);
+      const res = await fetch("/api/news-editor", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+        body: JSON.stringify({
+          news_id: id,
+          title,
+          content,
+          cover_img: selectedCover,
+          user_id: ctx?.user?.id,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok)
+        throw new Error(data.error || "Hiba történt a módosítás során.");
+
+      setMessage(`Sikeres módosítás! (ID: ${data.id})`);
+      router.push("/news/" + id);
+    } catch (err: any) {
+      console.error(err);
+      setMessage("Hiba a módosítás során!");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const getNewsById = async () => {
+    try {
+      const result = await fetch(`/api/news-editor/${id}`);
+      const data = await result.json();
+
+      console.log("NEWS BY ID:", data);
+
+      if (!result.ok || data.news.length === 0)
+        throw new Error(data.error || "Hiba történt a hír betöltése során.");
+
+      setContent(data.news[0].content);
+      setSelectedCover(data.news[0].cover_img);
+      setTitle(data.news[0].title);
+    } catch (err: any) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    if (id) getNewsById();
+  }, [id]);
+
   return (
     <div style={{ padding: "2rem" }}>
-      <h1>Új hír létrehozása</h1>
+      <h1>{id ? `Szerkesztés ${id}` : "Új hír létrehozása"}</h1>
 
       <input
         type="text"
@@ -101,7 +153,7 @@ export default function NewsPage() {
           </div>
         ))}
 
-        <label
+        {/* <label
           style={{
             width: "15rem",
             height: "10rem",
@@ -149,7 +201,7 @@ export default function NewsPage() {
               setSelectedCover(data.url);
             }}
           />
-        </label>
+        </label> */}
       </div>
 
       <TinyMCEEditor
@@ -211,9 +263,10 @@ export default function NewsPage() {
           placeholder: "Írd ide a hír tartalmát...",
         }}
         onEditorChange={(newContent) => setContent(newContent)}
+        value={content}
       />
 
-      <button onClick={handleSave} disabled={saving}>
+      <button onClick={id ? handleUpdate : handleSave} disabled={saving}>
         {saving ? "Mentés folyamatban..." : "Mentés"}
       </button>
     </div>
