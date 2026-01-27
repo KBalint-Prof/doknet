@@ -16,6 +16,7 @@ const images = [
   "/slider/slide1.jpg",
   "/slider/slide2.jpg",
   "/slider/slide3.jpg",
+  "/slider/slide5.jpg",
 ];
 
 export default function Carousel() {
