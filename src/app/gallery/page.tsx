@@ -1,108 +1,149 @@
-
 "use client";
+import { useState, useEffect } from "react";
+import "./gallery.css";
 
-import { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
-import './gallery.css';
+export default function GalleryPage() {
+  const [images, setImages] = useState<any[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [zoom, setZoom] = useState(1);
 
-interface GalleryImage {
-  id: number;
-  image: string;
-  filename: string;
-  uploaded_by: string;
-  created_at: string;
-}
-
-export default function GaleriaPage() {
-  const [images, setImages] = useState<GalleryImage[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchImages = async () => {
+  // Képek betöltése
+  const load = async () => {
     try {
-      const res = await fetch('/api/gallery');
+      const res = await fetch("/api/gallery");
       const data = await res.json();
       setImages(Array.isArray(data) ? data : []);
-    } catch (error) {
-      toast.error("Hiba a galéria betöltésekor");
-    } finally {
-      setLoading(false);
+    } catch (e) {
+      console.error("Hiba a betöltéskor:", e);
     }
   };
 
-  useEffect(() => { fetchImages(); }, []);
+  useEffect(() => {
+    load();
+  }, []);
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files?.length) return;
+  // Feltöltés
+  const upload = async (e: any) => {
     const formData = new FormData();
-    Array.from(e.target.files).forEach(file => formData.append('images', file));
+    Array.from(e.target.files!).forEach((f: any) => formData.append("images", f));
+    await fetch("/api/gallery", { method: "POST", body: formData });
+    load();
+  };
 
-    const id = toast.loading("Képek feltöltése...");
-    try {
-      const res = await fetch('/api/gallery', { method: 'POST', body: formData });
-      if (res.ok) {
-        toast.update(id, { render: "Sikeres feltöltés!", type: "success", isLoading: false, autoClose: 2000 });
-        fetchImages();
-      }
-    } catch (err) {
-      toast.update(id, { render: "Hiba történt", type: "error", isLoading: false, autoClose: 2000 });
+  // Kijelöltek törlése
+  const deleteSelected = async () => {
+    if (selectedIds.length === 0) {
+      setIsEditMode(false);
+      return;
     }
+    if (!confirm(`Biztosan törlöd a kijelölt ${selectedIds.length} képet?`)) return;
+
+    const res = await fetch("/api/gallery", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids: selectedIds })
+    });
+
+    if (res.ok) {
+      setSelectedIds([]);
+      setIsEditMode(false);
+      load();
+    }
+  };
+
+  // Kijelölés váltása
+  const toggleSelect = (id: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedIds(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
   };
 
   return (
-    <div className="galeria-section text-black">
-      <header className="text-center mb-12">
-        <h1 className="text-5xl font-black tracking-tight">
-            DÖK<span className="text-[#800020]">Net</span> Galéria
-        </h1>
-        <div className="w-24 h-1.5 bg-[#800020] mx-auto mt-4 rounded-full"></div>
+    <div className="gallery-layout">
+      <header className="gallery-header">
+        <h1>Galéria</h1>
+        <div className="top-controls">
+          <input type="file" id="up" multiple onChange={upload} hidden />
+          <label htmlFor="up" className="btn-bordo">Képek hozzáadása</label>
+
+          <button 
+            className={`btn-trash-main ${isEditMode ? 'active' : ''}`} 
+            onClick={() => isEditMode ? deleteSelected() : setIsEditMode(true)}
+          >
+            🗑️ {isEditMode && selectedIds.length > 0 ? `(${selectedIds.length})` : ""}
+          </button>
+
+          {isEditMode && (
+            <button className="btn-cancel" onClick={() => { setIsEditMode(false); setSelectedIds([]); }}>
+              Mégse
+            </button>
+          )}
+        </div>
       </header>
 
-      {/* INTERAKTÍV FELTÖLTŐ ZÓNA */}
-      <div className="upload-container group">
-        <div className="flex flex-col items-center">
-            <div className="text-5xl mb-4 transition-transform group-hover:scale-125 duration-300">📁</div>
-            <h2 className="text-2xl font-bold text-gray-700">Oszd meg az élményeket!</h2>
-            <p className="text-gray-500 mt-2">Kattints a gombra a galéria bővítéséhez</p>
-            
-            <label className="upload-button mt-6">
-                Fájlok kiválasztása
-                <input 
-                    type="file" 
-                    multiple 
-                    className="hidden" 
-                    onChange={handleUpload} 
-                    accept="image/*" 
-                />
-            </label>
-        </div>
-      </div>
-
-      {/* GALÉRIA RÁCS */}
-      {loading ? (
-        <div className="text-center py-10 italic text-gray-400">Képek betöltése...</div>
-      ) : (
-        <div className="image-grid">
-          {images.map((img) => (
-            <div key={img.id} className="image-card">
-              <img 
-                src={`/uploads/gallery/${img.image}`} 
-                alt={img.filename} 
-              />
-              <div className="image-overlay">
-                <p className="image-name">{img.filename}</p>
-                <div className="text-white/80 text-xs mt-2">
-                  <p>Feltöltő: {img.uploaded_by}</p>
-                  <p>{new Date(img.created_at).toLocaleDateString('hu-HU')}</p>
+      <main className="image-grid">
+        {images.map((img, idx) => {
+          const isSelected = selectedIds.includes(img.id);
+          return (
+            <div 
+              key={img.id} 
+              className={`img-box ${isSelected ? 'selected' : ''}`} 
+              onClick={() => {
+                if (isEditMode) toggleSelect(img.id, { stopPropagation: () => {} } as any);
+                else { setSelectedIndex(idx); setZoom(1); }
+              }}
+            >
+              <img src={img.image_path} alt="galéria kép" />
+              
+              {isEditMode && (
+                <div className="checkbox-layer" onClick={(e) => toggleSelect(img.id, e)}>
+                  <div className={`check-circle ${isSelected ? 'checked' : ''}`}>
+                    {isSelected && "✓"}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
-          ))}
-        </div>
-      )}
+          );
+        })}
+      </main>
 
-      {!loading && images.length === 0 && (
-        <div className="text-center py-20 bg-gray-100 rounded-3xl">
-            <p className="text-gray-400">Még nincsenek feltöltött képek.</p>
+      {/* Lightbox rögzített vezérlőkkel */}
+      {selectedIndex !== null && (
+        <div className="lightbox-overlay" onClick={() => setSelectedIndex(null)}>
+          <button className="l-nav prev" onClick={(e) => { 
+            e.stopPropagation(); 
+            setSelectedIndex((selectedIndex - 1 + images.length) % images.length);
+            setZoom(1);
+          }}>❮</button>
+          
+          <div className="l-viewport" onClick={(e) => e.stopPropagation()}>
+            <img 
+              src={images[selectedIndex].image_path} 
+              style={{ transform: `scale(${zoom})`, transformOrigin: 'center' }} 
+              alt="nagyított kép" 
+            />
+          </div>
+
+          {/* FIXÁLT VEZÉRLŐK - Nem tűnnek el nagyításkor */}
+          <div className="l-fixed-controls" onClick={(e) => e.stopPropagation()}>
+             <div className="zoom-bar">
+                <button onClick={() => setZoom(z => Math.max(0.5, z - 0.2))}>-</button>
+                <span className="zoom-text">{Math.round(zoom * 100)}%</span>
+                <button onClick={() => setZoom(z => Math.min(4, z + 0.2))}>+</button>
+             </div>
+             <a href={images[selectedIndex].image_path} download className="btn-dl">📥 Letöltés</a>
+          </div>
+
+          <button className="l-nav next" onClick={(e) => { 
+            e.stopPropagation(); 
+            setSelectedIndex((selectedIndex + 1) % images.length);
+            setZoom(1);
+          }}>❯</button>
+          
+          <span className="close-x" onClick={() => setSelectedIndex(null)}>×</span>
         </div>
       )}
     </div>

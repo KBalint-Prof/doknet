@@ -1,104 +1,59 @@
+.gallery-layout { max-width: 1200px; margin: 0 auto; padding: 50px 20px; font-family: sans-serif; }
+.gallery-header { text-align: center; margin-bottom: 40px; }
 
-/* Galéria szakasz alapbeállítása */
-.galeria-section {
-    padding: 40px 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
+.top-controls { display: flex; justify-content: center; align-items: center; gap: 20px; }
 
-/* --- FELTÖLTŐ ZÓNA (SZAGGATOTT KERET) --- */
-.upload-container {
-    background: #ffffff;
-    border: 3px dashed #d1d5db; /* Alap szürke szaggatott vonal */
-    border-radius: 20px;
-    padding: 60px 20px;
-    text-align: center;
-    margin-bottom: 50px;
-    cursor: pointer;
-    transition: all 0.4s ease-in-out;
-    position: relative;
+/* Bordó gomb */
+.btn-bordo {
+  padding: 10px 25px; border: 2px solid #800000; color: #800000;
+  border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s;
 }
+.btn-bordo:hover { background: #800000; color: white; }
 
-/* Hover a szaggatott vonalon belül */
-.upload-container:hover {
-    background: #fffafa;
-    border-color: #800020; /* DÖKNet Bordó */
-    box-shadow: 0 15px 30px rgba(128, 0, 32, 0.1);
-    transform: translateY(-8px); /* Megemelkedik a keret */
+/* Gmail kuka */
+.btn-trash-main {
+  background: white; border: 1px solid #ddd; padding: 10px 20px;
+  border-radius: 6px; cursor: pointer; font-size: 1.2rem; transition: 0.2s;
 }
+.btn-trash-main.active { background: #800000; color: white; border-color: #800000; }
 
-.upload-button {
-    background: #800020;
-    color: white;
-    padding: 14px 35px;
-    border-radius: 50px;
-    font-weight: bold;
-    cursor: pointer;
-    display: inline-block;
-    margin-top: 15px;
-    transition: 0.3s;
-    box-shadow: 0 4px 10px rgba(128, 0, 32, 0.2);
-}
+.btn-cancel { background: none; border: none; color: #666; cursor: pointer; text-decoration: underline; }
 
-.upload-button:hover {
-    background: #5a0016;
-    transform: scale(1.05);
-}
+/* Kép rács kerettel */
+.image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
 
-/* --- KÉP RÁCS ÉS KÁRTYÁK --- */
-.image-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 30px;
+.img-box {
+  position: relative; padding: 8px; background: white; border: 1px solid #ddd;
+  border-radius: 4px; cursor: pointer; transition: 0.3s;
 }
+.img-box img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; }
+.img-box.selected { border-color: #800000; box-shadow: 0 0 10px rgba(128, 0, 0, 0.2); }
 
-.image-card {
-    background: #000;
-    border-radius: 18px;
-    overflow: hidden;
-    position: relative;
-    height: 380px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+/* Kijelölő réteg */
+.checkbox-layer {
+  position: absolute; inset: 0; background: rgba(0,0,0,0.05);
+  display: flex; justify-content: flex-end; padding: 15px;
 }
+.check-circle {
+  width: 25px; height: 25px; background: white; border: 2px solid #000;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;
+}
+.checked { background: #800000 !important; border-color: #800000 !important; color: white; }
 
-.image-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.7s cubic-bezier(0.2, 1, 0.3, 1);
+/* Lightbox & Nav */
+.lightbox-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+  display: flex; align-items: center; justify-content: center; z-index: 1000;
 }
+.l-content { position: relative; text-align: center; }
+.l-content img { max-width: 85vw; max-height: 80vh; border: 2px solid white; transition: 0.2s; }
 
-/* Kép animáció: zoom és sötétítés */
-.image-card:hover img {
-    transform: scale(1.15);
-    filter: brightness(0.6);
-}
+.l-tools { margin-top: 20px; display: flex; justify-content: center; gap: 15px; align-items: center; color: white; }
+.l-tools button { padding: 5px 15px; cursor: pointer; border-radius: 4px; border: none; }
 
-/* Szöveg sáv (Overlay) */
-.image-overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 25px;
-    background: linear-gradient(to top, rgba(128, 0, 32, 0.9) 0%, transparent 70%);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
+.btn-dl { background: #800000; color: white; text-decoration: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; }
 
-.image-card:hover .image-overlay {
-    opacity: 1;
-}
-
-.image-name {
-    color: white;
-    font-weight: bold;
-    font-size: 1.2rem;
-    transform: translateY(20px);
-    transition: transform 0.4s ease 0.1s;
-}
-
-.image-card:hover .image-name {
-    transform: translateY(0);
-}
+.l-nav { position: absolute; color: white; background: none; border: none; font-size: 4rem; cursor: pointer; }
+.prev { left: 40px; }
+.next { right: 40px; }
+.close-x { position: absolute; top: 20px; right: 40px; color: white; font-size: 3rem; cursor: pointer; }
