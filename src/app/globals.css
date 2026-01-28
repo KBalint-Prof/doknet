@@ -44,9 +44,10 @@ body {
 } */
 
 :root {
-  --accent: #cc2f70;
-  --accent-soft: rgba(204, 47, 112, 0.08);
-  --accent-glow: rgba(204, 47, 112, 0.35);
+  --accent: #8b1e3f; /* bordó / burgundi */
+  --accent-light: #b02a53; /* világosabb bordó */
+  --accent-soft: rgba(139, 30, 63, 0.08);
+  --accent-glow: rgba(139, 30, 63, 0.35);
 }
 
 .navbar {
@@ -57,15 +58,14 @@ body {
   padding: 0.9rem 1.75rem;
   margin-bottom: 2rem;
 
-  background: linear-gradient(180deg, #ffffff 0%, var(--accent-soft) 100%);
-
+  background: linear-gradient(180deg, #ffffff 0%, var(--accent-soft) 70%);
   border-bottom: 1px solid rgba(204, 47, 112, 0.15);
 
   font-family:
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
-    'Segoe UI',
+    "Segoe UI",
     sans-serif;
 }
 
@@ -90,7 +90,7 @@ body {
 }
 
 .navbar a::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   bottom: -6px;
@@ -119,14 +119,18 @@ body {
   font-size: 0.85rem;
   font-weight: 600;
 
-  background: linear-gradient(135deg, var(--accent) 0%, #e0488c 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent) 0%,
+    var(--accent-light) 100%
+  );
   color: #fff;
 
   border: none;
   border-radius: 999px;
 
   cursor: pointer;
-  box-shadow: 0 6px 16px rgba(204, 47, 112, 0.35);
+  box-shadow: 0 6px 16px var(--accent-glow);
 
   transition:
     transform 0.15s ease,
@@ -135,7 +139,7 @@ body {
 
 .logout-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(204, 47, 112, 0.45);
+  box-shadow: 0 8px 20px var(--accent-glow);
 }
 
 input,
@@ -167,14 +171,14 @@ textarea::placeholder {
 
 input:hover:not(:focus),
 textarea:hover:not(:focus) {
-  border-color: rgba(204, 47, 112, 0.45);
+  border-color: var(--accent-light);
 }
 
 input:focus,
 textarea:focus {
   border-color: var(--accent);
   background-color: var(--accent-soft);
-  box-shadow: 0 0 0 3px rgba(204, 47, 112, 0.25);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 textarea {
@@ -205,11 +209,19 @@ button {
   font-weight: 600;
   letter-spacing: 0.2px;
   color: #fff;
-  background: linear-gradient(135deg, var(--accent) 0%, #e0488c 100%);
+
+  background: linear-gradient(
+    135deg,
+    var(--accent) 0%,
+    color-mix(in srgb, var(--accent) 80%, white 20%) 100%
+  );
+
   border: none;
   border-radius: 999px;
   cursor: pointer;
-  box-shadow: 0 6px 16px rgba(204, 47, 112, 0.35);
+
+  box-shadow: 0 6px 16px var(--accent-glow);
+
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease,
@@ -218,20 +230,20 @@ button {
 
 button:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 22px rgba(204, 47, 112, 0.45);
+  box-shadow: 0 8px 22px var(--accent-glow);
   filter: brightness(1.05);
 }
 
 button:active {
   transform: translateY(0);
-  box-shadow: 0 4px 10px rgba(204, 47, 112, 0.35);
+  box-shadow: 0 4px 10px var(--accent-glow);
 }
 
 button:focus-visible {
   outline: none;
   box-shadow:
-    0 0 0 3px rgba(204, 47, 112, 0.35),
-    0 6px 16px rgba(204, 47, 112, 0.35);
+    0 0 0 3px var(--accent-glow),
+    0 6px 16px var(--accent-glow);
 }
 
 button:disabled {

@@ -266,7 +266,11 @@ export default function NewsEditor({ id }: { id?: number }) {
         value={content}
       />
 
-      <button onClick={id ? handleUpdate : handleSave} disabled={saving}>
+      <button
+        style={{ marginTop: "1rem" }}
+        onClick={id ? handleUpdate : handleSave}
+        disabled={saving}
+      >
         {saving ? "Mentés folyamatban..." : "Mentés"}
       </button>
     </div>
