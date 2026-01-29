@@ -1,59 +1,96 @@
-.gallery-layout { max-width: 1200px; margin: 0 auto; padding: 50px 20px; font-family: sans-serif; }
-.gallery-header { text-align: center; margin-bottom: 40px; }
 
+:root {
+  --accent: #800000;
+}
+
+/* OLDAL ELRENDEZÉS - Az animációt a globális template kezeli, 
+   itt csak a szerkezet marad */
+.gallery-layout { 
+  max-width: 1200px; 
+  margin: 0 auto; 
+  padding: 50px 20px; 
+  font-family: sans-serif; 
+}
+
+.gallery-header { text-align: center; margin-bottom: 40px; }
 .top-controls { display: flex; justify-content: center; align-items: center; gap: 20px; }
 
-/* Bordó gomb */
+/* --- GOMBOK --- */
 .btn-bordo {
-  padding: 10px 25px; border: 2px solid #800000; color: #800000;
+  padding: 10px 25px; border: 2px solid var(--accent); color: var(--accent);
   border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s;
+  background: white;
 }
-.btn-bordo:hover { background: #800000; color: white; }
+.btn-bordo:hover { background: var(--accent); color: white; }
 
-/* Gmail kuka */
 .btn-trash-main {
   background: white; border: 1px solid #ddd; padding: 10px 20px;
   border-radius: 6px; cursor: pointer; font-size: 1.2rem; transition: 0.2s;
 }
-.btn-trash-main.active { background: #800000; color: white; border-color: #800000; }
+.btn-trash-main.active { background: var(--accent); color: white; border-color: var(--accent); }
 
 .btn-cancel { background: none; border: none; color: #666; cursor: pointer; text-decoration: underline; }
 
-/* Kép rács kerettel */
-.image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+/* --- A NAGY BOX (VASTAG KERET ÉS ÁRNYÉK) --- */
+.gallery-box {
+  background: #ffffff;
+  border: 2px solid #ddd; /* 2px vastag */
+  padding: 40px;
+  border-radius: 12px;
+  min-height: 450px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1); 
+  margin-top: 20px;
+}
 
+/* Kép rács */
+.image-grid { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+  gap: 25px; 
+}
+
+/* KÉPEK EGYENKÉNTI ANIMÁCIÓJA (Ez megmarad, mert jól néz ki a dobozon belül) */
 .img-box {
-  position: relative; padding: 8px; background: white; border: 1px solid #ddd;
-  border-radius: 4px; cursor: pointer; transition: 0.3s;
+  position: relative; 
+  padding: 8px; 
+  background: white; 
+  border: 1px solid #eee;
+  border-radius: 6px; 
+  cursor: pointer; 
+  transition: 0.3s;
+  
+  opacity: 0;
+  animation: fadeInUp 0.5s ease-out forwards; /* A globális fadeInUp-ot használja */
 }
+
+.img-box:nth-child(1) { animation-delay: 0.1s; }
+.img-box:nth-child(2) { animation-delay: 0.15s; }
+.img-box:nth-child(3) { animation-delay: 0.2s; }
+.img-box:nth-child(4) { animation-delay: 0.25s; }
+.img-box:nth-child(n+5) { animation-delay: 0.3s; }
+
+.img-box:hover { transform: scale(1.02); border-color: var(--accent); }
 .img-box img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; }
-.img-box.selected { border-color: #800000; box-shadow: 0 0 10px rgba(128, 0, 0, 0.2); }
+.img-box.selected { border-color: var(--accent); box-shadow: 0 0 10px rgba(128, 0, 0, 0.2); }
 
-/* Kijelölő réteg */
-.checkbox-layer {
-  position: absolute; inset: 0; background: rgba(0,0,0,0.05);
-  display: flex; justify-content: flex-end; padding: 15px;
-}
-.check-circle {
-  width: 25px; height: 25px; background: white; border: 2px solid #000;
-  border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;
-}
-.checked { background: #800000 !important; border-color: #800000 !important; color: white; }
-
-/* Lightbox & Nav */
+/* --- LIGHTBOX (FIX VEZÉRLŐK) --- */
 .lightbox-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.95);
-  display: flex; align-items: center; justify-content: center; z-index: 1000;
+  display: flex; align-items: center; justify-content: center; z-index: 3000;
 }
-.l-content { position: relative; text-align: center; }
-.l-content img { max-width: 85vw; max-height: 80vh; border: 2px solid white; transition: 0.2s; }
+.l-main-container { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+.l-viewer { width: 80vw; height: 70vh; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+.l-viewer img { max-width: 100%; max-height: 100%; object-fit: contain; transform-origin: center center; }
 
-.l-tools { margin-top: 20px; display: flex; justify-content: center; gap: 15px; align-items: center; color: white; }
-.l-tools button { padding: 5px 15px; cursor: pointer; border-radius: 4px; border: none; }
+.l-controls-bar {
+  display: flex; justify-content: center; gap: 20px; align-items: center; color: white;
+  background: rgba(255, 255, 255, 0.1); padding: 12px 25px; border-radius: 40px;
+}
+.btn-circle { width: 35px; height: 35px; border-radius: 50%; border: none; background: white; color: var(--accent); font-weight: bold; cursor: pointer; }
+.btn-dl { background: var(--accent); color: white; text-decoration: none; padding: 8px 18px; border-radius: 6px; font-weight: bold; }
 
-.btn-dl { background: #800000; color: white; text-decoration: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; }
-
-.l-nav { position: absolute; color: white; background: none; border: none; font-size: 4rem; cursor: pointer; }
+.l-nav { position: absolute; color: white; background: none; border: none; font-size: 4rem; cursor: pointer; opacity: 0.6; }
+.l-nav:hover { opacity: 1; color: var(--accent); }
 .prev { left: 40px; }
 .next { right: 40px; }
 .close-x { position: absolute; top: 20px; right: 40px; color: white; font-size: 3rem; cursor: pointer; }
