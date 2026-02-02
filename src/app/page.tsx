@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import Carousel from "./components/Carousel";
 import { useEffect, useState } from "react";
 import NewsList from "./components/NewsList";

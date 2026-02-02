@@ -5,7 +5,7 @@ import { db } from "../../db";
 
 export async function GET(
   req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
 
@@ -17,11 +17,14 @@ export async function GET(
         news.content,
         news.cover_img,
         news.created_at,
-        users.username AS author_name
+        news.modified_at,
+        users.username AS author_name,
+        mu.username AS modified_by_name
        FROM news 
-       LEFT JOIN users ON users.id = news.user_id 
+       LEFT JOIN users ON users.id = news.user_id
+       LEFT JOIN users mu ON mu.id = news.modified_by
        WHERE news.id = ?`,
-      [id]
+      [id],
     );
 
     const [comments] = await db.query(
@@ -34,7 +37,7 @@ export async function GET(
        LEFT JOIN users ON users.id = comments.user_id
        WHERE comments.news_id = ?
        ORDER BY comments.created_at DESC`,
-      [id]
+      [id],
     );
 
     const [reaction_types] = await db.query(`SELECT * FROM reaction_types`);
@@ -52,7 +55,7 @@ export async function GET(
        INNER JOIN reaction_types ON reaction_types.id = news_reactions.reaction_type_id
        WHERE news_reactions.news_id = ?
        ORDER BY reaction_types.sort_order ASC`,
-      [id]
+      [id],
     );
 
     (news as any)[0].comments = comments;
@@ -72,13 +75,13 @@ export async function POST(req: Request) {
     if (!title || !content) {
       return NextResponse.json(
         { error: "A cím és a tartalom is kötelező!" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const [result] = await db.query<ResultSetHeader>(
       "INSERT INTO news (title, content, cover_img, user_id) VALUES (?, ?, ?, ?)",
-      [title, content, cover_img ?? null, user_id]
+      [title, content, cover_img ?? null, user_id],
     );
 
     return NextResponse.json({

@@ -41,8 +41,8 @@ export async function PATCH(req: Request) {
     }
 
     const [result] = await db.query<ResultSetHeader>(
-      "UPDATE news SET title = ?, content = ?, cover_img = ? WHERE id = ?",
-      [title, content, cover_img ?? null, news_id],
+      "UPDATE news SET title = ?, content = ?, cover_img = ?, modified_by = ?,modified_at = NOW() WHERE id = ? AND is_deleted = 0 ",
+      [title, content, cover_img ?? null, user_id, news_id],
     );
 
     return NextResponse.json({

@@ -13,6 +13,8 @@ export interface NewsType {
   cover_img: string | null;
   created_at: string;
   author_name: string;
+  modified_at: string | null;
+  modified_by_name: string | null;
   comments: {
     id: number;
     content: string;
@@ -39,8 +41,7 @@ export default function NewsPage() {
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
 
-  const [isEditOpen, setIsEditOpen] = useState(false);
-
+  const [isOpen, setIsOpen] = useState(false);
   const [news, setNews] = useState<NewsType | null>(null);
   const [reactionTypes, setReactionTypes] = useState<ReactionTypeType[]>([]);
 
@@ -106,6 +107,7 @@ export default function NewsPage() {
             <button onClick={() => router.push("/news-editor/" + id)}>
               Szerkesztés
             </button>
+            <button onClick={() => setIsOpen(true)}>🗑️</button>
           </div>
 
           <article
@@ -113,14 +115,24 @@ export default function NewsPage() {
             dangerouslySetInnerHTML={{ __html: news.content }}
             style={{ marginTop: "1rem", fontSize: "1.2rem", lineHeight: "1.6" }}
           ></article>
+
+          <div
+            style={{
+              marginTop: "2rem",
+              borderTop: "1px solid #ddd",
+              paddingTop: "1rem",
+            }}
+          ></div>
+
           <small
             style={{
               marginTop: "0.75rem",
               color: "#777",
-              display: "flex",
-              flexDirection: "column",
-              gap: "0.25rem",
+              display: "grid",
+              gridTemplateColumns: "1fr 5fr",
+              gap: "0.25rem 0.75rem",
               lineHeight: 1.4,
+              fontSize: "0.8rem",
             }}
           >
             <span>
@@ -130,13 +142,38 @@ export default function NewsPage() {
               </time>
             </span>
 
+            {news.modified_at && (
+              <span>
+                Utoljára módosítva:{" "}
+                <strong style={{ fontWeight: 500 }}>
+                  {new Date(news.modified_at).toLocaleString("hu-HU")}
+                </strong>{" "}
+              </span>
+            )}
+
             <span>
               Közzétette:{" "}
               <strong style={{ fontWeight: 500 }}>
                 {news.author_name ?? "Ismeretlen"}
               </strong>
             </span>
+
+            {news.modified_by_name && (
+              <span>
+                Utoljára módosította:{" "}
+                <strong style={{ fontWeight: 500 }}>
+                  {news.modified_by_name ?? "Ismeretlen"}
+                </strong>{" "}
+              </span>
+            )}
           </small>
+          <div
+            style={{
+              marginTop: "2rem",
+              borderTop: "1px solid #ddd",
+              paddingTop: "1rem",
+            }}
+          ></div>
           <Reactions
             news={news}
             reactionTypes={reactionTypes}

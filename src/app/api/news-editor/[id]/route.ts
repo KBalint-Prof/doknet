@@ -17,10 +17,13 @@ export async function GET(
         news.content,
         news.cover_img,
         news.created_at,
-        users.username AS author_name
+        news.modified_at,
+        users.username AS author_name,
+        mu.username AS modified_by_name
        FROM news 
        LEFT JOIN users ON users.id = news.user_id 
-       WHERE news.id = ?`,
+       LEFT JOIN users mu ON mu.id = news.modified_by
+       WHERE news.id = ? AND news.is_deleted = 0`,
       [id],
     );
 
