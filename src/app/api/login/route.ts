@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { ResultSetHeader } from "mysql2";
 import bcrypt from "bcryptjs";
 import { db } from "../db";
 
@@ -9,13 +8,13 @@ export async function POST(req: Request) {
 
     if (!username || !password) {
       return NextResponse.json(
-        { error: "MInden mező kitöltése kötelező!" },
+        { error: "Minden mező kitöltése kötelező!" },
         { status: 400 }
       );
     }
 
     const [rows]: any = await db.query(
-      "SELECT id, username, email, password FROM users WHERE username = ?",
+      "SELECT id, username, email, password, role FROM users WHERE username = ?",
       [username]
     );
 
@@ -27,7 +26,6 @@ export async function POST(req: Request) {
     }
 
     const user = rows[0];
-
     const isValid = await bcrypt.compare(password, user.password);
 
     if (!isValid) {
@@ -40,6 +38,7 @@ export async function POST(req: Request) {
         id: user.id,
         username: user.username,
         email: user.email,
+        role: user.role, 
       },
     });
   } catch (err) {
