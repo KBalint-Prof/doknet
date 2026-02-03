@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/app/api/db";
 
-// Segédfüggvény: Csak elnök, tanár vagy admin módosíthat/törölhet
+
 const hasPermission = (role: string) => ['president', 'teacher', 'admin'].includes(role);
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -12,7 +12,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 
     const { title, date, description, userRole } = await req.json();
 
-    // JOGOSULTSÁG ELLENŐRZÉSE
+    
     if (!userRole || !hasPermission(userRole)) {
       return NextResponse.json({ error: "Nincs jogosultságod a módosításhoz!" }, { status: 403 });
     }
@@ -39,10 +39,10 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     const idNum = Number(id);
     if (isNaN(idNum)) return NextResponse.json({ error: "Érvénytelen ID" }, { status: 400 });
 
-    // A DELETE kérésnél is beolvassuk a body-t a rang ellenőrzéséhez
+    
     const { userRole } = await req.json();
 
-    // JOGOSULTSÁG ELLENŐRZÉSE
+    
     if (!userRole || !hasPermission(userRole)) {
       return NextResponse.json({ error: "Nincs jogosultságod a törléshez!" }, { status: 403 });
     }

@@ -7,7 +7,6 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
 import { EventClickArg } from "@fullcalendar/core";
 
-// --- Típusok (Interface-ek) ---
 interface CalendarEvent {
   id: number;
   title: string;
@@ -22,14 +21,14 @@ interface User {
 
 const API_URL = "/api/calendar";
 
-// Segédfüggvény a dátum formázásához
+
 const normalizeDate = (dateStr: any) => {
   if (!dateStr) return "";
   const s = String(dateStr);
   return s.includes("T") ? s.split("T")[0] : s;
 };
 
-// --- Fő Komponens ---
+
 export default function CalendarPage() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [selectedDate, setSelectedDate] = useState("");
@@ -39,14 +38,13 @@ export default function CalendarPage() {
   const [newEventTitle, setNewEventTitle] = useState("");
   const [newEventDescription, setNewEventDescription] = useState("");
 
-  // --- JOGOSULTSÁG KEZELÉS ---
-  // Ha null, akkor VENDÉG. Teszteléshez írd át pl. { username: "Admin", role: "admin" }-ra
+  
   const [user, setUser] = useState<User | null>(null); 
   
-  // Csak Elnök, Tanár vagy Admin szerkeszthet
+  
   const canEdit = !!user && ['president', 'teacher', 'admin'].includes(user.role);
 
-  // Események betöltése
+  
   const fetchEvents = async () => {
     try {
       const res = await fetch(API_URL);
@@ -61,13 +59,13 @@ export default function CalendarPage() {
     fetchEvents();
   }, []);
 
-  // Kiválasztott nap eseményeinek szűrése
+  
   useEffect(() => {
     const normalizedSelected = normalizeDate(selectedDate);
     setDailyEvents(events.filter(e => normalizeDate(e.date) === normalizedSelected));
   }, [selectedDate, events]);
 
-  // Kattintás üres napra
+  
   const handleDateClick = (info: DateClickArg) => {
     setSelectedDate(info.dateStr);
     if (canEdit) {
@@ -78,7 +76,7 @@ export default function CalendarPage() {
     }
   };
 
-  // Kattintás létező eseményre
+  
   const handleEventClick = (info: EventClickArg) => {
     const id = info.event.id;
     const eventData = events.find(e => String(e.id) === id);
@@ -93,7 +91,7 @@ export default function CalendarPage() {
     }
   };
 
-  // Mentés (Létrehozás vagy Módosítás)
+  
   const handleSaveEvent = async () => {
     if (!canEdit) return;
     
@@ -123,7 +121,7 @@ export default function CalendarPage() {
     }
   };
 
-  // Törlés
+  
   const handleDeleteEvent = async () => {
     if (!canEdit || !editingEventId) return;
     if (!confirm("Biztosan törölni szeretnéd?")) return;
@@ -165,7 +163,7 @@ export default function CalendarPage() {
         height="auto"
       />
 
-      {/* Napi események listája a naptár alatt */}
+      {}
       {selectedDate && (
         <div style={dailyEventsContainerStyle}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -191,7 +189,7 @@ export default function CalendarPage() {
         </div>
       )}
 
-      {/* Szerkesztő / Létrehozó Modal */}
+      {}
       {isModalOpen && canEdit && (
         <div style={modalOverlayStyle}>
           <div style={modalContentStyle}>
