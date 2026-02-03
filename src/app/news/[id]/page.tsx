@@ -68,8 +68,8 @@ export default function NewsPage() {
 
   const handleDelete = async () => {
     try {
-      const res = await fetch(`/api/news/${id}`, {
-        method: 'DELETE',
+      const res = await fetch(`/api/delete/`, {
+        method: 'PATCH',
       });
 
       if (!res.ok) throw new Error('Törlés sikertelen');
