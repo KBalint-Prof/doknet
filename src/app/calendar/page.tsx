@@ -178,23 +178,24 @@ export default function CalendarPage() {
 }
 /* ================= STYLES ================= */
 
-const modalOverlayStyle: React.CSSProperties = {
-  position: "fixed",
-  inset: 0,
-  backgroundColor: "rgba(0,0,0,0.6)",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  zIndex: 1000,
+const modalOverlayStyle: React.CSSProperties = { 
+  position: "fixed", 
+  inset: 0, 
+  backgroundColor: "rgba(0,0,0,0.25)",
+  backdropFilter: "blur(2px)",          
+  display: "flex", 
+  justifyContent: "center", 
+  alignItems: "center", 
+  zIndex: 9999 
 };
 
-const modalContentStyle: React.CSSProperties = {
-  background: "#fff",
-  padding: "30px",
-  borderRadius: "20px",
-  width: "90%",
-  maxWidth: "450px",
-  boxShadow: "0 15px 35px rgba(0,0,0,0.2)",
+const modalContentStyle: React.CSSProperties = { 
+  background: "#fff", 
+  padding: "1.5rem", 
+  borderRadius: "12px", 
+  width: "100%", 
+  maxWidth: "420px", 
+  boxShadow: "0 20px 60px rgba(0,0,0,0.25)"
 };
 
 const labelStyle: React.CSSProperties = {

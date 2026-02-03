@@ -14,6 +14,9 @@ export default function NavigationBar() {
         <a href="/news-editor">Hírszerkesztő</a>
         <a href="/calendar">Naptár</a>
         <a href="/gallery">Galéria</a>
+        {ctx?.user && (ctx.user as any).role === 'admin' && (
+          <a href="/admin">Admin Panel</a>
+        )}
       </div>
 
       <div className="nav-right">
