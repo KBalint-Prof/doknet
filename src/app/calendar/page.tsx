@@ -1,11 +1,13 @@
-"use client";
 
+'use client';
+
+import React, { useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
 import { EventClickArg } from "@fullcalendar/core";
-import { useEffect, useState } from "react";
 
+// --- Típusok (Interface-ek) ---
 interface CalendarEvent {
   id: number;
   title: string;
@@ -13,216 +15,218 @@ interface CalendarEvent {
   description: string;
 }
 
+interface User {
+  username: string;
+  role: 'student' | 'member' | 'president' | 'teacher' | 'admin';
+}
+
 const API_URL = "/api/calendar";
 
+// Segédfüggvény a dátum formázásához
 const normalizeDate = (dateStr: any) => {
   if (!dateStr) return "";
   const s = String(dateStr);
   return s.includes("T") ? s.split("T")[0] : s;
 };
 
-const CalendarPage: React.FC = () => {
+// --- Fő Komponens ---
+export default function CalendarPage() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [selectedDate, setSelectedDate] = useState("");
   const [dailyEvents, setDailyEvents] = useState<CalendarEvent[]>([]);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingEventId, setEditingEventId] = useState<string | null>(null);
   const [newEventTitle, setNewEventTitle] = useState("");
   const [newEventDescription, setNewEventDescription] = useState("");
 
+  // --- JOGOSULTSÁG KEZELÉS ---
+  // Ha null, akkor VENDÉG. Teszteléshez írd át pl. { username: "Admin", role: "admin" }-ra
+  const [user, setUser] = useState<User | null>(null); 
+  
+  // Csak Elnök, Tanár vagy Admin szerkeszthet
+  const canEdit = !!user && ['president', 'teacher', 'admin'].includes(user.role);
+
+  // Események betöltése
   const fetchEvents = async () => {
     try {
       const res = await fetch(API_URL);
       const data = await res.json();
       setEvents(data);
     } catch (err) {
-      console.error("Hiba:", err);
+      console.error("Hiba az események lekérésekor:", err);
     }
-  };
-
-  const handleDateClick = (info: DateClickArg) => {
-    setSelectedDate(info.dateStr);
-    setEditingEventId(null);
-    setNewEventTitle("");
-    setNewEventDescription("");
-    setIsModalOpen(true);
-  };
-
-  const handleEventClick = (info: EventClickArg) => {
-    const id = info.event.id;
-    const eventData = events.find(e => String(e.id) === id);
-
-    if (eventData) {
-      
-      setSelectedDate(normalizeDate(info.event.startStr));
-      
-      setEditingEventId(id);
-      setNewEventTitle(eventData.title || "");
-      setNewEventDescription(eventData.description || ""); 
-      setIsModalOpen(true);
-    }
-  };
-
-  const handleSaveEvent = async () => {
-    if (!newEventTitle || !selectedDate) {
-      alert("Az esemény címe és dátuma kötelező.");
-      return;
-    }
-
-    try {
-      if (editingEventId) {
-        await fetch(`${API_URL}/${editingEventId}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            title: newEventTitle,
-            date: selectedDate,
-            description: newEventDescription,
-          }),
-        });
-      } else {
-        await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            title: newEventTitle,
-            date: selectedDate,
-            description: newEventDescription,
-          }),
-        });
-      }
-
-      handleCloseModal();
-      await fetchEvents();
-    } catch (err) {
-      console.error("Hiba a mentés során:", err);
-    }
-  };
-
-  const handleDeleteEvent = async () => {
-    if (!editingEventId) return;
-    if (!confirm("Biztosan törölni szeretnéd ezt az eseményt?")) return;
-
-    try {
-      await fetch(`${API_URL}/${editingEventId}`, { method: "DELETE" });
-      handleCloseModal();
-      await fetchEvents();
-    } catch (err) {
-      console.error("Hiba a törlés során:", err);
-    }
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setEditingEventId(null);
-    setNewEventTitle("");
-    setNewEventDescription("");
   };
 
   useEffect(() => {
     fetchEvents();
   }, []);
 
+  // Kiválasztott nap eseményeinek szűrése
   useEffect(() => {
-    setDailyEvents(events.filter(e => normalizeDate(e.date) === selectedDate));
+    const normalizedSelected = normalizeDate(selectedDate);
+    setDailyEvents(events.filter(e => normalizeDate(e.date) === normalizedSelected));
   }, [selectedDate, events]);
 
+  // Kattintás üres napra
+  const handleDateClick = (info: DateClickArg) => {
+    setSelectedDate(info.dateStr);
+    if (canEdit) {
+      setEditingEventId(null);
+      setNewEventTitle("");
+      setNewEventDescription("");
+      setIsModalOpen(true);
+    }
+  };
+
+  // Kattintás létező eseményre
+  const handleEventClick = (info: EventClickArg) => {
+    const id = info.event.id;
+    const eventData = events.find(e => String(e.id) === id);
+    if (eventData) {
+      setSelectedDate(normalizeDate(eventData.date));
+      if (canEdit) {
+        setEditingEventId(id);
+        setNewEventTitle(eventData.title);
+        setNewEventDescription(eventData.description);
+        setIsModalOpen(true);
+      }
+    }
+  };
+
+  // Mentés (Létrehozás vagy Módosítás)
+  const handleSaveEvent = async () => {
+    if (!canEdit) return;
+    
+    try {
+      const method = editingEventId ? "PUT" : "POST";
+      const url = editingEventId ? `${API_URL}/${editingEventId}` : API_URL;
+
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: newEventTitle,
+          date: selectedDate,
+          description: newEventDescription,
+          userRole: user?.role
+        }),
+      });
+
+      if (res.ok) {
+        setIsModalOpen(false);
+        fetchEvents();
+      } else {
+        alert("Hiba történt a mentés során.");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Törlés
+  const handleDeleteEvent = async () => {
+    if (!canEdit || !editingEventId) return;
+    if (!confirm("Biztosan törölni szeretnéd?")) return;
+
+    try {
+      const res = await fetch(`${API_URL}/${editingEventId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userRole: user?.role })
+      });
+
+      if (res.ok) {
+        setIsModalOpen(false);
+        fetchEvents();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
-    <div style={{ maxWidth: 950, margin: "20px auto", fontFamily: "sans-serif" }}>
+    <div style={{ maxWidth: 950, margin: "20px auto", fontFamily: "sans-serif", padding: "0 20px" }}>
+      <h1 style={{ textAlign: "center", color: "#333" }}>Eseménynaptár</h1>
+      
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         locale="hu"
         buttonText={{ today: "ma" }}
-        headerToolbar={{
-          left: "prev,next today",
-          center: "title",
-          right: "",
-        }}
-        eventDisplay="block"
-        eventColor="#d1417a"
         events={events.map(e => ({
           id: String(e.id),
           title: e.title,
           start: e.date,
-          allDay: true,
+          allDay: true
         }))}
+        eventColor="#d1417a"
         dateClick={handleDateClick}
         eventClick={handleEventClick}
         height="auto"
       />
 
-      {}
+      {/* Napi események listája a naptár alatt */}
       {selectedDate && (
         <div style={dailyEventsContainerStyle}>
-          <h3 style={{ borderBottom: "2px solid #eee", paddingBottom: "10px" }}>
-            Események – {selectedDate}
-          </h3>
-          {dailyEvents.length === 0 ? (
-            <p style={{ color: "#666" }}>Nincs esemény.</p>
-          ) : (
-            <ul style={{ listStyle: "none", padding: 0 }}>
-              {dailyEvents.map(e => (
-                <li key={e.id} style={eventListItemStyle}>
-                  <strong>{e.title}</strong>
-                  {e.description && <p style={{ margin: "5px 0 0", fontSize: "14px", color: "#555" }}>{e.description}</p>}
-                </li>
-              ))}
-            </ul>
-          )}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3 style={{ margin: 0 }}>Események – {selectedDate}</h3>
+            {canEdit && (
+              <button onClick={() => { setEditingEventId(null); setIsModalOpen(true); }} style={okButtonStyle}>
+                + Új esemény
+              </button>
+            )}
+          </div>
+          <div style={{ marginTop: "15px" }}>
+            {dailyEvents.length === 0 ? (
+              <p style={{ color: "#666 italic" }}>Nincs esemény erre a napra.</p>
+            ) : (
+              dailyEvents.map(e => (
+                <div key={e.id} style={eventListItemStyle}>
+                  <strong style={{ display: "block", fontSize: "16px" }}>{e.title}</strong>
+                  <p style={{ margin: "5px 0 0", color: "#555", fontSize: "14px" }}>{e.description}</p>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       )}
 
-      {}
-      {isModalOpen && (
+      {/* Szerkesztő / Létrehozó Modal */}
+      {isModalOpen && canEdit && (
         <div style={modalOverlayStyle}>
           <div style={modalContentStyle}>
-            <h3 style={{ marginBottom: 20 }}>
-              {editingEventId ? "Esemény módosítása" : "Új esemény hozzáadása"}: {selectedDate}
-            </h3>
+            <h3 style={{ marginTop: 0 }}>{editingEventId ? "Esemény módosítása" : "Új esemény hozzáadása"}</h3>
+            <p style={{ fontSize: "14px", color: "#666" }}>Dátum: {selectedDate}</p>
+            
+            <label style={labelStyle}>Cím:</label>
+            <input 
+              style={inputStyle} 
+              value={newEventTitle} 
+              onChange={e => setNewEventTitle(e.target.value)} 
+              placeholder="Mi fog történni?" 
+            />
+            
+            <label style={{ ...labelStyle, marginTop: "15px" }}>Leírás:</label>
+            <textarea 
+              style={{ ...inputStyle, minHeight: "80px", resize: "vertical" }} 
+              value={newEventDescription} 
+              onChange={e => setNewEventDescription(e.target.value)} 
+              placeholder="Részletek..." 
+            />
 
-            <div style={{ marginBottom: 15 }}>
-              <label style={labelStyle}>Esemény neve:</label>
-              <input
-                type="text"
-                style={inputStyle}
-                value={newEventTitle}
-                onChange={e => setNewEventTitle(e.target.value)}
-              />
-            </div>
-
-            <div style={{ marginBottom: 20 }}>
-              <label style={labelStyle}>Esemény leírása:</label>
-              <textarea
-                style={{ ...inputStyle, minHeight: "80px", resize: "vertical" }}
-                value={newEventDescription}
-                onChange={e => setNewEventDescription(e.target.value)}
-              />
-            </div>
-
-            <div style={buttonGroupStyle}>
+            <div style={{ marginTop: "25px", display: "flex", gap: "10px" }}>
               {editingEventId && (
-                <button 
-                  onClick={handleDeleteEvent} 
-                  style={{ ...buttonBaseStyle, backgroundColor: "#ff4d4d", marginRight: "auto" }}
-                >
+                <button onClick={handleDeleteEvent} style={{ ...buttonBaseStyle, background: "#ff4d4d", marginRight: "auto" }}>
                   Törlés
                 </button>
               )}
-              <button onClick={handleCloseModal} style={cancelButtonStyle}>
-                Mégse
-              </button>
-              <button
-                onClick={handleSaveEvent}
+              <button onClick={() => setIsModalOpen(false)} style={cancelButtonStyle}>Mégse</button>
+              <button 
+                onClick={handleSaveEvent} 
+                style={{ ...okButtonStyle, opacity: newEventTitle ? 1 : 0.5 }} 
                 disabled={!newEventTitle}
-                style={{
-                  ...okButtonStyle,
-                  opacity: newEventTitle ? 1 : 0.6,
-                  cursor: newEventTitle ? "pointer" : "not-allowed",
-                }}
               >
-                {editingEventId ? "Mentés" : "OK"}
+                Mentés
               </button>
             </div>
           </div>
@@ -230,9 +234,7 @@ const CalendarPage: React.FC = () => {
       )}
     </div>
   );
-};
-
-export default CalendarPage;
+}
 
 /* ================= STYLES ================= */
 
