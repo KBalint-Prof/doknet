@@ -123,14 +123,14 @@ export default function CalendarPage() {
           initialView="dayGridMonth"
           locale="hu"
           buttonText={{ today: "ma" }}
-          eventColor="#d1417a" 
+          eventColor="#9a3b56" 
           events={events.map(e => ({
             id: String(e.id),
             title: e.title,
             start: e.date,
             allDay: true,
-            backgroundColor: "#d1417a",
-            borderColor: "#d1417a",
+            backgroundColor: "#9a3b56",
+            borderColor: "#9a3b56",
             textColor: "#ffffff"
           }))}
           dateClick={handleDateClick}
@@ -239,7 +239,7 @@ const cancelButtonStyle: React.CSSProperties = {
 
 const okButtonStyle: React.CSSProperties = {
   ...buttonBaseStyle,
-  background: "linear-gradient(135deg, #d1417a, #e91e63)",
+  background: "linear-gradient(135deg, #9a3b56, #9a3b56)",
 };
 
 const dailyEventsContainerStyle: React.CSSProperties = {
