@@ -11,10 +11,12 @@ export default function NavigationBar() {
       <div className="nav-left">
         <a href="/">Főoldal</a>
         {/* <a href="/news">Hírszerkesztő</a> */}
-        <a href="/news-editor">Hírszerkesztő</a>
+        {ctx?.user && (ctx.user as any).role === "admin" && (
+          <a href="/news-editor">Hírszerkesztő</a>
+        )}
         <a href="/calendar">Naptár</a>
         <a href="/gallery">Galéria</a>
-        {ctx?.user && (ctx.user as any).role === 'admin' && (
+        {ctx?.user && (ctx.user as any).role === "admin" && (
           <a href="/admin">Admin Panel</a>
         )}
       </div>
@@ -37,8 +39,8 @@ export default function NavigationBar() {
           </button>
         ) : (
           <>
-            <a href="/register">Sign Up</a>
-            <a href="/login">Login</a>
+            <a href="/register">Regisztráció</a>
+            <a href="/login">Bejelentkezés</a>
           </>
         )}
       </div>
