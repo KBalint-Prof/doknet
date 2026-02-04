@@ -16,6 +16,7 @@ export async function GET() {
        FROM news 
        LEFT JOIN users ON users.id = news.user_id
        LEFT JOIN users mu ON mu.id = news.modified_by
+       Where news.is_deleted = 0
        ORDER BY news.created_at DESC`,
     );
 
