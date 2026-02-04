@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useContext } from "react";
-import { GlobalContext } from "../context/GlobalContext";
-import { toast } from "react-toastify";
+import { useContext } from 'react';
+import { GlobalContext } from '../context/GlobalContext';
+import { toast } from 'react-toastify';
 
 export default function NavigationBar() {
   const ctx = useContext(GlobalContext);
@@ -11,27 +11,28 @@ export default function NavigationBar() {
       <div className="nav-left">
         <a href="/">Főoldal</a>
         {/* <a href="/news">Hírszerkesztő</a> */}
-        {ctx?.user && (ctx.user as any).role === "admin" && (
-          <a href="/news-editor">Hírszerkesztő</a>
-        )}
+        {ctx?.user &&
+          ['admin', 'teacher', 'president'].includes(
+            (ctx.user as any).role,
+          ) && <a href="/news-editor">Hírszerkesztő</a>}
         <a href="/calendar">Naptár</a>
         <a href="/gallery">Galéria</a>
-        {ctx?.user && (ctx.user as any).role === "admin" && (
+        {ctx?.user && (ctx.user as any).role === 'admin' && (
           <a href="/admin">Admin Panel</a>
         )}
       </div>
 
       <div className="nav-right">
-        <span className="username">{ctx?.user?.username || "Vendég"}</span>
+        <span className="username">{ctx?.user?.username || 'Vendég'}</span>
 
         {ctx?.user ? (
           <button
             className="logout-btn"
             onClick={() => {
               ctx?.setUser(null);
-              localStorage.removeItem("user");
-              toast.info("Kijelentkeztél.", {
-                style: { marginTop: "3.5rem" },
+              localStorage.removeItem('user');
+              toast.info('Kijelentkeztél.', {
+                style: { marginTop: '3.5rem' },
               });
             }}
           >

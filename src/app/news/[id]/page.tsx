@@ -1,11 +1,13 @@
-"use client";
+'use client';
 
-import Comments from "@/app/news/[id]/Comments";
-import Reactions from "@/app/news/[id]/Reactions";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import Delete from "./Delete";
+import Comments from '@/app/news/[id]/Comments';
+import Reactions from '@/app/news/[id]/Reactions';
+import { notFound, useParams } from 'next/navigation';
+import { useContext, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Delete from './Delete';
+import { toast } from 'react-toastify';
+import { GlobalContext } from '../../context/GlobalContext';
 
 export interface NewsType {
   id: number;
@@ -42,6 +44,7 @@ export default function NewsPage() {
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
 
+  const ctx = useContext(GlobalContext);
   const [isOpen, setIsOpen] = useState(false);
   const [news, setNews] = useState<NewsType | null>(null);
   const [reactionTypes, setReactionTypes] = useState<ReactionTypeType[]>([]);
@@ -53,10 +56,11 @@ export default function NewsPage() {
       const result = await fetch(`/api/news/${id}`);
       const data = await result.json();
 
-      console.log("NEWS BY ID:", data);
+      console.log('NEWS BY ID:', data);
 
-      if (!result.ok || data.news.length === 0)
-        throw new Error(data.error || "Hiba történt a hír betöltése során.");
+      if (result.status === 404) {
+        notFound();
+      }
 
       setNews(data.news[0]);
 
@@ -69,16 +73,20 @@ export default function NewsPage() {
   const handleDelete = async () => {
     try {
       const res = await fetch(`/api/delete/`, {
-        method: "PATCH",
+        method: 'PATCH',
         body: JSON.stringify({ news_id: id, is_deleted: 1 }),
       });
 
-      if (!res.ok) throw new Error("Törlés sikertelen");
+      if (!res.ok) throw new Error('Törlés sikertelen');
 
-      router.push("/");
+      toast.success('Sikeres törlés!', {
+        style: { marginTop: '3.5rem' },
+      });
+
+      router.push('/');
     } catch (err) {
       console.error(err);
-      alert("Nem sikerült törölni a hírt.");
+      alert('Nem sikerült törölni a hírt.');
     }
   };
 
@@ -87,108 +95,115 @@ export default function NewsPage() {
   }, [id]);
 
   return (
-    <main style={{ padding: "2rem" }}>
+    <main style={{ padding: '2rem' }}>
       {!news && <div>Betöltés...</div>}
 
       {news && (
         <>
           <div
             style={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "center",
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
             }}
           >
             <img
-              src={news.cover_img ?? ""}
+              src={news.cover_img ?? ''}
               alt="Borítókép"
               style={{
-                width: "100%",
-                maxWidth: "700px",
-                height: "25rem",
-                objectFit: "cover",
-                borderRadius: "8px",
+                width: '100%',
+                maxWidth: '700px',
+                height: '25rem',
+                objectFit: 'cover',
+                borderRadius: '8px',
               }}
             />
           </div>
           <div
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-              marginBottom: "1rem",
+              display: 'flex',
+              alignItems: 'center',
+              gap: '1rem',
+              marginBottom: '1rem',
             }}
           >
-            <h1 style={{ fontFamily: "Arial", margin: 0 }}>{news.title}</h1>
+            <h1 style={{ fontFamily: 'Arial', margin: 0 }}>{news.title}</h1>
 
-            <button onClick={() => router.push("/news-editor/" + id)}>
-              Szerkesztés
-            </button>
-            <button onClick={() => setIsOpen(true)}>🗑️</button>
+            {ctx?.user &&
+              ['admin', 'teacher', 'president'].includes(
+                (ctx.user as any).role,
+              ) && (
+                <>
+                  <button onClick={() => router.push('/news-editor/' + id)}>
+                    Szerkesztés
+                  </button>
+                  <button onClick={() => setIsOpen(true)}>🗑️</button>
+                </>
+              )}
           </div>
 
           <article
             className="news-content"
             dangerouslySetInnerHTML={{ __html: news.content }}
-            style={{ marginTop: "1rem", fontSize: "1.2rem", lineHeight: "1.6" }}
+            style={{ marginTop: '1rem', fontSize: '1.2rem', lineHeight: '1.6' }}
           ></article>
 
           <div
             style={{
-              marginTop: "2rem",
-              borderTop: "1px solid #ddd",
-              paddingTop: "1rem",
+              marginTop: '2rem',
+              borderTop: '1px solid #ddd',
+              paddingTop: '1rem',
             }}
           ></div>
 
           <small
             style={{
-              marginTop: "0.75rem",
-              color: "#777",
-              display: "grid",
-              gridTemplateColumns: "1fr 5fr",
-              gap: "0.25rem 0.75rem",
+              marginTop: '0.75rem',
+              color: '#777',
+              display: 'grid',
+              gridTemplateColumns: '1fr 5fr',
+              gap: '0.25rem 0.75rem',
               lineHeight: 1.4,
-              fontSize: "0.8rem",
+              fontSize: '0.8rem',
             }}
           >
             <span>
-              Közzétéve:{" "}
+              Közzétéve:{' '}
               <time dateTime={news.created_at}>
-                {new Date(news.created_at).toLocaleString("hu-HU")}
+                {new Date(news.created_at).toLocaleString('hu-HU')}
               </time>
             </span>
 
             {news.modified_at && (
               <span>
-                Utoljára módosítva:{" "}
+                Utoljára módosítva:{' '}
                 <strong style={{ fontWeight: 500 }}>
-                  {new Date(news.modified_at).toLocaleString("hu-HU")}
-                </strong>{" "}
+                  {new Date(news.modified_at).toLocaleString('hu-HU')}
+                </strong>{' '}
               </span>
             )}
 
             <span>
-              Közzétette:{" "}
+              Közzétette:{' '}
               <strong style={{ fontWeight: 500 }}>
-                {news.author_name ?? "Ismeretlen"}
+                {news.author_name ?? 'Ismeretlen'}
               </strong>
             </span>
 
             {news.modified_by_name && (
               <span>
-                Utoljára módosította:{" "}
+                Utoljára módosította:{' '}
                 <strong style={{ fontWeight: 500 }}>
-                  {news.modified_by_name ?? "Ismeretlen"}
-                </strong>{" "}
+                  {news.modified_by_name ?? 'Ismeretlen'}
+                </strong>{' '}
               </span>
             )}
           </small>
           <div
             style={{
-              marginTop: "2rem",
-              borderTop: "1px solid #ddd",
-              paddingTop: "1rem",
+              marginTop: '2rem',
+              borderTop: '1px solid #ddd',
+              paddingTop: '1rem',
             }}
           ></div>
           <Reactions
