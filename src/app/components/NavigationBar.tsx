@@ -17,12 +17,14 @@ export default function NavigationBar() {
           ) && <a href="/news-editor">Hírszerkesztő</a>}
         <a href="/calendar">Naptár</a>
         <a href="/gallery">Galéria</a>
-        {ctx?.user && (ctx.user as any).role === 'admin' && (
-          <a href="/admin">Admin Panel</a>
-        )}
+        <a href="/vote">Szavazás</a>
       </div>
 
       <div className="nav-right">
+        {ctx?.user && (ctx.user as any).role === 'admin' && (
+          <a href="/admin">Admin Panel</a>
+        )}
+
         <span className="username">{ctx?.user?.username || 'Vendég'}</span>
 
         {ctx?.user ? (
