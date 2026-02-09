@@ -18,6 +18,7 @@ export default function NavigationBar() {
         <a href="/calendar">Naptár</a>
         <a href="/gallery">Galéria</a>
         {ctx?.user && <a href="/vote">Szavazás</a>}
+        {ctx?.user && <a href="/chat">Chat</a>}
       </div>
 
       <div className="nav-right">
