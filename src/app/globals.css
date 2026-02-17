@@ -65,7 +65,7 @@ body {
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
-    "Segoe UI",
+    'Segoe UI',
     sans-serif;
 }
 
@@ -90,7 +90,7 @@ body {
 }
 
 .navbar a::after {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   bottom: -6px;
@@ -144,9 +144,9 @@ body {
 
 input,
 textarea {
-  width: 68%;
+  width: 54%;
   padding: 0.7rem 0.9rem;
-
+  font-family: 'Inter', sans-serif;
   font-size: 0.95rem;
   font-weight: 500;
   color: #222;
@@ -182,8 +182,8 @@ textarea:focus {
 }
 
 textarea {
-  resize: vertical;
-  min-height: 120px;
+  resize: none;
+  min-height: 40px;
 }
 
 input:disabled,

@@ -2,7 +2,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { GlobalContext } from '../context/GlobalContext';
-import VoteEditor from '../components/VoteEditor';
+import { useParams } from 'next/navigation';
 
 const allowed_roles = ['admin', 'teacher', 'president'];
 
@@ -18,6 +18,8 @@ interface NewsType {
 export default function HomePage() {
   const router = useRouter();
   const ctx = useContext(GlobalContext);
+  const params = useParams<{ id: string }>();
+  const id = Number(params.id);
 
   if (!ctx?.user || !allowed_roles.includes((ctx.user as any).role)) {
     return (
@@ -32,5 +34,15 @@ export default function HomePage() {
     );
   }
 
-  return <VoteEditor />;
+  return (
+    <main style={{ padding: '2rem' }}>
+      <h1>Szavazások</h1>
+      {ctx?.user &&
+        ['admin', 'teacher', 'president'].includes((ctx.user as any).role) && (
+          <button onClick={() => router.push('/vote-editor/')}>
+            Új szavazás
+          </button>
+        )}
+    </main>
+  );
 }

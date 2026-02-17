@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import NewsEditor from "@/app/components/NewsEditor";
-import { useParams } from "next/navigation";
-import { GlobalContext } from "../../context/GlobalContext";
-import { useContext } from "react";
+import NewsEditor from '@/app/components/NewsEditor';
+import { useParams } from 'next/navigation';
+import { GlobalContext } from '../../context/GlobalContext';
+import { useContext } from 'react';
 
-const allowed_roles = ["admin", "teacher", "president"];
+const allowed_roles = ['admin', 'teacher', 'president'];
 
 export default function NewsPage() {
   const params = useParams<{ id: string }>();
@@ -15,10 +15,10 @@ export default function NewsPage() {
   if (!ctx?.user || !allowed_roles.includes((ctx.user as any).role)) {
     return (
       <>
-        <div style={{ padding: "2rem", color: "red" }}>
+        <div style={{ padding: '2rem', color: 'red' }}>
           Nincs jogosultságod a hírszerkesztő használatához.
         </div>
-        <button onClick={() => (window.location.href = "/")}>
+        <button onClick={() => (window.location.href = '/')}>
           Vissza a főoldalra
         </button>
       </>
