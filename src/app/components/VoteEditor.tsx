@@ -1,33 +1,44 @@
-'use client';
+"use client";
 
-import { useContext, useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
-import { useRouter } from 'next/navigation';
-import { GlobalContext } from '../context/GlobalContext';
-
-const TinyMCEEditor = dynamic(
-  () => import('@tinymce/tinymce-react').then((mod) => mod.Editor),
-  { ssr: false },
-);
+import { useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { GlobalContext } from "../context/GlobalContext";
 
 export default function VoteEditor({ id }: { id?: number }) {
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState('');
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [message, setMessage] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const router = useRouter();
   const ctx = useContext(GlobalContext);
+  const [options, setOptions] = useState<string[]>([]);
+
+  const addOption = () => {
+    setOptions((prev) => [...prev, ""]);
+  };
+
+  const updateOption = (index: number, value: string) => {
+    const updated = [...options];
+    updated[index] = value;
+    setOptions(updated);
+  };
+
+  const removeOption = (index: number) => {
+    setOptions((prev) =>
+      prev.length > 1 ? prev.filter((_, i) => i !== index) : prev,
+    );
+  };
 
   const handleSave = async () => {
     setSaving(true);
-    setMessage('');
+    setMessage("");
 
     try {
       console.log(ctx?.user?.id);
-      const res = await fetch('/api/news-editor', {
-        method: 'POST',
+      const res = await fetch("/api/vote-editor", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json; charset=utf-8',
+          "Content-Type": "application/json; charset=utf-8",
         },
         body: JSON.stringify({
           title,
@@ -39,13 +50,13 @@ export default function VoteEditor({ id }: { id?: number }) {
       const data = await res.json();
 
       if (!res.ok)
-        throw new Error(data.error || 'Hiba történt a mentés során.');
+        throw new Error(data.error || "Hiba történt a mentés során.");
 
       setMessage(`Sikeres mentés! (ID: ${data.id})`);
-      router.push('/news/' + data.id);
+      router.push("/vote/" + data.id);
     } catch (err: any) {
       console.error(err);
-      setMessage('Hiba a mentés során!');
+      setMessage("Hiba a mentés során!");
     } finally {
       setSaving(false);
     }
@@ -53,14 +64,14 @@ export default function VoteEditor({ id }: { id?: number }) {
 
   const handleUpdate = async () => {
     setSaving(true);
-    setMessage('');
+    setMessage("");
 
     try {
       console.log(ctx?.user?.id);
-      const res = await fetch('/api/news-editor', {
-        method: 'PATCH',
+      const res = await fetch("/api/news-editor", {
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json; charset=utf-8',
+          "Content-Type": "application/json; charset=utf-8",
         },
         body: JSON.stringify({
           news_id: id,
@@ -73,13 +84,13 @@ export default function VoteEditor({ id }: { id?: number }) {
       const data = await res.json();
 
       if (!res.ok)
-        throw new Error(data.error || 'Hiba történt a módosítás során.');
+        throw new Error(data.error || "Hiba történt a módosítás során.");
 
       setMessage(`Sikeres módosítás! (ID: ${data.id})`);
-      router.push('/news/' + id);
+      router.push("/vote/" + id);
     } catch (err: any) {
       console.error(err);
-      setMessage('Hiba a módosítás során!');
+      setMessage("Hiba a módosítás során!");
     } finally {
       setSaving(false);
     }
@@ -90,11 +101,11 @@ export default function VoteEditor({ id }: { id?: number }) {
       const result = await fetch(`/api/vote-editor/${id}`);
       const data = await result.json();
 
-      console.log('VOTE BY ID:', data);
+      console.log("VOTE BY ID:", data);
 
       if (!result.ok || data.votes.length === 0)
         throw new Error(
-          data.error || 'Hiba történt a szavazás betöltése során.',
+          data.error || "Hiba történt a szavazás betöltése során.",
         );
 
       setDescription(data.votes[0].description);
@@ -109,8 +120,8 @@ export default function VoteEditor({ id }: { id?: number }) {
   }, [id]);
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>{id ? `Szavazás szerkesztése ${id}` : 'Új szavazás létrehozása'}</h1>
+    <div style={{ padding: "2rem" }}>
+      <h1>{id ? `Szavazás szerkesztése ${id}` : "Új szavazás létrehozása"}</h1>
 
       <input
         type="text"
@@ -120,23 +131,42 @@ export default function VoteEditor({ id }: { id?: number }) {
       />
 
       <textarea
-        style={{ marginTop: '2rem', overflow: 'hidden' }}
+        style={{ marginTop: "2rem", overflow: "hidden" }}
         placeholder="Szavazás leírása"
         value={description}
         onChange={(e) => {
           setDescription(e.target.value);
-          e.target.style.height = 'auto';
+          e.target.style.height = "auto";
           e.target.style.height = `${e.target.scrollHeight}px`;
         }}
       />
 
-      <div style={{ display: 'flex', gap: '1rem' }}>
+      {options.map((opt, index) => (
+        <div key={index}>
+          <input
+            type="text"
+            placeholder={`Opció ${index + 1}`}
+            value={opt}
+            onChange={(e) => updateOption(index, e.target.value)}
+            style={{ marginTop: "1rem" }}
+          />
+
+          <button onClick={() => removeOption(index)}>❌</button>
+        </div>
+      ))}
+      <div style={{ display: "flex", gap: "1rem" }}>
+        <button type="button" onClick={addOption} style={{ marginTop: "1rem" }}>
+          Új Opció hozzáadása
+        </button>
+      </div>
+
+      <div style={{ display: "flex", gap: "1rem" }}>
         <button
-          style={{ marginTop: '1rem' }}
+          style={{ marginTop: "1rem" }}
           onClick={id ? handleUpdate : handleSave}
           disabled={saving}
         >
-          {saving ? 'Mentés folyamatban...' : 'Mentés'}
+          {saving ? "Mentés folyamatban..." : "Mentés"}
         </button>
       </div>
     </div>
