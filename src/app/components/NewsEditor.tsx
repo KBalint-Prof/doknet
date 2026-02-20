@@ -137,6 +137,7 @@ export default function NewsEditor({ id }: { id?: number }) {
             style={{
               width: '15rem',
               height: '10rem',
+              marginBottom: '1rem',
               border:
                 selectedCover === img ? '3px solid #0070f3' : '1px solid #ccc',
               borderRadius: '8px',
