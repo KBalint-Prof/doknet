@@ -17,7 +17,10 @@ export default function NavigationBar() {
           ) && <a href="/news-editor">Hírszerkesztő</a>}
         <a href="/calendar">Naptár</a>
         <a href="/gallery">Galéria</a>
-        {ctx?.user && <a href="/vote">Szavazás</a>}
+        {ctx?.user &&
+          ["admin", "teacher", "president"].includes(
+            (ctx.user as any).role,
+          ) && <a href="/vote">Szavazás</a>}
         {ctx?.user && <a href="/chat">Chat</a>}
       </div>
 
