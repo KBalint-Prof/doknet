@@ -6,11 +6,10 @@ import { useParams } from 'next/navigation';
 
 const allowed_roles = ['admin', 'teacher', 'president'];
 
-interface NewsType {
+interface VoteType {
   id: number;
   title: string;
-  content: string;
-  cover_img: string | null;
+  description: string;
   created_at: string;
   author_name: string;
 }
