@@ -1,11 +1,11 @@
-"use client";
-import { useContext, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { GlobalContext } from "../context/GlobalContext";
-import { useParams } from "next/navigation";
-import VoteList from "../components/VoteList";
+'use client';
+import { useContext, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { GlobalContext } from '../context/GlobalContext';
+import { useParams } from 'next/navigation';
+import VoteList from '../components/VoteList';
 
-const allowed_roles = ["admin", "teacher", "president"];
+const allowed_roles = ['admin', 'teacher', 'president'];
 
 interface VoteType {
   id: number;
@@ -24,10 +24,10 @@ export default function HomePage() {
   if (!ctx?.user || !allowed_roles.includes((ctx.user as any).role)) {
     return (
       <>
-        <div style={{ padding: "2rem", color: "red" }}>
+        <div style={{ padding: '2rem', color: 'red' }}>
           Nincs jogosultságod a szavazásszerkesztő használatához.
         </div>
-        <button onClick={() => (window.location.href = "/")}>
+        <button onClick={() => (window.location.href = '/')}>
           Vissza a főoldalra
         </button>
       </>
@@ -35,11 +35,14 @@ export default function HomePage() {
   }
 
   return (
-    <main style={{ padding: "2rem" }}>
+    <main style={{ padding: '2rem' }}>
       <h1>Szavazások</h1>
       {ctx?.user &&
-        ["admin", "teacher", "president"].includes((ctx.user as any).role) && (
-          <button onClick={() => router.push("/vote-editor/")}>
+        ['admin', 'teacher', 'president'].includes((ctx.user as any).role) && (
+          <button
+            style={{ marginBottom: '1rem' }}
+            onClick={() => router.push('/vote-editor/')}
+          >
             Új szavazás
           </button>
         )}

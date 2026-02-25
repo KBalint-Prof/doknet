@@ -52,7 +52,7 @@ export default function VoteEditor({ id }: { id?: number }) {
       if (!res.ok)
         throw new Error(data.error || 'Hiba történt a mentés során.');
 
-      router.push('/');
+      router.push('/vote/');
     } catch (err) {
       console.error(err);
       setMessage('Hiba a mentés során!');
