@@ -25,13 +25,30 @@ export async function GET(
       [id],
     );
 
+    const [vote_options] = await db.query(`SELECT * FROM vote_options`);
+
+    const [options] = await db.query(
+      `SELECT
+        vote_votes.id,
+        vote_votes.user_id,
+        vote_options.id AS vote_option_id,
+        vote_options.option_text,
+       FROM vote_votes
+       INNER JOIN vote_options ON vote_options.id = vote_votes.vote_option_id
+       WHERE vote_votes.vote_id = ?
+       ORDER BY vote_options.sort_order ASC`,
+      [id],
+    );
+
+    (votes as any)[0].options = options;
+
     if ((votes as any[]).length === 0) {
       return NextResponse.json(
         { message: 'Szavazás nem található' },
         { status: 404 },
       );
     }
-    return NextResponse.json({ votes });
+    return NextResponse.json({ votes, vote_options });
   } catch (err) {
     console.error('Hiba a lekérdezés során:', err);
     return NextResponse.json({ error: 'Adatbázis hiba!' }, { status: 500 });
