@@ -20,11 +20,7 @@ export default function NewsList() {
     try {
       const res = await fetch("/api/news");
       const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "Hiba történt a hírek betöltésekor.");
-      }
-
+      if (!res.ok) throw new Error(data.error || "Hiba történt.");
       setNewsList(data);
     } catch (err) {
       console.error(err);
@@ -37,15 +33,22 @@ export default function NewsList() {
     fetchNewsList();
   }, []);
 
-  if (loading) {
-    return <p>Hírek betöltése…</p>;
-  }
+  if (loading) return <p>Hírek betöltése…</p>;
 
   return (
-    <>
+    /* GRID elrendezés: 2 egyenlő oszlop */
+    <div 
+      style={{ 
+        display: "grid", 
+        gridTemplateColumns: "repeat(auto-fit, minmax(450px, 1fr))", 
+        gap: "25px", 
+        padding: "20px",
+        maxWidth: "1200px",
+        margin: "0 auto"
+      }}
+    >
       {newsList.map((news) => {
-        const plainText =
-          news.content.replace(/<[^>]+>/g, "").slice(0, 600) + "...";
+        const plainText = news.content.replace(/<[^>]+>/g, "").slice(0, 250) + "...";
 
         return (
           <Link
@@ -53,73 +56,56 @@ export default function NewsList() {
             href={`/news/${news.id}`}
             style={{
               display: "flex",
-              gap: "1rem",
-              padding: "1rem",
-              border: "1px solid #ddd",
-              borderRadius: "10px",
-              marginBottom: "1rem",
+              flexDirection: "column",
               textDecoration: "none",
               color: "inherit",
-              alignItems: "stretch",
-              flexWrap: "wrap",
+              border: "1px solid #e0e0e0",
+              borderRadius: "15px",
+              overflow: "hidden",
+              backgroundColor: "#fff",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+              transition: "transform 0.2s ease"
             }}
           >
+            {/* Borítókép fix magassággal */}
             {news.cover_img && (
-              <div style={{ flex: "0 0 260px", maxWidth: "100%" }}>
+              <div style={{ width: "100%", height: "240px" }}>
                 <img
                   src={news.cover_img}
-                  alt="Borítókép"
-                  style={{
-                    width: "100%",
-                    height: "160px",
-                    objectFit: "cover",
-                    borderRadius: "8px",
-                  }}
+                  alt="Borító"
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
               </div>
             )}
 
-            <div
-              style={{
-                flex: "1 1 300px",
-                display: "flex",
-                flexDirection: "column",
+            {/* Szöveges rész */}
+            <div style={{ padding: "20px", display: "flex", flexDirection: "column", flex: 1 }}>
+              <h2 style={{ margin: "0 0 12px 0", fontSize: "1.4rem", color: "#222" }}>
+                {news.title}
+              </h2>
+              <p style={{ margin: "0 0 20px 0", color: "#555", lineHeight: "1.5", flex: 1 }}>
+                {plainText}
+              </p>
+
+              {/* Információs sáv alul */}
+              <div style={{ 
+                marginTop: "auto", 
+                paddingTop: "15px", 
+                borderTop: "1px solid #f0f0f0", 
+                display: "flex", 
                 justifyContent: "space-between",
-              }}
-            >
-              <div>
-                <h2 style={{ margin: "0 0 0.5rem 0" }}>{news.title}</h2>
-                <p style={{ margin: 0, color: "#444" }}>{plainText}</p>
+                fontSize: "0.85rem",
+                color: "#999"
+              }}>
+                <span>{new Date(news.created_at).toLocaleDateString("hu-HU")}</span>
+                <span style={{ fontWeight: "600", color: "#666" }}>
+                  {news.author_name ?? "Admin"}
+                </span>
               </div>
-
-              <small
-                style={{
-                  marginTop: "0.75rem",
-                  color: "#777",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.25rem",
-                  lineHeight: 1.4,
-                }}
-              >
-                <span>
-                  Közzétéve:{" "}
-                  <time dateTime={news.created_at}>
-                    {new Date(news.created_at).toLocaleString("hu-HU")}
-                  </time>
-                </span>
-
-                <span>
-                  Közzétette:{" "}
-                  <strong style={{ fontWeight: 500 }}>
-                    {news.author_name ?? "Ismeretlen"}
-                  </strong>
-                </span>
-              </small>
             </div>
           </Link>
         );
       })}
-    </>
+    </div>
   );
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import '@/app/globals.css';
 import NavigationBar from './components/NavigationBar';
+import Footer from './components/Footer'; // Ne felejtsd el importálni!
 import { GlobalProvider } from './context/GlobalContext';
 import { ToastContainer } from 'react-toastify';
 
@@ -15,15 +16,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html>
+    <html lang="hu">
       <body>
         <GlobalProvider>
           <ToastContainer />
-          <NavigationBar />
-          {children}
+          
+          {/* Flexbox wrapper, hogy a lábléc mindig az alján legyen */}
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            minHeight: '100vh' 
+          }}>
+            <NavigationBar />
+            
+            {/* A fő tartalom kitölti a maradék helyet */}
+            <main style={{ flex: '1' }}>
+              {children}
+            </main>
+
+            <Footer />
+          </div>
+          
         </GlobalProvider>
       </body>
     </html>
   );
 }
-
