@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
-import { ResultSetHeader } from 'mysql2';
-import { db } from '../../db';
+import { ResultSetHeader } from "mysql2";
+import { db } from "../../db";
 
 export async function GET(
   req: Request,
@@ -32,11 +32,11 @@ export async function GET(
         vote_votes.id,
         vote_votes.user_id,
         vote_options.id AS vote_option_id,
-        vote_options.option_text,
+        vote_options.option_text
        FROM vote_votes
-       INNER JOIN vote_options ON vote_options.id = vote_votes.vote_option_id
+       INNER JOIN vote_options ON vote_options.id = vote_votes.option_id
        WHERE vote_votes.vote_id = ?
-       ORDER BY vote_options.sort_order ASC`,
+       ORDER BY vote_options.id ASC`,
       [id],
     );
 
@@ -44,14 +44,14 @@ export async function GET(
 
     if ((votes as any[]).length === 0) {
       return NextResponse.json(
-        { message: 'Szavazás nem található' },
+        { message: "Szavazás nem található" },
         { status: 404 },
       );
     }
     return NextResponse.json({ votes, vote_options });
   } catch (err) {
-    console.error('Hiba a lekérdezés során:', err);
-    return NextResponse.json({ error: 'Adatbázis hiba!' }, { status: 500 });
+    console.error("Hiba a lekérdezés során:", err);
+    return NextResponse.json({ error: "Adatbázis hiba!" }, { status: 500 });
   }
 }
 
@@ -61,22 +61,22 @@ export async function POST(req: Request) {
 
     if (!title || !description) {
       return NextResponse.json(
-        { error: 'A cím és a leírás is kötelező!' },
+        { error: "A cím és a leírás is kötelező!" },
         { status: 400 },
       );
     }
 
     const [result] = await db.query<ResultSetHeader>(
-      'INSERT INTO votes (title, description, user_id) VALUES (?, ?, ?)',
+      "INSERT INTO votes (title, description, user_id) VALUES (?, ?, ?)",
       [title, description, user_id],
     );
 
     return NextResponse.json({
-      message: 'Sikeres mentés!',
+      message: "Sikeres mentés!",
       id: result.insertId,
     });
   } catch (err) {
-    console.error('Hiba a mentés során:', err);
-    return NextResponse.json({ error: 'Adatbázis hiba!' }, { status: 500 });
+    console.error("Hiba a mentés során:", err);
+    return NextResponse.json({ error: "Adatbázis hiba!" }, { status: 500 });
   }
 }
