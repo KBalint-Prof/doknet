@@ -234,10 +234,6 @@ button:hover {
   filter: brightness(1.05);
 }
 
-h1 {
-    text-shadow: 2px 2px 4px #000000;
-}
-
 button:active {
   transform: translateY(0);
   box-shadow: 0 4px 10px var(--accent-glow);
@@ -281,7 +277,7 @@ button:disabled {
   --border-color: #dddddd;
 }
 
-[data-theme='dark'] {
+[data-theme="dark"] {
   --bg-color: #121212;
   --text-color: #e0e0e0;
   --card-bg: #1e1e1e;
@@ -290,9 +286,10 @@ button:disabled {
 }
 
 body {
+  margin: 0;
   background-color: var(--bg-color);
   color: var(--text-color);
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 }
-
-

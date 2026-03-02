@@ -11,13 +11,13 @@ export async function POST(req: Request) {
     if (!user_id) {
       return NextResponse.json(
         { error: "A reakció küldéséhez kötelező a bejelentkezés!" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const [alreadyExitsResult] = await db.query(
       `SELECT * FROM news_reactions WHERE user_id = ? AND news_id = ?`,
-      [user_id, news_id]
+      [user_id, news_id],
     );
 
     //@ts-ignore
@@ -31,18 +31,18 @@ export async function POST(req: Request) {
     if (alreadyExistsSame) {
       const [result] = await db.query<ResultSetHeader>(
         "DELETE FROM news_reactions WHERE user_id = ? AND news_id = ?",
-        [user_id, news_id]
+        [user_id, news_id],
       );
     } else if (alreadyExists) {
       const [result] = await db.query<ResultSetHeader>(
         "UPDATE news_reactions SET user_id = ?, news_id = ?, reaction_type_id = ? WHERE user_id = ? AND news_id = ?",
-        [user_id, news_id, reaction_type_id, user_id, news_id]
+        [user_id, news_id, reaction_type_id, user_id, news_id],
       );
       id = result.insertId;
     } else {
       const [result] = await db.query<ResultSetHeader>(
         "INSERT INTO news_reactions (user_id, news_id, reaction_type_id) VALUES (?, ?, ?)",
-        [user_id, news_id, reaction_type_id]
+        [user_id, news_id, reaction_type_id],
       );
 
       id = result.insertId;
