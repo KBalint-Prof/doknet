@@ -76,7 +76,7 @@ export default function NavigationBar() {
         <span className="username" style={{ fontWeight: 600, color: "var(--text-color)" }}>
           {ctx?.user?.username || "Vendég"}
         </span>
-
+        
         {ctx?.user ? (
           <button
             className="logout-btn"

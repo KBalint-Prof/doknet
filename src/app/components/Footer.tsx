@@ -65,7 +65,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-
+        
         {/* Alsó sáv */}
         <div style={{ 
           marginTop: "20px",

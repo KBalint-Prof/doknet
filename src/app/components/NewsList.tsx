@@ -86,7 +86,7 @@ export default function NewsList() {
               <p style={{ margin: "0 0 20px 0", color: "#555", lineHeight: "1.5", flex: 1 }}>
                 {plainText}
               </p>
-
+              
               {/* Információs sáv alul */}
               <div style={{ 
                 marginTop: "auto", 

@@ -37,7 +37,7 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("theme", newTheme);
     document.documentElement.setAttribute("data-theme", newTheme);
   };
-
+  //valami
   return (
     <GlobalContext.Provider value={{ user, setUser, theme, toggleTheme }}>
       {children}
