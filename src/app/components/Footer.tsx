@@ -25,12 +25,12 @@ export default function Footer() {
         }}>
           {/* Iskola és Portál infó */}
           <div style={{ flex: "1 1 300px" }}>
-            <h3 style={{ margin: 0, fontSize: "1.3rem", fontWeight: "bold" }}>Szent János Gimnázium</h3>
-            <p style={{ margin: "8px 0", fontSize: "0.9rem", opacity: 0.8 }}>
-              Edelényi Szent János Görögkatolikus Gimnázium és Szakgimnázium
+           
+            <p style={{ margin: "8px 0", fontSize: "1rem", opacity: 0.8 }}>
+              Szent János Görögkatolikus Gimnázium és Szakképző Iskola
             </p>
             <div style={{ fontSize: "0.9rem", marginTop: "10px" }}>
-              📍 3780 Edelény, Antal György út 2-4.
+              📍3780 Edelény, Borsodi út 34.
             </div>
           </div>
 
@@ -50,7 +50,7 @@ export default function Footer() {
                 href="tel:+3648525032" 
                 style={{ color: "inherit", textDecoration: "none" }}
               >
-                📞 +36 48 525 032
+                📞 Főigazgatói titkárság mobil: (30) 311-4110
               </a>
             </div>
           </div>

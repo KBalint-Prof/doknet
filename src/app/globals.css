@@ -277,12 +277,46 @@ button:disabled {
   --border-color: #dddddd;
 }
 
+/* ALAPÉRTELMEZETT VÁLTOZÓK (VILÁGOS MÓD) */
+:root {
+  --bg-color: #ffffff;
+  --text-color: #333333;
+  --card-bg: #ffffff;
+  --nav-bg: linear-gradient(180deg, #ffffff 0%, var(--accent-soft) 70%); /* Megtartjuk az eredeti dizájnt világos módban */
+  --border-color: #dddddd;
+}
+
+/* SÖTÉT MÓD VÁLTOZÓI */
 [data-theme="dark"] {
-  --bg-color: #121212;
-  --text-color: #e0e0e0;
-  --card-bg: #1e1e1e;
-  --nav-bg: #1a1a1a;
+  --bg-color: #000000;      /* Teljesen fekete háttér */
+  --text-color: #ffffff;    /* Fehér betűk */
+  --card-bg: #121212;
+  --nav-bg: #000000;        /* Sötét módban NINCS gradiens, csak sima fekete */
   --border-color: #333333;
+}
+
+/* 1. A test (body) színeit a változók vezéreljék */
+body {
+  margin: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* 2. A Navbar háttere sötét módban legyen fix fekete */
+[data-theme="dark"] .navbar {
+  background: #000000 !important;
+  background-image: none !important;
+}
+
+/* 3. A hírek szövege sötét módban legyen fix fehér */
+[data-theme="dark"] .news-title,
+[data-theme="dark"] .news-content,
+[data-theme="dark"] .news-card,
+[data-theme="dark"] h1, 
+[data-theme="dark"] h2, 
+[data-theme="dark"] p {
+  color: #ffffff !important;
 }
 
 body {
@@ -292,4 +326,35 @@ body {
   transition:
     background-color 0.3s,
     color 0.3s;
+}
+
+/* SÖTÉT MÓD - SZÖVEGBEVITELI MEZŐK FIXÁLÁSA */
+[data-theme="dark"] input, 
+[data-theme="dark"] textarea {
+  /* Ez teszi fehérré a szöveget gépelés közben */
+  color: #ffffff !important;
+  
+  /* Ez ad egy látható, de sötét hátteret a mezőnek */
+  background-color: #2a2a2a !important; 
+  
+  /* Világosabb keret, hogy látsszon a doboz széle */
+  border: 1px solid #444 !important;
+  
+  /* Hogy ne legyen fura belső árnyéka */
+  box-shadow: none !important;
+}
+
+/* A segédszöveg (placeholder) színe sötét módban */
+[data-theme="dark"] input::placeholder, 
+[data-theme="dark"] textarea::placeholder {
+  color: #bbbbbb !important;
+  opacity: 1;
+}
+
+/* Amikor a felhasználó rákattint a mezőbe (Focus) */
+[data-theme="dark"] input:focus, 
+[data-theme="dark"] textarea:focus {
+  background-color: #333333 !important;
+  border-color: var(--accent) !important;
+  outline: none;
 }

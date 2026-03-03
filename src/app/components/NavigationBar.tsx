@@ -9,7 +9,9 @@ export default function NavigationBar() {
 
   // Változókhoz kötött stílusok a sötét mód támogatásához
   const navStyle = {
-    backgroundColor: "var(--nav-bg, #ffffff)",
+    // Sötét módban fix #000000 (fekete), egyébként a változó vagy fehér
+    backgroundColor: ctx?.theme === "dark" ? "#000000" : "var(--nav-bg, #ffffff)",
+    backgroundImage: ctx?.theme === "dark" ? "none" : undefined, 
     color: "var(--text-color, #333)",
     borderBottom: "1px solid var(--border-color, #ddd)",
     transition: "all 0.3s ease",
