@@ -22,6 +22,7 @@ export default function NewsList() {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
 
   // SZÍNPALETTA - A kért egyedi címszínnel
+  
   const colors = {
     // Ez az általad kért szín a címeknek
     titlePrimary: "rgba(177, 41, 98, 0.45)", 
