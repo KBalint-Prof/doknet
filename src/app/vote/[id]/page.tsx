@@ -32,6 +32,7 @@ export default function VotePage() {
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
 
+  const [isOpen, setIsOpen] = useState(false);
   const ctx = useContext(GlobalContext);
   const [vote, setVote] = useState<VotesType | null>(null);
   const [voteOptions, setVoteOptions] = useState<VoteOptionsType[]>([]);
@@ -109,6 +110,15 @@ export default function VotePage() {
             }}
           >
             <h1 style={{ fontFamily: "Arial", margin: 0 }}>{vote.title}</h1>
+
+            {ctx?.user &&
+              ["admin", "teacher", "president"].includes(
+                (ctx.user as any).role,
+              ) && (
+                <>
+                  <button onClick={() => setIsOpen(true)}>Lezárás</button>
+                </>
+              )}
           </div>
 
           <article

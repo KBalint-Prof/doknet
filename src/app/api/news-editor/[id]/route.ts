@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 
-import { ResultSetHeader } from "mysql2";
 import { db } from "../../db";
 
 export async function GET(

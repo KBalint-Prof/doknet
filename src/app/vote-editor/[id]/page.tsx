@@ -1,6 +1,6 @@
 "use client";
 
-import NewsEditor from "@/app/components/NewsEditor";
+import VoteEditor from "@/app/components/VoteEditor";
 import { useParams } from "next/navigation";
 import { GlobalContext } from "../../context/GlobalContext";
 import { useContext } from "react";
@@ -14,15 +14,15 @@ export default function VoteEditorPage() {
 
   if (!ctx?.user || !allowed_roles.includes((ctx.user as any).role)) {
     return (
-      <>
-        <div style={{ padding: "2rem", color: "red" }}>
-          Nincs jogosultságod a hírszerkesztő használatához.
-        </div>
+      <div style={{ textAlign: "center", marginTop: "100px", padding: "20px" }}>
+        <h2 style={{ color: "#8b1e3f" }}>
+          🔒 Nincs jogosultságod a szavazásszerkesztő használatához.
+        </h2>
         <button onClick={() => (window.location.href = "/")}>
           Vissza a főoldalra
         </button>
-      </>
+      </div>
     );
   }
-  return <NewsEditor id={id} />;
+  return <VoteEditor />;
 }
