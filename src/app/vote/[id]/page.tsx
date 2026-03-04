@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { GlobalContext } from "../../context/GlobalContext";
 import Options from "./Options";
+import Vote_close from "./Vote_close";
 
 export interface VotesType {
   id: number;
@@ -58,6 +59,26 @@ export default function VotePage() {
       setVoteOptions(data.vote_options);
     } catch (err: any) {
       console.error(err);
+    }
+  };
+
+  const handleClose = async () => {
+    try {
+      const res = await fetch(`/api/vote_close`, {
+        method: "PATCH",
+        body: JSON.stringify({ vote_id: id, is_active: 1 }),
+      });
+
+      if (!res.ok) throw new Error("Lezárás sikertelen");
+
+      toast.success("Sikeres lezárás!", {
+        style: { marginTop: "3.5rem" },
+      });
+
+      router.push("/vote");
+    } catch (err) {
+      console.error(err);
+      alert("Nem sikerült lezárni a szavazást.");
     }
   };
 
@@ -180,6 +201,14 @@ export default function VotePage() {
             votes={vote}
             voteOptions={voteOptions}
             getVotesById={getVoteById}
+          />
+
+          <Vote_close
+            isOpen={isOpen}
+            onClose={() => setIsOpen(false)}
+            onConfirm={handleClose}
+            title="Szavazás lezárása"
+            description="Biztosan lezárod ezt a szavazást? Ez nem visszavonható."
           />
         </>
       )}
