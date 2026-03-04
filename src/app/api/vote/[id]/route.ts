@@ -17,11 +17,11 @@ export async function GET(
         votes.description,
         votes.created_at,
         votes.modified_at,
+        votes.is_active,
         users.username AS author_name
        FROM votes 
        LEFT JOIN users ON users.id = votes.user_id
-       WHERE votes.id = ? AND votes.is_active = 0
-       LIMIT 1`,
+       WHERE votes.id = ?`,
       [id],
     );
 

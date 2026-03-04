@@ -70,13 +70,15 @@ export default function Options({
             <button
               key={vo.id}
               onClick={() => handleOption(vo.id)}
-              disabled={saving}
+              disabled={saving || votes.is_active === 1}
             >
+              {vo.option_text}
+              {" : "}
               {votes.options.reduce(
                 (count, v) => (v.vote_option_id === vo.id ? count + 1 : count),
                 0,
-              )}{" "}
-              {vo.option_text}
+              )}
+              {" szavazat "}
             </button>
           ))}
       </div>

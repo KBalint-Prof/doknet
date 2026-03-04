@@ -15,6 +15,7 @@ export interface VotesType {
   description: string;
   created_at: string;
   author_name: string;
+  is_active: number;
   modified_at: string | null;
   options: {
     vote_option_id: number;
@@ -111,7 +112,11 @@ export default function VotePage() {
             }}
           >
             <img
-              src={"/covers/szavazas.png"}
+              src={
+                vote.is_active === 1
+                  ? "/covers/szavazas_lezart.png"
+                  : "/covers/szavazas.png"
+              }
               alt="Borítókép"
               style={{
                 width: "100%",
