@@ -1,10 +1,17 @@
 "use client";
+import { useContext } from "react";
+import { GlobalContext } from "../context/GlobalContext";
 
 export default function Footer() {
+  const ctx = useContext(GlobalContext);
+  const isDark = ctx?.theme === "dark";
+
   return (
     <footer
       style={{
-        backgroundColor: "var(--nav-bg, #ffffff)",
+        backgroundColor: isDark
+          ? "var(--nav-bg, #1f1f1f)"
+          : "var(--nav-bg, #e2e2e2)",
         color: "var(--text-color, #333)",
         borderTop: "1px solid var(--border-color, #ddd)",
         padding: "2.5rem 1.5rem",
