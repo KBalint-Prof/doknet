@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Link from "next/link";
+import { GlobalContext } from "../context/GlobalContext";
 
 interface VoteType {
   id: number;
@@ -21,6 +22,8 @@ interface VoteType {
 export default function VoteList() {
   const [voteList, setVoteList] = useState<VoteType[]>([]);
   const [loading, setLoading] = useState(true);
+  const ctx = useContext(GlobalContext);
+  const isDark = ctx?.theme === "dark";
 
   const fetchVoteList = async () => {
     try {
@@ -99,7 +102,9 @@ export default function VoteList() {
             >
               <div>
                 <h2 style={{ margin: "0 0 0.5rem 0" }}>{vote.title}</h2>
-                <p style={{ margin: 0, color: "#444" }}>{plainText}</p>
+                <p style={{ margin: 0, color: isDark ? "#fff" : "#444" }}>
+                  {plainText}
+                </p>
               </div>
 
               <small

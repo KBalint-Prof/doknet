@@ -9,14 +9,6 @@ export default function NavigationBar() {
   const ctx = useContext(GlobalContext);
   const isDark = ctx?.theme === "dark";
 
-  const linkStyle: React.CSSProperties = {
-    color: isDark ? "#ffffff" : "#333333",
-    textDecoration: "none",
-    fontWeight: 600,
-    fontSize: "0.95rem",
-    transition: "opacity 0.2s ease",
-  };
-
   return (
     <nav className={`navbar ${isDark ? "dark" : ""}`}>
       <div
@@ -56,57 +48,20 @@ export default function NavigationBar() {
         </a>
 
         <div style={{ display: "flex", gap: "20px" }}>
-          <a
-            href="/calendar"
-            style={linkStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-          >
-            Naptár
-          </a>
-          <a
-            href="/gallery"
-            style={linkStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-          >
-            Galéria
-          </a>
+          <a href="/calendar">Naptár</a>
+          <a href="/gallery">Galéria</a>
 
           {ctx?.user &&
             ["admin", "teacher", "president"].includes(
               (ctx.user as any).role,
             ) && (
               <>
-                <a
-                  href="/news-editor"
-                  style={linkStyle}
-                  onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
-                  onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-                >
-                  Szerkesztő
-                </a>
-                <a
-                  href="/vote"
-                  style={linkStyle}
-                  onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
-                  onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-                >
-                  Szavazás
-                </a>
+                <a href="/news-editor">Szerkesztő</a>
+                <a href="/vote">Szavazás</a>
               </>
             )}
 
-          {ctx?.user && (
-            <a
-              href="/chat"
-              style={linkStyle}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.7")}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-            >
-              Chat
-            </a>
-          )}
+          {ctx?.user && <a href="/chat">Chat</a>}
         </div>
       </div>
 
@@ -119,9 +74,7 @@ export default function NavigationBar() {
         </button>
 
         {ctx?.user && (ctx.user as any).role === "admin" && (
-          <a href="/admin" style={linkStyle}>
-            Admin Panel
-          </a>
+          <a href="/admin">Admin Panel</a>
         )}
 
         <span className="username">{ctx?.user?.username || "Vendég"}</span>
@@ -140,9 +93,7 @@ export default function NavigationBar() {
           </button>
         ) : (
           <div style={{ display: "flex", gap: "30px", alignItems: "center" }}>
-            <a href="/login" style={linkStyle}>
-              Bejelentkezés
-            </a>
+            <a href="/login">Bejelentkezés</a>
             <a href="/register">Regisztráció</a>
           </div>
         )}

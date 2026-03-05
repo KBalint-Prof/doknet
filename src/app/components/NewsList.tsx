@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Link from "next/link";
+import { GlobalContext } from "../context/GlobalContext";
 
 interface NewsType {
   id: number;
@@ -15,6 +16,8 @@ interface NewsType {
 export default function NewsList() {
   const [newsList, setNewsList] = useState<NewsType[]>([]);
   const [loading, setLoading] = useState(true);
+  const ctx = useContext(GlobalContext);
+  const isDark = ctx?.theme === "dark";
 
   const fetchNewsList = async () => {
     try {
@@ -89,7 +92,9 @@ export default function NewsList() {
             >
               <div>
                 <h2 style={{ margin: "0 0 0.5rem 0" }}>{news.title}</h2>
-                <p style={{ margin: 0, color: "#444" }}>{plainText}</p>
+                <p style={{ margin: 0, color: isDark ? "#fff" : "#444" }}>
+                  {plainText}
+                </p>
               </div>
 
               <small
