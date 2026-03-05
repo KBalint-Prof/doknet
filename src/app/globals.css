@@ -1,20 +1,51 @@
+/* =========================
+   RESET / ALAP STÍLUSOK
+========================= */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
 img {
   max-width: 100%;
   height: auto;
 }
-.img-left {
-  float: left;
-  margin: 1rem 1rem 1rem 1rem;
+
+/* =========================
+   THEME VÁLTOZÓK
+========================= */
+
+:root {
+  --accent: #8b1e3f;
+  --accent-light: #b02a53;
+  --accent-soft: rgba(139, 30, 63, 0.08);
+  --accent-glow: rgba(139, 30, 63, 0.35);
+
+  --bg-color: #ffffff;
+  --text-color: #333333;
+  --card-bg: #ffffff;
+  --border-color: #dddddd;
 }
-.img-right {
-  float: right;
-  margin: 1rem 1rem 1rem 1rem;
+
+[data-theme="dark"] {
+  --bg-color: #000000;
+  --text-color: #ffffff;
+  --card-bg: #121212;
+  --border-color: #333333;
+
+  --accent-soft: rgba(139, 30, 63, 0.25);
+  --accent-glow: rgba(139, 30, 63, 0.6);
 }
-.img-center {
-  display: block;
-  margin: 1rem auto 1rem auto;
-  float: none;
-}
+
+/* =========================
+   NEWS
+========================= */
 
 .news-title {
   width: 100%;
@@ -31,32 +62,37 @@ img {
   font-family: Arial, sans-serif;
 }
 
-body {
-  font-family: Arial, sans-serif;
+/* =========================
+   KÉP IGAZÍTÁS
+========================= */
+
+.img-left {
+  float: left;
+  margin: 1rem;
 }
 
-.tox-statusbar__branding {
-  display: none;
+.img-right {
+  float: right;
+  margin: 1rem;
 }
 
-/* .tox-statusbar__path {
-  display: none !important;
-} */
-
-:root {
-  --accent: #8b1e3f; /* bordó / burgundi */
-  --accent-light: #b02a53; /* világosabb bordó */
-  --accent-soft: rgba(139, 30, 63, 0.08);
-  --accent-glow: rgba(139, 30, 63, 0.35);
+.img-center {
+  display: block;
+  margin: 1rem auto;
+  float: none;
 }
+
+/* =========================
+   NAVBAR
+========================= */
 
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  padding: 0.1rem 2rem; /* módosított a React paddingjének megfelelően */
-  margin: 5px 2rem 2rem 2rem; /* top:10px, margin-bottom:2rem */
+  padding: 0.1rem 2rem;
+  margin: 5px 2rem 2rem 2rem;
 
   height: 65px;
   border-radius: 50px;
@@ -68,29 +104,26 @@ body {
     "Segoe UI",
     sans-serif;
 
-  /* alap háttér a világos módhoz */
   background: rgba(255, 255, 255, 0.85);
   border: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
 
-  /* Glassmorphism hatás */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 
   transition: all 0.3s ease;
 
-  position: relative; /* ha top-ot akarsz használni */
+  position: relative;
   top: 10px;
   z-index: 1000;
 }
 
-/* Sötét mód */
-.navbar.dark {
+[data-theme="dark"] .navbar {
   background: rgba(0, 0, 0, 0.8);
   border: 3px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
-/*valami*/
+
 .nav-left,
 .nav-right {
   display: flex;
@@ -105,6 +138,10 @@ body {
   font-weight: 500;
   position: relative;
   transition: color 0.25s ease;
+}
+
+[data-theme="dark"] .navbar a {
+  color: #ffffff;
 }
 
 .navbar a:hover {
@@ -127,103 +164,23 @@ body {
   width: 100%;
 }
 
+/* =========================
+   USERNAME BADGE
+========================= */
+
 .username {
-  font-size: 0.9rem;
   font-weight: 600;
   color: var(--accent);
   background: var(--accent-soft);
-  padding: 0.25rem 0.6rem;
+  padding: 0.25rem 0.7rem;
   border-radius: 999px;
+  border: 1px solid var(--accent-soft);
+  transition: all 0.2s ease;
 }
 
-.logout-btn {
-  padding: 0.5rem 1.2rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-
-  background: linear-gradient(
-    135deg,
-    var(--accent) 0%,
-    var(--accent-light) 100%
-  );
-  color: #fff;
-
-  border: none;
-  border-radius: 999px;
-
-  cursor: pointer;
-  box-shadow: 0 6px 16px var(--accent-glow);
-
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-.logout-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px var(--accent-glow);
-}
-
-input,
-textarea {
-  width: 54%;
-  padding: 0.7rem 0.9rem;
-  font-family: "Inter", sans-serif;
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: #222;
-
-  background: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-
-  outline: none;
-
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    background-color 0.2s ease;
-}
-
-input::placeholder,
-textarea::placeholder {
-  color: #999;
-  font-weight: 400;
-}
-
-input:hover:not(:focus),
-textarea:hover:not(:focus) {
-  border-color: var(--accent-light);
-}
-
-input:focus,
-textarea:focus {
-  border-color: var(--accent);
-  background-color: var(--accent-soft);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-textarea {
-  resize: none;
-  min-height: 40px;
-}
-
-input:disabled,
-textarea:disabled {
-  background: #f6f6f6;
-  color: #aaa;
-  cursor: not-allowed;
-}
-
-input:invalid,
-textarea:invalid {
-  border-color: #e03131;
-}
-
-input:invalid:focus,
-textarea:invalid:focus {
-  box-shadow: 0 0 0 3px rgba(224, 49, 49, 0.25);
-}
+/* =========================
+   BUTTONS
+========================= */
 
 button {
   padding: 0.6rem 1.4rem;
@@ -261,26 +218,92 @@ button:active {
   box-shadow: 0 4px 10px var(--accent-glow);
 }
 
-button:focus-visible {
-  outline: none;
-  box-shadow:
-    0 0 0 3px var(--accent-glow),
-    0 6px 16px var(--accent-glow);
-}
-
 button:disabled {
   background: #ddd;
   color: #999;
   box-shadow: none;
   cursor: not-allowed;
-  transform: none;
 }
+
+/* =========================
+   INPUT / TEXTAREA
+========================= */
+
+input,
+textarea {
+  width: 54%;
+  padding: 0.7rem 0.9rem;
+
+  font-family: "Inter", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+
+  color: #222;
+
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #999;
+}
+
+input:hover:not(:focus),
+textarea:hover:not(:focus) {
+  border-color: var(--accent-light);
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--accent);
+  background-color: var(--accent-soft);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+textarea {
+  resize: none;
+  min-height: 40px;
+}
+
+/* DARK MODE INPUT */
+
+[data-theme="dark"] input,
+[data-theme="dark"] textarea {
+  color: #ffffff;
+  background-color: #2a2a2a;
+  border: 1px solid #444;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: #bbbbbb;
+}
+
+[data-theme="dark"] input:focus,
+[data-theme="dark"] textarea:focus {
+  background-color: #333333;
+  border-color: var(--accent);
+}
+
+/* =========================
+   ANIMÁCIÓ
+========================= */
 
 @keyframes fadeInUp {
   from {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -291,98 +314,10 @@ button:disabled {
   animation: fadeInUp 0.6s ease-out forwards;
 }
 
-:root {
-  --bg-color: #ffffff;
-  --text-color: #333333;
-  --card-bg: #ffffff;
-  --nav-bg: #f8f9fa;
-  --border-color: #dddddd;
-}
+/* =========================
+   TINYMCE
+========================= */
 
-/* ALAPÉRTELMEZETT VÁLTOZÓK (VILÁGOS MÓD) */
-:root {
-  --bg-color: #ffffff;
-  --text-color: #333333;
-  --card-bg: #ffffff;
-  --nav-bg: linear-gradient(
-    180deg,
-    #ffffff 0%,
-    var(--accent-soft) 70%
-  ); /* Megtartjuk az eredeti dizájnt világos módban */
-  --border-color: #dddddd;
-}
-
-/* SÖTÉT MÓD VÁLTOZÓI */
-[data-theme="dark"] {
-  --bg-color: #000000; /* Teljesen fekete háttér */
-  --text-color: #ffffff; /* Fehér betűk */
-  --card-bg: #121212;
-  --nav-bg: #000000; /* Sötét módban NINCS gradiens, csak sima fekete */
-  --border-color: #333333;
-}
-
-/* 1. A test (body) színeit a változók vezéreljék */
-body {
-  margin: 0;
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  transition:
-    background-color 0.3s,
-    color 0.3s;
-}
-
-/* 2. A Navbar háttere sötét módban legyen fix fekete */
-[data-theme="dark"] .navbar {
-  background: #000000 !important;
-  background-image: none !important;
-}
-
-/* 3. A hírek szövege sötét módban legyen fix fehér */
-[data-theme="dark"] .news-title,
-[data-theme="dark"] .news-content,
-[data-theme="dark"] .news-card,
-[data-theme="dark"] h1,
-[data-theme="dark"] h2,
-[data-theme="dark"] p {
-  color: #ffffff !important;
-}
-
-body {
-  margin: 0;
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  transition:
-    background-color 0.3s,
-    color 0.3s;
-}
-
-/* SÖTÉT MÓD - SZÖVEGBEVITELI MEZŐK FIXÁLÁSA */
-[data-theme="dark"] input,
-[data-theme="dark"] textarea {
-  /* Ez teszi fehérré a szöveget gépelés közben */
-  color: #ffffff !important;
-
-  /* Ez ad egy látható, de sötét hátteret a mezőnek */
-  background-color: #2a2a2a !important;
-
-  /* Világosabb keret, hogy látsszon a doboz széle */
-  border: 1px solid #444 !important;
-
-  /* Hogy ne legyen fura belső árnyéka */
-  box-shadow: none !important;
-}
-
-/* A segédszöveg (placeholder) színe sötét módban */
-[data-theme="dark"] input::placeholder,
-[data-theme="dark"] textarea::placeholder {
-  color: #bbbbbb !important;
-  opacity: 1;
-}
-
-/* Amikor a felhasználó rákattint a mezőbe (Focus) */
-[data-theme="dark"] input:focus,
-[data-theme="dark"] textarea:focus {
-  background-color: #333333 !important;
-  border-color: var(--accent) !important;
-  outline: none;
+.tox-statusbar__branding {
+  display: none;
 }

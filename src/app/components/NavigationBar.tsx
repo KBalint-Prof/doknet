@@ -114,51 +114,20 @@ export default function NavigationBar() {
         className="nav-right"
         style={{ display: "flex", alignItems: "center", gap: "15px" }}
       >
-        <button
-          onClick={ctx?.toggleTheme}
-          style={{
-            background: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.05)",
-            border: "none",
-            borderRadius: "50%",
-            width: "38px",
-            height: "38px",
-            cursor: "pointer",
-            fontSize: "1.2rem",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+        <button onClick={ctx?.toggleTheme} className="theme-toggle">
           {isDark ? "☀️" : "🌙"}
         </button>
+
         {ctx?.user && (ctx.user as any).role === "admin" && (
           <a href="/admin" style={linkStyle}>
             Admin Panel
           </a>
         )}
 
-        <span
-          style={{
-            fontSize: "0.9rem",
-            fontWeight: 600,
-            color: isDark ? "#ccc" : "#555",
-          }}
-        >
-          {ctx?.user?.username || "Vendég"}
-        </span>
+        <span className="username">{ctx?.user?.username || "Vendég"}</span>
 
         {ctx?.user ? (
           <button
-            style={{
-              padding: "8px 18px",
-              borderRadius: "20px",
-              border: "none",
-              backgroundColor: "#ff4d4d",
-              color: "white",
-              fontWeight: 600,
-              cursor: "pointer",
-              transition: "transform 0.2s",
-            }}
             onClick={() => {
               ctx?.setUser(null);
               localStorage.removeItem("user");
