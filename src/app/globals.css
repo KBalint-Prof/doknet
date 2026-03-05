@@ -55,11 +55,11 @@ body {
   justify-content: space-between;
   align-items: center;
 
-  padding: 0.9rem 1.75rem;
-  margin-bottom: 2rem;
+  padding: 0.1rem 2rem; /* módosított a React paddingjének megfelelően */
+  margin: 5px 2rem 2rem 2rem; /* top:10px, margin-bottom:2rem */
 
-  background: linear-gradient(180deg, #ffffff 0%, var(--accent-soft) 70%);
-  border-bottom: 1px solid rgba(204, 47, 112, 0.15);
+  height: 65px;
+  border-radius: 50px;
 
   font-family:
     system-ui,
@@ -67,6 +67,28 @@ body {
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
+
+  /* alap háttér a világos módhoz */
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+
+  /* Glassmorphism hatás */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  transition: all 0.3s ease;
+
+  position: relative; /* ha top-ot akarsz használni */
+  top: 10px;
+  z-index: 1000;
+}
+
+/* Sötét mód */
+.navbar.dark {
+  background: rgba(0, 0, 0, 0.8);
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 /*valami*/
 .nav-left,
@@ -282,16 +304,20 @@ button:disabled {
   --bg-color: #ffffff;
   --text-color: #333333;
   --card-bg: #ffffff;
-  --nav-bg: linear-gradient(180deg, #ffffff 0%, var(--accent-soft) 70%); /* Megtartjuk az eredeti dizájnt világos módban */
+  --nav-bg: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    var(--accent-soft) 70%
+  ); /* Megtartjuk az eredeti dizájnt világos módban */
   --border-color: #dddddd;
 }
 
 /* SÖTÉT MÓD VÁLTOZÓI */
 [data-theme="dark"] {
-  --bg-color: #000000;      /* Teljesen fekete háttér */
-  --text-color: #ffffff;    /* Fehér betűk */
+  --bg-color: #000000; /* Teljesen fekete háttér */
+  --text-color: #ffffff; /* Fehér betűk */
   --card-bg: #121212;
-  --nav-bg: #000000;        /* Sötét módban NINCS gradiens, csak sima fekete */
+  --nav-bg: #000000; /* Sötét módban NINCS gradiens, csak sima fekete */
   --border-color: #333333;
 }
 
@@ -300,7 +326,9 @@ body {
   margin: 0;
   background-color: var(--bg-color);
   color: var(--text-color);
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 }
 
 /* 2. A Navbar háttere sötét módban legyen fix fekete */
@@ -313,8 +341,8 @@ body {
 [data-theme="dark"] .news-title,
 [data-theme="dark"] .news-content,
 [data-theme="dark"] .news-card,
-[data-theme="dark"] h1, 
-[data-theme="dark"] h2, 
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
 [data-theme="dark"] p {
   color: #ffffff !important;
 }
@@ -329,30 +357,30 @@ body {
 }
 
 /* SÖTÉT MÓD - SZÖVEGBEVITELI MEZŐK FIXÁLÁSA */
-[data-theme="dark"] input, 
+[data-theme="dark"] input,
 [data-theme="dark"] textarea {
   /* Ez teszi fehérré a szöveget gépelés közben */
   color: #ffffff !important;
-  
+
   /* Ez ad egy látható, de sötét hátteret a mezőnek */
-  background-color: #2a2a2a !important; 
-  
+  background-color: #2a2a2a !important;
+
   /* Világosabb keret, hogy látsszon a doboz széle */
   border: 1px solid #444 !important;
-  
+
   /* Hogy ne legyen fura belső árnyéka */
   box-shadow: none !important;
 }
 
 /* A segédszöveg (placeholder) színe sötét módban */
-[data-theme="dark"] input::placeholder, 
+[data-theme="dark"] input::placeholder,
 [data-theme="dark"] textarea::placeholder {
   color: #bbbbbb !important;
   opacity: 1;
 }
 
 /* Amikor a felhasználó rákattint a mezőbe (Focus) */
-[data-theme="dark"] input:focus, 
+[data-theme="dark"] input:focus,
 [data-theme="dark"] textarea:focus {
   background-color: #333333 !important;
   border-color: var(--accent) !important;

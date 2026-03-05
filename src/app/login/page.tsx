@@ -48,14 +48,14 @@ export default function LoginPage() {
       ctx?.setUser(data.user);
 
       toast.success("Sikeres Bejelentkezés!", {
-        style: { marginTop: "3.5rem" },
+        style: { marginTop: "4.5rem" },
       });
 
       router.push("/");
     } catch (err: any) {
       console.error(err);
       toast.error("Hiba a Bejelentkezés során!", {
-        style: { marginTop: "3.5rem" },
+        style: { marginTop: "4.5rem" },
       });
     } finally {
       setLogin(false);

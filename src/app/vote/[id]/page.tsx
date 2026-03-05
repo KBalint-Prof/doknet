@@ -73,7 +73,7 @@ export default function VotePage() {
       if (!res.ok) throw new Error("Lezárás sikertelen");
 
       toast.success("Sikeres lezárás!", {
-        style: { marginTop: "3.5rem" },
+        style: { marginTop: "4.5rem" },
       });
 
       router.push("/vote");

@@ -1,40 +1,40 @@
-'use client';
+"use client";
 
-import { useContext, useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
-import { useRouter } from 'next/navigation';
-import { GlobalContext } from '../context/GlobalContext';
+import { useContext, useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+import { GlobalContext } from "../context/GlobalContext";
+import { toast } from "react-toastify";
 
 const TinyMCEEditor = dynamic(
-  () => import('@tinymce/tinymce-react').then((mod) => mod.Editor),
+  () => import("@tinymce/tinymce-react").then((mod) => mod.Editor),
   { ssr: false },
 );
 
 export default function NewsEditor({ id }: { id?: number }) {
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState('');
-  const [title, setTitle] = useState('');
+  const [message, setMessage] = useState("");
+  const [title, setTitle] = useState("");
   const [selectedCover, setSelectedCover] = useState<string | null>(null);
   const defaultCovers = [
-    '/covers/bejelentes.png',
-    '/covers/felhivas.png',
-    '/covers/fontos.png',
-    '/covers/szavazas.png',
+    "/covers/bejelentes.png",
+    "/covers/felhivas.png",
+    "/covers/fontos.png",
   ];
   const router = useRouter();
   const ctx = useContext(GlobalContext);
 
   const handleSave = async () => {
     setSaving(true);
-    setMessage('');
+    setMessage("");
 
     try {
       console.log(ctx?.user?.id);
-      const res = await fetch('/api/news-editor', {
-        method: 'POST',
+      const res = await fetch("/api/news-editor", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json; charset=utf-8',
+          "Content-Type": "application/json; charset=utf-8",
         },
         body: JSON.stringify({
           title,
@@ -47,13 +47,19 @@ export default function NewsEditor({ id }: { id?: number }) {
       const data = await res.json();
 
       if (!res.ok)
-        throw new Error(data.error || 'Hiba történt a mentés során.');
+        throw new Error(data.error || "Hiba történt a mentés során.");
 
       setMessage(`Sikeres mentés! (ID: ${data.id})`);
-      router.push('/news/' + data.id);
+      router.push("/news/" + data.id);
+      toast.success("Sikeres mentés!", {
+        style: { marginTop: "4.5rem" },
+      });
     } catch (err: any) {
       console.error(err);
-      setMessage('Hiba a mentés során!');
+      setMessage("Hiba a mentés során!");
+      toast.error("Hiba a mentés során!", {
+        style: { marginTop: "4.5rem" },
+      });
     } finally {
       setSaving(false);
     }
@@ -61,14 +67,14 @@ export default function NewsEditor({ id }: { id?: number }) {
 
   const handleUpdate = async () => {
     setSaving(true);
-    setMessage('');
+    setMessage("");
 
     try {
       console.log(ctx?.user?.id);
-      const res = await fetch('/api/news-editor', {
-        method: 'PATCH',
+      const res = await fetch("/api/news-editor", {
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json; charset=utf-8',
+          "Content-Type": "application/json; charset=utf-8",
         },
         body: JSON.stringify({
           news_id: id,
@@ -82,13 +88,13 @@ export default function NewsEditor({ id }: { id?: number }) {
       const data = await res.json();
 
       if (!res.ok)
-        throw new Error(data.error || 'Hiba történt a módosítás során.');
+        throw new Error(data.error || "Hiba történt a módosítás során.");
 
       setMessage(`Sikeres módosítás! (ID: ${data.id})`);
-      router.push('/news/' + id);
+      router.push("/news/" + id);
     } catch (err: any) {
       console.error(err);
-      setMessage('Hiba a módosítás során!');
+      setMessage("Hiba a módosítás során!");
     } finally {
       setSaving(false);
     }
@@ -99,10 +105,10 @@ export default function NewsEditor({ id }: { id?: number }) {
       const result = await fetch(`/api/news-editor/${id}`);
       const data = await result.json();
 
-      console.log('NEWS BY ID:', data);
+      console.log("NEWS BY ID:", data);
 
       if (!result.ok || data.news.length === 0)
-        throw new Error(data.error || 'Hiba történt a hír betöltése során.');
+        throw new Error(data.error || "Hiba történt a hír betöltése során.");
 
       setContent(data.news[0].content);
       setSelectedCover(data.news[0].cover_img);
@@ -117,8 +123,8 @@ export default function NewsEditor({ id }: { id?: number }) {
   }, [id]);
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>{id ? `Szerkesztés ${id}` : 'Új hír létrehozása'}</h1>
+    <div style={{ padding: "2rem" }}>
+      <h1>{id ? `Szerkesztés ${id}` : "Új hír létrehozása"}</h1>
 
       <input
         type="text"
@@ -129,26 +135,26 @@ export default function NewsEditor({ id }: { id?: number }) {
 
       <h3>Borítókép kiválasztása</h3>
 
-      <div style={{ display: 'flex', gap: '1rem' }}>
+      <div style={{ display: "flex", gap: "1rem" }}>
         {defaultCovers.map((img) => (
           <div
             key={img}
             onClick={() => setSelectedCover(img)}
             style={{
-              width: '15rem',
-              height: '10rem',
-              marginBottom: '1rem',
+              width: "15rem",
+              height: "10rem",
+              marginBottom: "1rem",
               border:
-                selectedCover === img ? '3px solid #0070f3' : '1px solid #ccc',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              overflow: 'hidden',
+                selectedCover === img ? "3px solid #0070f3" : "1px solid #ccc",
+              borderRadius: "8px",
+              cursor: "pointer",
+              overflow: "hidden",
             }}
           >
             <img
               src={img}
               alt="Borítókép"
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
           </div>
         ))}
@@ -157,47 +163,47 @@ export default function NewsEditor({ id }: { id?: number }) {
       <TinyMCEEditor
         apiKey={process.env.NEXT_PUBLIC_EDITOR_KEY}
         init={{
-          language: 'hu_HU',
-          language_url: '/hu_HU.js',
+          language: "hu_HU",
+          language_url: "/hu_HU.js",
           height: 750,
           resize: false,
-          entity_encoding: 'raw',
+          entity_encoding: "raw",
           menubar: true,
           plugins: [
-            'advlist',
-            'autolink',
-            'lists',
-            'link',
-            'image',
-            'charmap',
-            'preview',
-            'anchor',
-            'searchreplace',
-            'visualblocks',
-            'code',
-            'fullscreen',
-            'insertdatetime',
-            'media',
-            'table',
-            'help',
-            'wordcount',
+            "advlist",
+            "autolink",
+            "lists",
+            "link",
+            "image",
+            "charmap",
+            "preview",
+            "anchor",
+            "searchreplace",
+            "visualblocks",
+            "code",
+            "fullscreen",
+            "insertdatetime",
+            "media",
+            "table",
+            "help",
+            "wordcount",
           ],
           toolbar:
-            'undo redo | blocks | bold italic underline | alignleft aligncenter alignright alignjustify | ' +
-            'bullist numlist outdent indent | image media link | removeformat | help',
+            "undo redo | blocks | bold italic underline | alignleft aligncenter alignright alignjustify | " +
+            "bullist numlist outdent indent | image media link | removeformat | help",
           images_upload_handler: (blobInfo: any) =>
             new Promise((resolve) => {
               const base64 =
-                'data:' + blobInfo.blob().type + ';base64,' + blobInfo.base64();
+                "data:" + blobInfo.blob().type + ";base64," + blobInfo.base64();
               resolve(base64);
             }),
           automatic_uploads: true,
-          file_picker_types: 'image',
+          file_picker_types: "image",
           image_class_list: [
-            { title: 'None', value: '' },
-            { title: 'Float left (wrap text)', value: 'img-left' },
-            { title: 'Float right (wrap text)', value: 'img-right' },
-            { title: 'Centered', value: 'img-center' },
+            { title: "None", value: "" },
+            { title: "Float left (wrap text)", value: "img-left" },
+            { title: "Float right (wrap text)", value: "img-right" },
+            { title: "Centered", value: "img-center" },
           ],
           image_dimensions: true,
           content_style: `
@@ -210,18 +216,18 @@ export default function NewsEditor({ id }: { id?: number }) {
             .img-right { float: right; margin: 1rem; }
             .img-center { display: block; margin: 1rem auto; float: none; }
           `,
-          placeholder: 'Írd ide a hír tartalmát...',
+          placeholder: "Írd ide a hír tartalmát...",
         }}
         onEditorChange={(newContent) => setContent(newContent)}
         value={content}
       />
 
       <button
-        style={{ marginTop: '1rem' }}
+        style={{ marginTop: "1rem" }}
         onClick={id ? handleUpdate : handleSave}
         disabled={saving}
       >
-        {saving ? 'Mentés folyamatban...' : 'Mentés'}
+        {saving ? "Mentés folyamatban..." : "Mentés"}
       </button>
     </div>
   );
