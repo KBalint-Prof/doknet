@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { db } from "../db";
+import { NextResponse } from 'next/server';
+import { db } from '../db';
 
 export async function GET() {
   try {
@@ -9,7 +9,6 @@ export async function GET() {
         votes.title,
         votes.description,
         votes.created_at,
-        votes.modified_at,
         votes.is_active,
         users.username AS author_name
        FROM votes 
@@ -19,7 +18,7 @@ export async function GET() {
 
     return NextResponse.json(rows);
   } catch (err) {
-    console.error("Hiba a lekérdezés során:", err);
-    return NextResponse.json({ error: "Adatbázis hiba!" }, { status: 500 });
+    console.error('Hiba a lekérdezés során:', err);
+    return NextResponse.json({ error: 'Adatbázis hiba!' }, { status: 500 });
   }
 }
