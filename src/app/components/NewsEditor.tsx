@@ -24,6 +24,7 @@ export default function NewsEditor({ id }: { id?: number }) {
   ];
   const router = useRouter();
   const ctx = useContext(GlobalContext);
+  const isDark = ctx?.theme === "dark";
 
   const handleSave = async () => {
     setSaving(true);
