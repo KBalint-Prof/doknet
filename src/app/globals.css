@@ -23,6 +23,7 @@ img {
   --text-color: #333333;
   --card-bg: #ffffff;
   --border-color: #dddddd;
+  --placeholder: #888;
 }
 
 [data-theme="dark"] {
@@ -30,6 +31,7 @@ img {
   --text-color: #ffffff;
   --card-bg: #121212;
   --border-color: #333333;
+  --placeholder: #9ca3af;
 
   --accent-soft: rgba(139, 30, 63, 0.25);
   --accent-glow: rgba(139, 30, 63, 0.6);
@@ -100,7 +102,7 @@ img {
 
 [data-theme="dark"] .navbar {
   background: rgba(0, 0, 0, 0.8);
-  border: 3px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 

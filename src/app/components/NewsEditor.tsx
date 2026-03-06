@@ -162,8 +162,11 @@ export default function NewsEditor({ id }: { id?: number }) {
       </div>
 
       <TinyMCEEditor
+        key={isDark ? "dark" : "light"}
         apiKey={process.env.NEXT_PUBLIC_EDITOR_KEY}
         init={{
+          skin: isDark ? "oxide-dark" : "oxide",
+          content_css: isDark ? "dark" : "default",
           language: "hu_HU",
           language_url: "/hu_HU.js",
           height: 750,
@@ -211,11 +214,16 @@ export default function NewsEditor({ id }: { id?: number }) {
           body {
             font-family: Arial, sans-serif;
             font-size: 16px;
+            background: ${isDark ? "#121212" : "#ffffff"};
+            color: ${isDark ? "#ffffff" : "#000000"};
           }
             img { max-width: 100%; height: auto; }
             .img-left { float: left; margin: 1rem; }
             .img-right { float: right; margin: 1rem; }
             .img-center { display: block; margin: 1rem auto; float: none; }
+            .mce-content-body[data-mce-placeholder]:not(.mce-visualblocks)::before {
+            color: var(--placeholder);
+            opacity: 1;
           `,
           placeholder: "Írd ide a hír tartalmát...",
         }}
