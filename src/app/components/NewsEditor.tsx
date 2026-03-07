@@ -223,7 +223,6 @@ export default function NewsEditor({ id }: { id?: number }) {
             .img-center { display: block; margin: 1rem auto; float: none; }
             .mce-content-body[data-mce-placeholder]:not(.mce-visualblocks)::before {
             color: var(--placeholder);
-            opacity: 1;
           `,
           placeholder: "Írd ide a hír tartalmát...",
         }}

@@ -26,7 +26,7 @@ export default function NavigationBar() {
         >
           <div style={{ position: "relative", width: "42px", height: "42px" }}>
             <Image
-              src="/logo/doklogo2.png"
+              src="/logo/doklogo4.png"
               alt="DÖKnet Logo"
               fill
               style={{
@@ -56,7 +56,7 @@ export default function NavigationBar() {
               (ctx.user as any).role,
             ) && (
               <>
-                <a href="/news-editor">Szerkesztő</a>
+                <a href="/news-editor">Hírszerkesztő</a>
                 <a href="/vote">Szavazás</a>
               </>
             )}

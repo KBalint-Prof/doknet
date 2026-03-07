@@ -408,3 +408,25 @@ textarea {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent);
 }
+
+@media (max-width: 768px) {
+  a[href^="/news/"] {
+    flex-direction: column;
+  }
+
+  a[href^="/news/"] > div:first-child {
+    flex: none !important;
+    width: 100%;
+  }
+
+  a[href^="/news/"] img {
+    display: block;
+    margin: 0 auto 6px auto;
+    max-width: 320px;
+    height: auto !important;
+  }
+
+  a[href^="/news/"] > div:last-child {
+    flex: none !important;
+  }
+}
