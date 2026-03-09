@@ -1,58 +1,36 @@
-"use client";
+'use client';
 
-import { useContext } from "react";
-import { GlobalContext } from "../context/GlobalContext";
-import { toast } from "react-toastify";
-import Image from "next/image";
+import { useContext } from 'react';
+import { GlobalContext } from '../context/GlobalContext';
+import { toast } from 'react-toastify';
+import Image from 'next/image';
 
 export default function NavigationBar() {
   const ctx = useContext(GlobalContext);
-  const isDark = ctx?.theme === "dark";
+  const isDark = ctx?.theme === 'dark';
 
   return (
-    <nav className={`navbar ${isDark ? "dark" : ""}`}>
-      <div
-        className="nav-left"
-        style={{ display: "flex", gap: "35px", alignItems: "center" }}
-      >
-        <a
-          href="/"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            textDecoration: "none",
-          }}
-        >
-          <div style={{ position: "relative", width: "42px", height: "42px" }}>
+    <nav className={`navbar ${isDark ? 'dark' : ''}`}>
+      <div className="nav-left">
+        <a href="/" className="logo">
+          <div className="logo-img">
             <Image
               src="/logo/doklogo4.png"
               alt="DÖKnet Logo"
-              fill
-              style={{
-                objectFit: "contain",
-                mixBlendMode: isDark ? "normal" : "multiply",
-              }}
+              width={42}
+              height={42}
+              className="logo-desktop"
             />
           </div>
-          <span
-            style={{
-              color: isDark ? "#fff" : "#000",
-              fontWeight: 800,
-              fontSize: "1.3rem",
-              letterSpacing: "-0.5px",
-            }}
-          >
-            DÖKnet
-          </span>
+          <span className="logo-text">DÖKnet</span>
         </a>
 
-        <div style={{ display: "flex", gap: "20px" }}>
+        <div className="nav-links">
           <a href="/calendar">Naptár</a>
           <a href="/gallery">Galéria</a>
 
           {ctx?.user &&
-            ["admin", "teacher", "president"].includes(
+            ['admin', 'teacher', 'president'].includes(
               (ctx.user as any).role,
             ) && (
               <>
@@ -65,34 +43,31 @@ export default function NavigationBar() {
         </div>
       </div>
 
-      <div
-        className="nav-right"
-        style={{ display: "flex", alignItems: "center", gap: "15px" }}
-      >
+      <div className="nav-right">
         <button onClick={ctx?.toggleTheme} className="theme-toggle">
-          {isDark ? "☀️" : "🌙"}
+          {isDark ? '☀️' : '🌙'}
         </button>
 
-        {ctx?.user && (ctx.user as any).role === "admin" && (
+        {ctx?.user && (ctx.user as any).role === 'admin' && (
           <a href="/admin">Admin Panel</a>
         )}
 
-        <span className="username">{ctx?.user?.username || "Vendég"}</span>
+        <span className="username">{ctx?.user?.username || 'Vendég'}</span>
 
         {ctx?.user ? (
           <button
             onClick={() => {
               ctx?.setUser(null);
-              localStorage.removeItem("user");
-              toast.info("Kijelentkeztél.", {
-                style: { marginTop: "4.5rem" },
+              localStorage.removeItem('user');
+              toast.info('Kijelentkeztél.', {
+                style: { marginTop: '4.5rem' },
               });
             }}
           >
             Kijelentkezés
           </button>
         ) : (
-          <div style={{ display: "flex", gap: "30px", alignItems: "center" }}>
+          <div className="login-register">
             <a href="/login">Bejelentkezés</a>
             <a href="/register">Regisztráció</a>
           </div>
