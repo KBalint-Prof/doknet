@@ -246,14 +246,16 @@ const okButtonStyle: React.CSSProperties = {
 const dailyEventsContainerStyle: React.CSSProperties = {
   marginTop: 30,
   padding: "20px",
-  backgroundColor: "#f9f9f9",
+  backgroundColor: "var(--card-bg)",
+  color: "var(--text-color)",
   borderRadius: "12px",
-  border: "1px solid #eee",
+  border: "1px solid var(--border-color)",
 };
 
 const eventListItemStyle: React.CSSProperties = {
   padding: "12px",
-  backgroundColor: "#fff",
+  backgroundColor: "var(--bg-color)",
+  color: "var(--text-color)",
   marginBottom: "10px",
   borderRadius: "8px",
   boxShadow: "0 2px 4px rgba(0,0,0,0.05)",

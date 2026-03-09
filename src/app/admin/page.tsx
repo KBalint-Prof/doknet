@@ -63,28 +63,26 @@ export default function AdminPage() {
     }
 
     return (
-        <div style={{ padding: "2rem", maxWidth: "900px", margin: "0 auto" }}>
+        <div style={{ padding: "2rem", maxWidth: "900px", margin: "0 auto", color: "var(--text-color)" }}>
             <h1 style={{ borderBottom: "2px solid #d1417a" }}>Admin Panel</h1>
             <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px" }}>
                 <thead>
-                    <tr style={{ textAlign: "left", backgroundColor: "#f4f4f4" }}>
+                    <tr style={{ textAlign: "left", backgroundColor: "var(--card-bg)", borderBottom: "2px solid var(--border-color)" }}>
                         <th style={{ padding: "10px" }}>Név</th>
-                        <th style={{ padding: "10px" }}>Email</th>
                         <th style={{ padding: "10px" }}>Rang</th>
                         <th style={{ padding: "10px" }}>Művelet</th>
                     </tr>
                 </thead>
                 <tbody>
                     {users.map(u => (
-                        <tr key={u.id} style={{ borderBottom: "1px solid #eee" }}>
+                        <tr key={u.id} style={{ borderBottom: "1px solid var(--border-color)" }}>
                             <td style={{ padding: "10px" }}>{u.username}</td>
-                            <td style={{ padding: "10px" }}>{u.email}</td>
                             <td style={{ padding: "10px" }}><b>{u.role}</b></td>
                             <td style={{ padding: "10px" }}>
                                 <select 
                                     value={u.role} 
                                     onChange={(e) => updateRole(u.id, e.target.value)}
-                                    style={{ padding: "5px" }}
+                                    style={{ padding: "5px", backgroundColor: "var(--bg-color)", color: "var(--text-color)", border: "1px solid var(--border-color)", borderRadius: "4px" }}
                                 >
                                     <option value="student">Diák</option>
                                     <option value="member">Tag</option>

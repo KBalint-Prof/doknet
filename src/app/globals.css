@@ -35,6 +35,29 @@ img {
   --accent-glow: rgba(139, 30, 63, 0.6);
 }
 
+[data-theme='dark'] .fc {
+  --fc-border-color: #333;
+  --fc-page-bg-color: #000;
+}
+
+[data-theme='dark'] .fc-col-header-cell{
+  background-color: #121212 !important;
+}
+
+[data-theme='dark'] .fc-col-header-cell-cushion {
+  color: #fff !important;
+}
+
+[data-theme='dark'] .fc-daygrid-day {
+  background-color: #000;
+}
+
+[data-theme='dark'] .daily-events-container {
+  background-color: #121212 !important;
+  color: white;
+  border-color: #333;
+}
+
 .news-title {
   width: 100%;
   font-family: Arial, Helvetica;
