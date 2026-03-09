@@ -25,7 +25,7 @@ img {
   --border-color: #dddddd;
 }
 
-[data-theme='dark'] {
+[data-theme="dark"] {
   --bg-color: #000000;
   --text-color: #ffffff;
   --card-bg: #121212;
@@ -35,27 +35,31 @@ img {
   --accent-glow: rgba(139, 30, 63, 0.6);
 }
 
-[data-theme='dark'] .fc {
+[data-theme="dark"] .fc {
   --fc-border-color: #333;
   --fc-page-bg-color: #000;
 }
 
-[data-theme='dark'] .fc-col-header-cell{
+[data-theme="dark"] .fc-col-header-cell {
   background-color: #121212 !important;
 }
 
-[data-theme='dark'] .fc-col-header-cell-cushion {
+[data-theme="dark"] .fc-col-header-cell-cushion {
   color: #fff !important;
 }
 
-[data-theme='dark'] .fc-daygrid-day {
+[data-theme="dark"] .fc-daygrid-day {
   background-color: #000;
 }
 
-[data-theme='dark'] .daily-events-container {
+[data-theme="dark"] .daily-events-container {
   background-color: #121212 !important;
   color: white;
   border-color: #333;
+}
+
+[data-theme="dark"] .mobile-menu {
+  background: rgba(45, 45, 45, 0.95);
 }
 
 .news-title {
@@ -104,7 +108,7 @@ img {
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
-    'Segoe UI',
+    "Segoe UI",
     sans-serif;
 
   background: rgba(255, 255, 255, 0.85);
@@ -121,7 +125,7 @@ img {
   z-index: 1000;
 }
 
-[data-theme='dark'] .navbar {
+[data-theme="dark"] .navbar {
   background: rgba(0, 0, 0, 0.8);
   border: 3px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
@@ -180,7 +184,7 @@ img {
   transition: color 0.25s ease;
 }
 
-[data-theme='dark'] .navbar a {
+[data-theme="dark"] .navbar a {
   color: #ffffff;
 }
 
@@ -189,7 +193,7 @@ img {
 }
 
 .navbar a::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   bottom: -6px;
@@ -262,7 +266,7 @@ textarea {
   width: 54%;
   padding: 0.7rem 0.9rem;
 
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 0.95rem;
   font-weight: 500;
 
@@ -278,6 +282,52 @@ textarea {
     border-color 0.2s ease,
     box-shadow 0.2s ease,
     background-color 0.2s ease;
+}
+
+.hamburger {
+  display: none;
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+
+  justify-content: center;
+  align-items: center;
+
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  box-sizing: border-box;
+  background-color: transparent;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.hamburger svg {
+  width: 60%;
+  height: 60%;
+  stroke: var(--accent);
+}
+
+.mobile-menu {
+  position: absolute;
+  top: 75px;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 90%;
+
+  background-color: rgba(200, 200, 200, 0.95);
+  border: 1px solid var(--accent);
+  border-radius: 14px;
+
+  padding: 16px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  z-index: 999;
 }
 
 input::placeholder,
@@ -311,25 +361,25 @@ textarea {
   line-clamp: 6;
 }
 
-[data-theme='dark'] input,
-[data-theme='dark'] textarea {
+[data-theme="dark"] input,
+[data-theme="dark"] textarea {
   color: #ffffff;
   background-color: #2a2a2a;
   border: 1px solid #444;
 }
 
-[data-theme='dark'] input::placeholder,
-[data-theme='dark'] textarea::placeholder {
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
   color: #bbbbbb;
 }
 
-[data-theme='dark'] input:focus,
-[data-theme='dark'] textarea:focus {
+[data-theme="dark"] input:focus,
+[data-theme="dark"] textarea:focus {
   background-color: #333333;
   border-color: var(--accent);
 }
 
-[data-theme='dark'] .username {
+[data-theme="dark"] .username {
   color: #ff6b9a;
   background: rgba(139, 30, 63, 0.35);
   border-color: rgba(139, 30, 63, 0.6);
@@ -477,22 +527,22 @@ textarea {
 }
 
 @media (max-width: 768px) {
-  a[href^='/news/'] {
+  a[href^="/news/"] {
     flex-direction: column;
   }
 
-  a[href^='/news/'] > div:first-child {
+  a[href^="/news/"] > div:first-child {
     flex: none !important;
     width: 100%;
   }
 
-  a[href^='/news/'] img {
+  a[href^="/news/"] img {
     display: block;
     margin: 0 auto 6px auto;
     max-width: 320px;
   }
 
-  a[href^='/news/'] > div:last-child {
+  a[href^="/news/"] > div:last-child {
     flex: none !important;
   }
 
@@ -507,5 +557,18 @@ textarea {
   .nav-right a:not(.theme-toggle),
   .nav-right button:not(.theme-toggle) {
     display: none !important;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .logo-text {
+    display: none;
+  }
+
+  .mobile-menu a {
+    padding: 10px 6px;
+    font-size: 1.05rem;
   }
 }

@@ -22,10 +22,8 @@ const images = [
 export default function Carousel() {
   const swiperRef = useRef<SwiperType | null>(null);
 
-  // Most az indexet tároljuk (null = zárva, 0,1,2... = nyitva)
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
 
-  // Lapozó függvények
   const nextImg = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (selectedIdx !== null) {
@@ -82,7 +80,6 @@ export default function Carousel() {
           aspectRatio: "16 / 9",
         }}
       >
-        {/* LOGÓK (maradnak) */}
         <div
           style={{ ...logoBaseStyle, left: "-35%" }}
           className="desktop-logo"
@@ -132,7 +129,6 @@ export default function Carousel() {
         </Swiper>
       </div>
 
-      {/* --- LAPOZHATÓ NAGYÍTÓ --- */}
       {selectedIdx !== null && (
         <div
           onClick={() => setSelectedIdx(null)}
@@ -150,7 +146,6 @@ export default function Carousel() {
             cursor: "zoom-out",
           }}
         >
-          {/* Bezárás */}
           <span
             style={{
               position: "absolute",
@@ -165,12 +160,10 @@ export default function Carousel() {
             &times;
           </span>
 
-          {/* BAL NYÍL */}
           <button onClick={prevImg} style={navButtonStyle(true)}>
             &#10094;
           </button>
 
-          {/* KÉP */}
           <div
             style={{ position: "relative", width: "80%", height: "80%" }}
             onClick={(e) => e.stopPropagation()}
@@ -184,7 +177,6 @@ export default function Carousel() {
             />
           </div>
 
-          {/* JOBB NYÍL */}
           <button onClick={nextImg} style={navButtonStyle(false)}>
             &#10095;
           </button>
@@ -194,7 +186,6 @@ export default function Carousel() {
   );
 }
 
-// Segédfüggvény a nyilak stílusához (Tailwind nélkül)
 const navButtonStyle = (isLeft: boolean): React.CSSProperties => ({
   position: "absolute",
   top: "50%",

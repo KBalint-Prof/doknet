@@ -1,16 +1,28 @@
-'use client';
+"use client";
 
-import { useContext } from 'react';
-import { GlobalContext } from '../context/GlobalContext';
-import { toast } from 'react-toastify';
-import Image from 'next/image';
+import { useContext, useEffect, useState } from "react";
+import { GlobalContext } from "../context/GlobalContext";
+import { toast } from "react-toastify";
+import Image from "next/image";
 
 export default function NavigationBar() {
   const ctx = useContext(GlobalContext);
-  const isDark = ctx?.theme === 'dark';
+  const isDark = ctx?.theme === "dark";
+  const [mobileMenuOpen, setmobileMenuOpen] = useState(false);
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setmobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   return (
-    <nav className={`navbar ${isDark ? 'dark' : ''}`}>
+    <nav className={`navbar ${isDark ? "dark" : ""}`}>
       <div className="nav-left">
         <a href="/" className="logo">
           <div className="logo-img">
@@ -30,7 +42,7 @@ export default function NavigationBar() {
           <a href="/gallery">Galéria</a>
 
           {ctx?.user &&
-            ['admin', 'teacher', 'president'].includes(
+            ["admin", "teacher", "president"].includes(
               (ctx.user as any).role,
             ) && (
               <>
@@ -43,24 +55,58 @@ export default function NavigationBar() {
         </div>
       </div>
 
+      <div
+        className="hamburger"
+        onClick={() => setmobileMenuOpen(!mobileMenuOpen)}
+      >
+        <svg
+          width="60"
+          height="60"
+          viewBox="0 0 16 16"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+        >
+          <path d="m2.75 12.25h10.5m-10.5-4h10.5m-10.5-4h10.5" />
+        </svg>
+      </div>
+      {mobileMenuOpen && (
+        <div className="mobile-menu">
+          <a href="/calendar">Naptár</a>
+          <a href="/gallery">Galéria</a>
+          {ctx?.user &&
+            ["admin", "teacher", "president"].includes(
+              (ctx.user as any).role,
+            ) && (
+              <>
+                <a href="/news-editor">Hírszerkesztő</a>
+                <a href="/vote">Szavazás</a>
+              </>
+            )}
+          {ctx?.user && <a href="/chat">Chat</a>}
+        </div>
+      )}
+
       <div className="nav-right">
         <button onClick={ctx?.toggleTheme} className="theme-toggle">
-          {isDark ? '☀️' : '🌙'}
+          {isDark ? "☀️" : "🌙"}
         </button>
-
-        {ctx?.user && (ctx.user as any).role === 'admin' && (
+        {ctx?.user && (ctx.user as any).role === "admin" && (
           <a href="/admin">Admin Panel</a>
         )}
 
-        <span className="username">{ctx?.user?.username || 'Vendég'}</span>
+        <span className="username">{ctx?.user?.username || "Vendég"}</span>
 
         {ctx?.user ? (
           <button
             onClick={() => {
               ctx?.setUser(null);
-              localStorage.removeItem('user');
-              toast.info('Kijelentkeztél.', {
-                style: { marginTop: '4.5rem' },
+              localStorage.removeItem("user");
+              toast.info("Kijelentkeztél.", {
+                style: { marginTop: "4.5rem" },
               });
             }}
           >
