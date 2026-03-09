@@ -47,8 +47,7 @@ export default function NewsList() {
   return (
     <>
       {newsList.map((news) => {
-        const plainText =
-          news.content.replace(/<[^>]+>/g, "").slice(0, 600) + "...";
+        const plainText = news.content.replace(/<[^>]+>/g, "");
 
         return (
           <Link
@@ -92,7 +91,10 @@ export default function NewsList() {
             >
               <div>
                 <h2 style={{ margin: "0 0 0.5rem 0" }}>{news.title}</h2>
-                <p style={{ margin: 0, color: isDark ? "#fff" : "#444" }}>
+                <p
+                  className="news-preview"
+                  style={{ margin: 0, color: isDark ? "#fff" : "#444" }}
+                >
                   {plainText}
                 </p>
               </div>

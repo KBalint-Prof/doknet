@@ -423,10 +423,25 @@ textarea {
     display: block;
     margin: 0 auto 6px auto;
     max-width: 320px;
-    height: auto !important;
   }
 
   a[href^="/news/"] > div:last-child {
     flex: none !important;
+  }
+}
+
+.news-preview {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
+}
+
+@media (max-width: 768px) {
+  .news-preview {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
   }
 }

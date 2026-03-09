@@ -91,6 +91,9 @@ export default function ChatPage() {
       <div className="chat-locked">
         <h2>🔒 Zárt körű chat</h2>
         <p>Ezt a felületet csak a DÖK munkatársai érhetik el.</p>
+        <button onClick={() => (window.location.href = "/")}>
+          Vissza a főoldalra
+        </button>
       </div>
     );
   }

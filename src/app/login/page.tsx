@@ -68,7 +68,6 @@ export default function LoginPage() {
       style={{
         padding: "2rem",
         minHeight: "100vh",
-        backgroundColor: ctx?.user ? "transparent" : "#ffffff",
         transition: "0.4s ease",
         display: "flex",
         flexDirection: "column",

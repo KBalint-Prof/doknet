@@ -21,7 +21,6 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User>(null);
   const [theme, setTheme] = useState<string>("light");
 
-  // Betöltéskor ellenőrizzük a mentett user-t és a mentett témát
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     setUser(storedUser ? JSON.parse(storedUser) : null);
@@ -37,7 +36,7 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("theme", newTheme);
     document.documentElement.setAttribute("data-theme", newTheme);
   };
-  //valami
+
   return (
     <GlobalContext.Provider value={{ user, setUser, theme, toggleTheme }}>
       {children}

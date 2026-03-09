@@ -3,7 +3,7 @@
 import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
 
-interface CloseModalProps {
+interface VoteCloseProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => Promise<void> | void;
@@ -11,13 +11,13 @@ interface CloseModalProps {
   description?: string;
 }
 
-export default function Close({
+export default function VoteClose({
   isOpen,
   onClose,
   onConfirm,
   title = "Biztosan lezárod a szavazást?",
   description = "Ez a művelet végleges.",
-}: CloseModalProps) {
+}: VoteCloseProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -77,7 +77,7 @@ export default function Close({
               cursor: "pointer",
             }}
           >
-            Törlés
+            Lezárás
           </button>
         </div>
       </div>
