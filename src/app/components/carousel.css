@@ -23,3 +23,9 @@
   --swiper-navigation-color: white;
   --swiper-pagination-color: white;
 }
+
+@media (max-width: 768px) {
+  .CarouselImg {
+    display: none;
+  }
+}

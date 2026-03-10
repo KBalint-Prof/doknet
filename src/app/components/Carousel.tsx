@@ -85,6 +85,7 @@ export default function Carousel() {
           className="desktop-logo"
         >
           <Image
+            className="CarouselImg"
             src="/logo/sztjglogo.png"
             alt="SZTGJ"
             fill
@@ -96,6 +97,7 @@ export default function Carousel() {
           className="desktop-logo"
         >
           <Image
+            className="CarouselImg"
             src="/logo/doklogo2.png"
             alt="DOK"
             fill
