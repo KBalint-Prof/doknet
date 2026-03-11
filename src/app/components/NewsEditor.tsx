@@ -156,57 +156,60 @@ export default function NewsEditor({ id }: { id?: number }) {
           </div>
         ))}
       </div>
-
-      <TinyMCEEditor
-        key={isDark ? "dark" : "light"}
-        apiKey={process.env.NEXT_PUBLIC_EDITOR_KEY}
-        init={{
-          skin: isDark ? "oxide-dark" : "oxide",
-          content_css: isDark ? "dark" : "default",
-          language: "hu_HU",
-          language_url: "/hu_HU.js",
-          height: 750,
-          resize: false,
-          entity_encoding: "raw",
-          menubar: true,
-          plugins: [
-            "advlist",
-            "autolink",
-            "lists",
-            "link",
-            "image",
-            "charmap",
-            "preview",
-            "anchor",
-            "searchreplace",
-            "visualblocks",
-            "code",
-            "fullscreen",
-            "insertdatetime",
-            "media",
-            "table",
-            "help",
-            "wordcount",
-          ],
-          toolbar:
-            "undo redo | blocks | bold italic underline | alignleft aligncenter alignright alignjustify | " +
-            "bullist numlist outdent indent | image media link | removeformat | help",
-          images_upload_handler: (blobInfo: any) =>
-            new Promise((resolve) => {
-              const base64 =
-                "data:" + blobInfo.blob().type + ";base64," + blobInfo.base64();
-              resolve(base64);
-            }),
-          automatic_uploads: true,
-          file_picker_types: "image",
-          image_class_list: [
-            { title: "None", value: "" },
-            { title: "Float left (wrap text)", value: "img-left" },
-            { title: "Float right (wrap text)", value: "img-right" },
-            { title: "Centered", value: "img-center" },
-          ],
-          image_dimensions: true,
-          content_style: `
+      <div className="editor-wrapper">
+        <TinyMCEEditor
+          key={isDark ? "dark" : "light"}
+          apiKey={process.env.NEXT_PUBLIC_EDITOR_KEY}
+          init={{
+            skin: isDark ? "oxide-dark" : "oxide",
+            content_css: isDark ? "dark" : "default",
+            language: "hu_HU",
+            language_url: "/hu_HU.js",
+            height: 750,
+            resize: false,
+            entity_encoding: "raw",
+            menubar: true,
+            plugins: [
+              "advlist",
+              "autolink",
+              "lists",
+              "link",
+              "image",
+              "charmap",
+              "preview",
+              "anchor",
+              "searchreplace",
+              "visualblocks",
+              "code",
+              "fullscreen",
+              "insertdatetime",
+              "media",
+              "table",
+              "help",
+              "wordcount",
+            ],
+            toolbar:
+              "undo redo | blocks | bold italic underline | alignleft aligncenter alignright alignjustify | " +
+              "bullist numlist outdent indent | image media link | removeformat | help",
+            images_upload_handler: (blobInfo: any) =>
+              new Promise((resolve) => {
+                const base64 =
+                  "data:" +
+                  blobInfo.blob().type +
+                  ";base64," +
+                  blobInfo.base64();
+                resolve(base64);
+              }),
+            automatic_uploads: true,
+            file_picker_types: "image",
+            image_class_list: [
+              { title: "None", value: "" },
+              { title: "Float left (wrap text)", value: "img-left" },
+              { title: "Float right (wrap text)", value: "img-right" },
+              { title: "Centered", value: "img-center" },
+            ],
+            image_dimensions: true,
+            content_style: `
           body {
             font-family: Arial, sans-serif;
             font-size: 16px;
@@ -220,11 +223,12 @@ export default function NewsEditor({ id }: { id?: number }) {
             .mce-content-body[data-mce-placeholder]:not(.mce-visualblocks)::before {
             color: var(--placeholder);
           `,
-          placeholder: "Írd ide a hír tartalmát...",
-        }}
-        onEditorChange={(newContent) => setContent(newContent)}
-        value={content}
-      />
+            placeholder: "Írd ide a hír tartalmát...",
+          }}
+          onEditorChange={(newContent) => setContent(newContent)}
+          value={content}
+        />
+      </div>
 
       <button
         style={{ marginTop: "1rem" }}

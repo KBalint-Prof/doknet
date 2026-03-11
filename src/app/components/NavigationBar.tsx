@@ -8,12 +8,12 @@ import Image from "next/image";
 export default function NavigationBar() {
   const ctx = useContext(GlobalContext);
   const isDark = ctx?.theme === "dark";
-  const [mobileMenuOpen, setmobileMenuOpen] = useState(false);
+  const [hamburgerOpen, setHamburgerOpen] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 768) {
-        setmobileMenuOpen(false);
+        setHamburgerOpen(false);
       }
     };
 
@@ -47,17 +47,23 @@ export default function NavigationBar() {
             ) && (
               <>
                 <a href="/news-editor">Hírszerkesztő</a>
-                <a href="/vote">Szavazás</a>
               </>
             )}
-
-          {ctx?.user && <a href="/chat">Chat</a>}
+          {ctx?.user &&
+            ["admin", "teacher", "president", "member"].includes(
+              (ctx.user as any).role,
+            ) && (
+              <>
+                <a href="/vote">Szavazás</a>
+                <a href="/chat">Chat</a>
+              </>
+            )}
         </div>
       </div>
 
       <div
         className="hamburger"
-        onClick={() => setmobileMenuOpen(!mobileMenuOpen)}
+        onClick={() => setHamburgerOpen(!hamburgerOpen)}
       >
         <svg
           width="60"
@@ -73,7 +79,7 @@ export default function NavigationBar() {
           <path d="m2.75 12.25h10.5m-10.5-4h10.5m-10.5-4h10.5" />
         </svg>
       </div>
-      {mobileMenuOpen && (
+      {hamburgerOpen && (
         <div className="mobile-menu">
           <a href="/calendar">Naptár</a>
           <a href="/gallery">Galéria</a>
@@ -83,10 +89,17 @@ export default function NavigationBar() {
             ) && (
               <>
                 <a href="/news-editor">Hírszerkesztő</a>
-                <a href="/vote">Szavazás</a>
               </>
             )}
-          {ctx?.user && <a href="/chat">Chat</a>}
+          {ctx?.user &&
+            ["admin", "teacher", "president", "member"].includes(
+              (ctx.user as any).role,
+            ) && (
+              <>
+                <a href="/vote">Szavazás</a>
+                <a href="/chat">Chat</a>
+              </>
+            )}
         </div>
       )}
 

@@ -36,7 +36,6 @@ export default function Footer() {
             gap: "30px",
           }}
         >
-          {/* Iskola és Portál infó */}
           <div style={{ flex: "1 1 300px" }}>
             <h4 style={{ margin: "0 0 10px 0", fontSize: "1rem" }}>
               Szent János Görögkatolikus Gimnázium, Szakgimnázium, Technikum,
@@ -47,7 +46,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Elérhetőségek */}
           <div style={{ flex: "1 1 200px" }}>
             <h4 style={{ margin: "0 0 10px 0", fontSize: "1rem" }}>
               Elérhetőség
@@ -77,7 +75,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Gyorslinkek */}
           <div style={{ flex: "1 1 150px" }}>
             <h4 style={{ margin: "0 0 10px 0", fontSize: "1rem" }}>DÖKNet</h4>
             <div
@@ -107,7 +104,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Alsó sáv */}
         <div
           style={{
             marginTop: "20px",
