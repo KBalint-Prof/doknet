@@ -1,7 +1,8 @@
-'use client';
-import { useState, useEffect, useContext } from 'react';
-import { GlobalContext } from '../context/GlobalContext';
-import './gallery.css';
+"use client";
+import { useState, useEffect, useContext } from "react";
+import { GlobalContext } from "../context/GlobalContext";
+import "./gallery.css";
+import { createPortal } from "react-dom";
 
 export default function GalleryPage() {
   const [images, setImages] = useState<any[]>([]);
@@ -13,11 +14,11 @@ export default function GalleryPage() {
 
   const load = async () => {
     try {
-      const res = await fetch('/api/gallery');
+      const res = await fetch("/api/gallery");
       const data = await res.json();
       setImages(Array.isArray(data) ? data : []);
     } catch (e) {
-      console.error('Hiba:', e);
+      console.error("Hiba:", e);
     }
   };
 
@@ -28,9 +29,9 @@ export default function GalleryPage() {
   const upload = async (e: any) => {
     const formData = new FormData();
     Array.from(e.target.files!).forEach((f: any) =>
-      formData.append('images', f),
+      formData.append("images", f),
     );
-    await fetch('/api/gallery', { method: 'POST', body: formData });
+    await fetch("/api/gallery", { method: "POST", body: formData });
     load();
   };
 
@@ -42,9 +43,9 @@ export default function GalleryPage() {
     if (!confirm(`Biztosan törlöd a kijelölt ${selectedIds.length} képet?`))
       return;
 
-    const res = await fetch('/api/gallery', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await fetch("/api/gallery", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids: selectedIds }),
     });
 
@@ -62,6 +63,14 @@ export default function GalleryPage() {
     );
   };
 
+  useEffect(() => {
+    if (selectedIndex !== null) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [selectedIndex]);
+
   return (
     <div className="gallery-layout">
       <header className="gallery-header">
@@ -69,7 +78,7 @@ export default function GalleryPage() {
         <div className="top-controls">
           <input type="file" id="up" multiple onChange={upload} hidden />
           {ctx?.user &&
-            ['admin', 'teacher', 'president'].includes(
+            ["admin", "teacher", "president"].includes(
               (ctx.user as any).role,
             ) && (
               <>
@@ -78,15 +87,15 @@ export default function GalleryPage() {
                 </label>
 
                 <button
-                  className={`btn-trash-main ${isEditMode ? 'active' : ''}`}
+                  className={`btn-trash-main ${isEditMode ? "active" : ""}`}
                   onClick={() =>
                     isEditMode ? deleteSelected() : setIsEditMode(true)
                   }
                 >
-                  🗑️{' '}
+                  🗑️{" "}
                   {isEditMode && selectedIds.length > 0
                     ? `(${selectedIds.length})`
-                    : ''}
+                    : ""}
                 </button>
               </>
             )}
@@ -111,7 +120,7 @@ export default function GalleryPage() {
             return (
               <div
                 key={img.id}
-                className={`img-box ${isSelected ? 'selected' : ''}`}
+                className={`img-box ${isSelected ? "selected" : ""}`}
                 onClick={() => {
                   if (isEditMode)
                     toggleSelect(img.id, { stopPropagation: () => {} } as any);
@@ -128,9 +137,9 @@ export default function GalleryPage() {
                     onClick={(e) => toggleSelect(img.id, e)}
                   >
                     <div
-                      className={`check-circle ${isSelected ? 'checked' : ''}`}
+                      className={`check-circle ${isSelected ? "checked" : ""}`}
                     >
-                      {isSelected && '✓'}
+                      {isSelected && "✓"}
                     </div>
                   </div>
                 )}
@@ -140,80 +149,82 @@ export default function GalleryPage() {
         </main>
       </div>
 
-      {selectedIndex !== null && (
-        <div
-          className="lightbox-overlay"
-          onClick={() => setSelectedIndex(null)}
-        >
-          <button
-            className="l-nav prev"
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelectedIndex(
-                (selectedIndex - 1 + images.length) % images.length,
-              );
-              setZoom(1);
-            }}
-          >
-            ❮
-          </button>
-
+      {selectedIndex !== null &&
+        createPortal(
           <div
-            className="l-main-container"
-            onClick={(e) => e.stopPropagation()}
+            className="lightbox-overlay"
+            onClick={() => setSelectedIndex(null)}
           >
-            <div className="l-viewer">
-              <img
-                src={images[selectedIndex].image_path}
-                style={{
-                  transform: `scale(${zoom})`,
-                  transition: 'transform 0.2s',
-                }}
-                alt="nagyított"
-              />
-            </div>
-            <div className="l-controls-bar">
-              <div className="zoom-group">
-                <button
-                  className="btn-circle"
-                  onClick={() => setZoom((z) => Math.max(0.5, z - 0.2))}
-                >
-                  −
-                </button>
-                <span className="zoom-label" style={{ color: 'white' }}>
-                  {Math.round(zoom * 100)}%
-                </span>
-                <button
-                  className="btn-circle"
-                  onClick={() => setZoom((z) => Math.min(4, z + 0.2))}
-                >
-                  +
-                </button>
+            <button
+              className="l-nav prev"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedIndex(
+                  (selectedIndex - 1 + images.length) % images.length,
+                );
+                setZoom(1);
+              }}
+            >
+              ❮
+            </button>
+
+            <div
+              className="l-main-container"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="l-viewer">
+                <img
+                  src={images[selectedIndex].image_path}
+                  style={{
+                    transform: `scale(${zoom})`,
+                    transition: "transform 0.2s",
+                  }}
+                  alt="nagyított"
+                />
               </div>
-              <a
-                href={images[selectedIndex].image_path}
-                download
-                className="btn-dl"
-              >
-                📥 Mentés
-              </a>
+              <div className="l-controls-bar">
+                <div className="zoom-group">
+                  <button
+                    className="btn-circle"
+                    onClick={() => setZoom((z) => Math.max(0.5, z - 0.2))}
+                  >
+                    −
+                  </button>
+                  <span className="zoom-label" style={{ color: "white" }}>
+                    {Math.round(zoom * 100)}%
+                  </span>
+                  <button
+                    className="btn-circle"
+                    onClick={() => setZoom((z) => Math.min(4, z + 0.2))}
+                  >
+                    +
+                  </button>
+                </div>
+                <a
+                  href={images[selectedIndex].image_path}
+                  download
+                  className="btn-dl"
+                >
+                  📥 Mentés
+                </a>
+              </div>
             </div>
-          </div>
-          <button
-            className="l-nav next"
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelectedIndex((selectedIndex + 1) % images.length);
-              setZoom(1);
-            }}
-          >
-            ❯
-          </button>
-          <span className="close-x" onClick={() => setSelectedIndex(null)}>
-            ×
-          </span>
-        </div>
-      )}
+            <button
+              className="l-nav next"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedIndex((selectedIndex + 1) % images.length);
+                setZoom(1);
+              }}
+            >
+              ❯
+            </button>
+            <span className="close-x" onClick={() => setSelectedIndex(null)}>
+              ×
+            </span>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }
