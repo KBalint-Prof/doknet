@@ -72,7 +72,8 @@ export default function LoginPage() {
         display: "flex",
         flexDirection: "column",
         gap: "1rem",
-        width: "400px",
+        width: "100%",
+        maxWidth: "400px",
         margin: "0 auto",
         alignItems: "center",
       }}

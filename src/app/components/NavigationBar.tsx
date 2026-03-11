@@ -100,6 +100,30 @@ export default function NavigationBar() {
                 <a href="/chat">Chat</a>
               </>
             )}
+          {ctx?.user && (ctx.user as any).role === "admin" && (
+            <a href="/admin">Admin Panel</a>
+          )}
+          <button onClick={ctx?.toggleTheme} className="theme-toggle">
+            {isDark ? "☀️" : "🌙"}
+          </button>
+          {ctx?.user ? (
+            <button
+              onClick={() => {
+                ctx?.setUser(null);
+                localStorage.removeItem("user");
+                toast.info("Kijelentkeztél.", {
+                  style: { marginTop: "4.5rem" },
+                });
+              }}
+            >
+              Kijelentkezés
+            </button>
+          ) : (
+            <div className="login-register">
+              <a href="/login">Bejelentkezés</a>
+              <a href="/register">Regisztráció</a>
+            </div>
+          )}
         </div>
       )}
 

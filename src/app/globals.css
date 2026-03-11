@@ -215,7 +215,13 @@ img {
   padding: 0.25rem 0.7rem;
   border-radius: 999px;
   border: 1px solid var(--accent-soft);
-  transition: all 0.2s ease;
+
+  max-width: 120px; /* limit width */
+  white-space: nowrap; /* ne törjön sorba */
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  min-width: 0; /* flex fix */
 }
 
 button {
@@ -563,8 +569,6 @@ textarea {
   }
 
   .nav-links,
-  .username,
-  .login-register,
   .nav-right a:not(.theme-toggle),
   .nav-right button:not(.theme-toggle) {
     display: none !important;
@@ -572,6 +576,10 @@ textarea {
 
   .hamburger {
     display: flex;
+
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .logo-text {
@@ -589,5 +597,13 @@ textarea {
 
   .editor-wrapper {
     width: 100%;
+  }
+
+  .username {
+    max-width: 60px;
+  }
+
+  .nav-right .theme-toggle {
+    display: none;
   }
 }
