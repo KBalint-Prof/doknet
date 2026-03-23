@@ -70,18 +70,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        padding: "2rem",
-        display: "flex",
-        flexDirection: "column",
-        gap: "1rem",
-        width: "400px",
-        margin: "0 auto",
-        alignItems: "center",
-      }}
-    >
+    <form onSubmit={handleSubmit} className="login-register-form">
       <h1>Regisztráció</h1>
 
       <input

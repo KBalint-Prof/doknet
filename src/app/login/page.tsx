@@ -63,21 +63,7 @@ export default function LoginPage() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        padding: "2rem",
-        minHeight: "100vh",
-        transition: "0.4s ease",
-        display: "flex",
-        flexDirection: "column",
-        gap: "1rem",
-        width: "100%",
-        maxWidth: "400px",
-        margin: "0 auto",
-        alignItems: "center",
-      }}
-    >
+    <form onSubmit={handleSubmit} className="login-register-form">
       <h1>Bejelentkezés</h1>
 
       <input
