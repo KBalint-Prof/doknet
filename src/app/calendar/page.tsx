@@ -266,13 +266,14 @@ const modalOverlayStyle: React.CSSProperties = {
   zIndex: 9999,
 };
 
-const modalContentStyle: React.CSSProperties = {
-  background: "#fff",
-  padding: "1.5rem",
-  borderRadius: "12px",
-  width: "100%",
-  maxWidth: "420px",
-  boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
+const modalContentStyle: React.CSSProperties = { 
+  background: "var(--card-bg)",
+  color: "var(--text-color)", 
+  padding: "1.5rem", 
+  borderRadius: "12px", 
+  width: "100%", 
+  maxWidth: "420px", 
+  boxShadow: "0 20px 60px rgba(0,0,0,0.25)"
 };
 
 const labelStyle: React.CSSProperties = {
@@ -284,13 +285,16 @@ const labelStyle: React.CSSProperties = {
 };
 
 const inputStyle: React.CSSProperties = {
-  width: "94%",
+  width: "95%",
   padding: "12px",
   borderRadius: "10px",
-  border: "1px solid #ddd",
+  border: "1px solid var(--border-color)",
   fontSize: "15px",
   outline: "none",
+  backgroundColor: "var (--bg-card)",
+  color: "var(--text-color)"
 };
+
 
 const buttonGroupStyle: React.CSSProperties = {
   display: "flex",
