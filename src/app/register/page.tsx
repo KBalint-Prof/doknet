@@ -29,7 +29,7 @@ export default function RegisterPage() {
   const handleSave = async () => {
     if (password !== passwordCheck) {
       toast.error("A két jelszó nem egyezik!", {
-        style: { marginTop: "3.5rem" },
+        style: { marginTop: "4.5rem" },
       });
       setMessage("A két jelszó nem egyezik!");
       return;
@@ -53,7 +53,7 @@ export default function RegisterPage() {
         throw new Error(data.error || "Hiba történt a regisztráció során.");
 
       toast.success("Sikeres Regisztráció!", {
-        style: { marginTop: "3.5rem" },
+        style: { marginTop: "4.5rem" },
       });
 
       router.push("/login");
@@ -62,7 +62,7 @@ export default function RegisterPage() {
       console.error(err);
       setMessage("Hiba a regisztráció során!");
       toast.error("Hiba a Regisztráció során!", {
-        style: { marginTop: "3.5rem" },
+        style: { marginTop: "4.5rem" },
       });
     } finally {
       setSaving(false);
@@ -70,18 +70,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        padding: "2rem",
-        display: "flex",
-        flexDirection: "column",
-        gap: "1rem",
-        width: "400px",
-        margin: "0 auto",
-        alignItems: "center",
-      }}
-    >
+    <form onSubmit={handleSubmit} className="login-register-form">
       <h1>Regisztráció</h1>
 
       <input

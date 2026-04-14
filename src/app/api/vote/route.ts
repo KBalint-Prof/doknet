@@ -9,11 +9,10 @@ export async function GET() {
         votes.title,
         votes.description,
         votes.created_at,
-        votes.modified_at,
+        votes.is_active,
         users.username AS author_name
        FROM votes 
        LEFT JOIN users ON users.id = votes.user_id
-       Where votes.is_active = 0
        ORDER BY votes.created_at DESC`,
     );
 

@@ -1,7 +1,8 @@
-'use client';
-import { useState, useEffect, useContext } from 'react';
-import { GlobalContext } from '../context/GlobalContext';
-import './gallery.css';
+"use client";
+import { useState, useEffect, useContext } from "react";
+import { GlobalContext } from "../context/GlobalContext";
+import "./gallery.css";
+import { createPortal } from "react-dom";
 
 export default function GalleryPage() {
   const [images, setImages] = useState<any[]>([]);
@@ -23,7 +24,7 @@ export default function GalleryPage() {
 
   const load = async () => {
     try {
-      const res = await fetch('/api/gallery');
+      const res = await fetch("/api/gallery");
       const data = await res.json();
       setImages(Array.isArray(data) ? data : []);
     } catch (e) { console.error('Hiba:', e); }
@@ -43,9 +44,9 @@ export default function GalleryPage() {
     if (selectedIds.length === 0) { setIsEditMode(false); return; }
     if (!confirm(`Biztosan törlöd a kijelölt ${selectedIds.length} képet?`)) return;
 
-    const res = await fetch('/api/gallery', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await fetch("/api/gallery", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids: selectedIds }),
     });
 
@@ -62,6 +63,14 @@ export default function GalleryPage() {
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
     );
   };
+
+  useEffect(() => {
+    if (selectedIndex !== null) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [selectedIndex]);
 
   return (
     <div className="gallery-layout">
@@ -95,7 +104,7 @@ export default function GalleryPage() {
             return (
               <div
                 key={img.id}
-                className={`img-box ${isSelected ? 'selected' : ''}`}
+                className={`img-box ${isSelected ? "selected" : ""}`}
                 onClick={() => {
                   if (isEditMode) toggleSelect(img.id, { stopPropagation: () => {} } as any);
                   else { setSelectedIndex(idx); setZoom(1); }
@@ -105,6 +114,7 @@ export default function GalleryPage() {
                 {isEditMode && (
                   <div className="checkbox-layer" onClick={(e) => toggleSelect(img.id, e)}>
                     <div className={`check-circle ${isSelected ? 'checked' : ''}`}>{isSelected && '✓'}</div>
+
                   </div>
                 )}
               </div>
@@ -112,7 +122,6 @@ export default function GalleryPage() {
           })}
         </main>
       </div>
-
       {/* --- LIGHTBOX (FIXÁLT ÉS GÖRGETÉSMENTES) --- */}
       {selectedIndex !== null && (
         <div className="lightbox-overlay" onClick={() => setSelectedIndex(null)}>

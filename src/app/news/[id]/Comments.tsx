@@ -50,12 +50,12 @@ export default function Comments({
       setContent("");
       getNewsById();
       toast.success("Komment közzétéve!", {
-        style: { marginTop: "3.5rem" },
+        style: { marginTop: "4.5rem" },
       });
     } catch (err: any) {
       console.error(err);
       toast.error("Kommenteléshez írj a mezőbe!", {
-        style: { marginTop: "3.5rem" },
+        style: { marginTop: "4.5rem" },
       });
     } finally {
       setSaving(false);

@@ -1,19 +1,65 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
 img {
   max-width: 100%;
   height: auto;
 }
-.img-left {
-  float: left;
-  margin: 1rem 1rem 1rem 1rem;
+
+:root {
+  --accent: #8b1e3f;
+  --accent-light: #b02a53;
+  --accent-soft: rgba(139, 30, 63, 0.08);
+  --accent-glow: rgba(139, 30, 63, 0.35);
+
+  --bg-color: #ffffff;
+  --text-color: #333333;
+  --card-bg: #ffffff;
+  --border-color: #dddddd;
 }
-.img-right {
-  float: right;
-  margin: 1rem 1rem 1rem 1rem;
+
+[data-theme="dark"] {
+  --bg-color: #000000;
+  --text-color: #ffffff;
+  --card-bg: #121212;
+  --border-color: #333333;
+
+  --accent-soft: rgba(139, 30, 63, 0.25);
+  --accent-glow: rgba(139, 30, 63, 0.6);
 }
-.img-center {
-  display: block;
-  margin: 1rem auto 1rem auto;
-  float: none;
+
+[data-theme="dark"] .fc {
+  --fc-border-color: #333;
+  --fc-page-bg-color: #000;
+}
+
+[data-theme="dark"] .fc-col-header-cell {
+  background-color: #121212 !important;
+}
+
+[data-theme="dark"] .fc-col-header-cell-cushion {
+  color: #fff !important;
+}
+
+[data-theme="dark"] .fc-daygrid-day {
+  background-color: #000;
+}
+
+[data-theme="dark"] .daily-events-container {
+  background-color: #121212 !important;
+  color: white;
+  border-color: #333;
+}
+
+[data-theme="dark"] .mobile-menu {
+  background: rgba(45, 45, 45, 0.95);
 }
 
 .news-title {
@@ -31,23 +77,20 @@ img {
   font-family: Arial, sans-serif;
 }
 
-body {
-  font-family: Arial, sans-serif;
+.img-left {
+  float: left;
+  margin: 1rem;
 }
 
-.tox-statusbar__branding {
-  display: none;
+.img-right {
+  float: right;
+  margin: 1rem;
 }
 
-/* .tox-statusbar__path {
-  display: none !important;
-} */
-
-:root {
-  --accent: #8b1e3f; /* bordó / burgundi */
-  --accent-light: #b02a53; /* világosabb bordó */
-  --accent-soft: rgba(139, 30, 63, 0.08);
-  --accent-glow: rgba(139, 30, 63, 0.35);
+.img-center {
+  display: block;
+  margin: 1rem auto;
+  float: none;
 }
 
 .navbar {
@@ -55,11 +98,11 @@ body {
   justify-content: space-between;
   align-items: center;
 
-  padding: 0.9rem 1.75rem;
-  margin-bottom: 2rem;
+  padding: 0.1rem 2rem;
+  margin: 5px 2rem 2rem 2rem;
 
-  background: linear-gradient(180deg, #ffffff 0%, var(--accent-soft) 70%);
-  border-bottom: 1px solid rgba(204, 47, 112, 0.15);
+  height: 65px;
+  border-radius: 50px;
 
   font-family:
     system-ui,
@@ -67,22 +110,98 @@ body {
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
+
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  transition: all 0.3s ease;
+
+  position: relative;
+  top: 10px;
+  z-index: 1000;
 }
-/*valami*/
-.nav-left,
+
+[data-theme="dark"] .navbar {
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 35px;
+}
+
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 1.4rem;
+  gap: 15px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.login-register {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+.login-register-form {
+  padding: 2rem;
+  min-height: 10vh;
+  transition: 0.4s ease;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.logo-img {
+  position: relative;
+  width: 42px;
+  height: 42px;
+}
+
+.logo-text {
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: -0.5px;
+  color: var(--text-color);
 }
 
 .navbar a {
   text-decoration: none;
   color: #2b2b2b;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 500;
   position: relative;
   transition: color 0.25s ease;
+}
+
+[data-theme="dark"] .navbar a {
+  color: #ffffff;
 }
 
 .navbar a:hover {
@@ -106,101 +225,19 @@ body {
 }
 
 .username {
-  font-size: 0.9rem;
   font-weight: 600;
   color: var(--accent);
   background: var(--accent-soft);
-  padding: 0.25rem 0.6rem;
+  padding: 0.25rem 0.7rem;
   border-radius: 999px;
-}
+  border: 1px solid var(--accent-soft);
 
-.logout-btn {
-  padding: 0.5rem 1.2rem;
-  font-size: 0.85rem;
-  font-weight: 600;
+  max-width: 120px; /* limit width */
+  white-space: nowrap; /* ne törjön sorba */
+  overflow: hidden;
+  text-overflow: ellipsis;
 
-  background: linear-gradient(
-    135deg,
-    var(--accent) 0%,
-    var(--accent-light) 100%
-  );
-  color: #fff;
-
-  border: none;
-  border-radius: 999px;
-
-  cursor: pointer;
-  box-shadow: 0 6px 16px var(--accent-glow);
-
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-.logout-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px var(--accent-glow);
-}
-
-input,
-textarea {
-  width: 54%;
-  padding: 0.7rem 0.9rem;
-  font-family: "Inter", sans-serif;
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: #222;
-
-  background: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-
-  outline: none;
-
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    background-color 0.2s ease;
-}
-
-input::placeholder,
-textarea::placeholder {
-  color: #999;
-  font-weight: 400;
-}
-
-input:hover:not(:focus),
-textarea:hover:not(:focus) {
-  border-color: var(--accent-light);
-}
-
-input:focus,
-textarea:focus {
-  border-color: var(--accent);
-  background-color: var(--accent-soft);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-textarea {
-  resize: none;
-  min-height: 40px;
-}
-
-input:disabled,
-textarea:disabled {
-  background: #f6f6f6;
-  color: #aaa;
-  cursor: not-allowed;
-}
-
-input:invalid,
-textarea:invalid {
-  border-color: #e03131;
-}
-
-input:invalid:focus,
-textarea:invalid:focus {
-  box-shadow: 0 0 0 3px rgba(224, 49, 49, 0.25);
+  min-width: 0; /* flex fix */
 }
 
 button {
@@ -239,19 +276,145 @@ button:active {
   box-shadow: 0 4px 10px var(--accent-glow);
 }
 
-button:focus-visible {
-  outline: none;
-  box-shadow:
-    0 0 0 3px var(--accent-glow),
-    0 6px 16px var(--accent-glow);
-}
-
 button:disabled {
   background: #ddd;
   color: #999;
   box-shadow: none;
   cursor: not-allowed;
-  transform: none;
+}
+
+input,
+textarea {
+  width: 54%;
+  padding: 0.7rem 0.9rem;
+
+  font-family: "Inter", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+
+  color: #222;
+
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.editor-wrapper {
+  width: 80%;
+}
+
+.cover-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hamburger {
+  display: none;
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+
+  justify-content: center;
+  align-items: center;
+
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  box-sizing: border-box;
+  background-color: transparent;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.hamburger svg {
+  width: 60%;
+  height: 60%;
+  stroke: var(--accent);
+}
+
+.mobile-menu {
+  position: absolute;
+  top: 75px;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 90%;
+
+  background-color: rgba(200, 200, 200, 0.95);
+  border: 1px solid var(--accent);
+  border-radius: 14px;
+
+  padding: 16px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  z-index: 999;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #999;
+}
+
+input:hover:not(:focus),
+textarea:hover:not(:focus) {
+  border-color: var(--accent-light);
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--accent);
+  background-color: var(--accent-soft);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+textarea {
+  resize: none;
+  min-height: 40px;
+}
+
+.news-preview {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
+}
+
+[data-theme="dark"] input,
+[data-theme="dark"] textarea {
+  color: #ffffff;
+  background-color: #2a2a2a;
+  border: 1px solid #444;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: #bbbbbb;
+}
+
+[data-theme="dark"] input:focus,
+[data-theme="dark"] textarea:focus {
+  background-color: #333333;
+  border-color: var(--accent);
+}
+
+[data-theme="dark"] .username {
+  color: #ff6b9a;
+  background: rgba(139, 30, 63, 0.35);
+  border-color: rgba(139, 30, 63, 0.6);
 }
 
 @keyframes fadeInUp {
@@ -259,6 +422,7 @@ button:disabled {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -269,92 +433,222 @@ button:disabled {
   animation: fadeInUp 0.6s ease-out forwards;
 }
 
-:root {
-  --bg-color: #ffffff;
-  --text-color: #333333;
-  --card-bg: #ffffff;
-  --nav-bg: #f8f9fa;
-  --border-color: #dddddd;
+.tox-statusbar__branding {
+  display: none;
 }
 
-/* ALAPÉRTELMEZETT VÁLTOZÓK (VILÁGOS MÓD) */
-:root {
-  --bg-color: #ffffff;
-  --text-color: #333333;
-  --card-bg: #ffffff;
-  --nav-bg: linear-gradient(180deg, #ffffff 0%, var(--accent-soft) 70%); /* Megtartjuk az eredeti dizájnt világos módban */
-  --border-color: #dddddd;
+.chat-container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 85vh;
 }
 
-/* SÖTÉT MÓD VÁLTOZÓI */
-[data-theme="dark"] {
-  --bg-color: #000000;      /* Teljesen fekete háttér */
-  --text-color: #ffffff;    /* Fehér betűk */
-  --card-bg: #121212;
-  --nav-bg: #000000;        /* Sötét módban NINCS gradiens, csak sima fekete */
-  --border-color: #333333;
+.chat-title {
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 10px;
+  margin-bottom: 15px;
 }
 
-/* 1. A test (body) színeit a változók vezéreljék */
-body {
-  margin: 0;
-  background-color: var(--bg-color);
+.chat-box {
+  flex: 1;
+  overflow-y: auto;
+
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  background: var(--card-bg);
+
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.chat-message {
+  padding: 10px 14px;
+  border-radius: 16px;
+  max-width: 75%;
+
+  word-wrap: break-word;
+
+  font-size: 14px;
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.chat-message.own {
+  align-self: flex-end;
+
+  background: var(--accent);
+  color: white;
+
+  border-bottom-right-radius: 4px;
+}
+
+.chat-message.other {
+  align-self: flex-start;
+
+  background: color-mix(in srgb, var(--card-bg) 92%, var(--accent) 8%);
   color: var(--text-color);
-  transition: background-color 0.3s, color 0.3s;
+
+  border: 1px solid var(--border-color);
+
+  border-bottom-left-radius: 4px;
 }
 
-/* 2. A Navbar háttere sötét módban legyen fix fekete */
-[data-theme="dark"] .navbar {
-  background: #000000 !important;
-  background-image: none !important;
+.chat-username {
+  display: block;
+  font-size: 11px;
+  margin-bottom: 4px;
+  opacity: 0.75;
 }
 
-/* 3. A hírek szövege sötét módban legyen fix fehér */
-[data-theme="dark"] .news-title,
-[data-theme="dark"] .news-content,
-[data-theme="dark"] .news-card,
-[data-theme="dark"] h1, 
-[data-theme="dark"] h2, 
-[data-theme="dark"] p {
-  color: #ffffff !important;
+.chat-input-area {
+  display: flex;
+  gap: 10px;
+
+  margin-top: 12px;
+
+  background: var(--card-bg);
+
+  padding: 10px;
+
+  border-radius: 30px;
+
+  border: 1px solid var(--border-color);
 }
 
-body {
-  margin: 0;
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  transition:
-    background-color 0.3s,
-    color 0.3s;
+.chat-input-area input {
+  flex: 1;
+  border: none;
+  background: transparent;
 }
 
-/* SÖTÉT MÓD - SZÖVEGBEVITELI MEZŐK FIXÁLÁSA */
-[data-theme="dark"] input, 
-[data-theme="dark"] textarea {
-  /* Ez teszi fehérré a szöveget gépelés közben */
-  color: #ffffff !important;
-  
-  /* Ez ad egy látható, de sötét hátteret a mezőnek */
-  background-color: #2a2a2a !important; 
-  
-  /* Világosabb keret, hogy látsszon a doboz széle */
-  border: 1px solid #444 !important;
-  
-  /* Hogy ne legyen fura belső árnyéka */
-  box-shadow: none !important;
+.chat-locked {
+  text-align: center;
+  margin-top: 100px;
+  padding: 20px;
 }
 
-/* A segédszöveg (placeholder) színe sötét módban */
-[data-theme="dark"] input::placeholder, 
-[data-theme="dark"] textarea::placeholder {
-  color: #bbbbbb !important;
-  opacity: 1;
+.chat-locked h2 {
+  color: var(--accent);
 }
 
-/* Amikor a felhasználó rákattint a mezőbe (Focus) */
-[data-theme="dark"] input:focus, 
-[data-theme="dark"] textarea:focus {
-  background-color: #333333 !important;
-  border-color: var(--accent) !important;
-  outline: none;
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--card-bg);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--accent) 60%, transparent);
+  border-radius: 10px;
+  border: 2px solid var(--card-bg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+@media (max-width: 768px) {
+  a[href^="/news/"] {
+    flex-direction: column;
+  }
+
+  a[href^="/news/"] > div:first-child {
+    flex: none !important;
+    width: 100%;
+  }
+
+  a[href^="/news/"] img {
+    display: block;
+    margin: 0 auto 6px auto;
+    max-width: 320px;
+  }
+
+  a[href^="/news/"] > div:last-child {
+    flex: none !important;
+  }
+
+  .news-preview {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+
+  .nav-links,
+  .nav-right a:not(.theme-toggle),
+  .nav-right button:not(.theme-toggle) {
+    display: none !important;
+  }
+
+  .hamburger {
+    display: flex;
+    position: static; /* EZ A KULCS */
+  }
+
+  .logo-text {
+    display: none;
+  }
+
+  .mobile-menu a {
+    padding: 10px 6px;
+    font-size: 1.05rem;
+  }
+
+  .cover-preview {
+    object-position: 95% center;
+  }
+
+  .editor-wrapper {
+    width: 100%;
+  }
+
+  .username {
+    max-width: 60px;
+  }
+
+  .nav-right .theme-toggle {
+    display: none;
+  }
+
+  .login-register-form {
+    padding: 0;
+    min-height: auto;
+    gap: 0.8rem;
+
+    max-width: 100%;
+  }
+  .mobile-menu .login-register {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    gap: 12px;
+    width: 100%;
+
+    flex-wrap: nowrap;
+  }
+
+  .mobile-menu .login-register a {
+    white-space: nowrap;
+    font-size: 0.95rem;
+
+    padding: 6px 12px;
+    border-radius: 999px;
+
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+
+    text-align: center;
+  }
 }

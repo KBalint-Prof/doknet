@@ -48,14 +48,14 @@ export default function LoginPage() {
       ctx?.setUser(data.user);
 
       toast.success("Sikeres Bejelentkezés!", {
-        style: { marginTop: "3.5rem" },
+        style: { marginTop: "4.5rem" },
       });
 
       router.push("/");
     } catch (err: any) {
       console.error(err);
       toast.error("Hiba a Bejelentkezés során!", {
-        style: { marginTop: "3.5rem" },
+        style: { marginTop: "4.5rem" },
       });
     } finally {
       setLogin(false);
@@ -63,21 +63,7 @@ export default function LoginPage() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        padding: "2rem",
-        minHeight: "100vh",
-        backgroundColor: ctx?.user ? "transparent" : "#ffffff",
-        transition: "0.4s ease",
-        display: "flex",
-        flexDirection: "column",
-        gap: "1rem",
-        width: "400px",
-        margin: "0 auto",
-        alignItems: "center",
-      }}
-    >
+    <form onSubmit={handleSubmit} className="login-register-form">
       <h1>Bejelentkezés</h1>
 
       <input

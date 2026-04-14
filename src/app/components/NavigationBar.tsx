@@ -1,206 +1,157 @@
-'use client';
+"use client";
 
-import { useContext } from 'react';
-import { GlobalContext } from '../context/GlobalContext';
-import { toast } from 'react-toastify';
-import Image from 'next/image';
+import { useContext, useEffect, useState } from "react";
+import { GlobalContext } from "../context/GlobalContext";
+import { toast } from "react-toastify";
+import Image from "next/image";
 
 export default function NavigationBar() {
   const ctx = useContext(GlobalContext);
-  const isDark = ctx?.theme === 'dark';
+  const isDark = ctx?.theme === "dark";
+  const [hamburgerOpen, setHamburgerOpen] = useState(false);
 
-  const navStyle: React.CSSProperties = {
-    top: '10px',
-    zIndex: 1000,
-    margin: '10px 2rem',
-    borderRadius: '50px',
-    height: '65px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '0 2rem',
-    // Glassmorphism hatás
-    backgroundColor: isDark
-      ? 'rgba(0, 0, 0, 0.8)'
-      : 'rgba(255, 255, 255, 0.85)',
-    backdropFilter: 'blur(12px)',
-    WebkitBackdropFilter: 'blur(12px)',
-    border: isDark
-      ? '1px solid rgba(255, 255, 255, 0.1)'
-      : '1px solid rgba(0, 0, 0, 0.08)',
-    boxShadow: isDark
-      ? '0 8px 32px rgba(0, 0, 0, 0.4)'
-      : '0 8px 32px rgba(0, 0, 0, 0.05)',
-    transition: 'all 0.3s ease',
-  };
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setHamburgerOpen(false);
+      }
+    };
 
-  const linkStyle: React.CSSProperties = {
-    color: isDark ? '#ffffff' : '#333333',
-    textDecoration: 'none',
-    fontWeight: 600,
-    fontSize: '0.95rem',
-    transition: 'opacity 0.2s ease',
-  };
+    window.addEventListener("resize", handleResize);
 
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   return (
-    <nav className="navbar" style={navStyle}>
-      {/* BAL OLDAL: LOGÓ ÉS MENÜ */}
-      <div
-        className="nav-left"
-        style={{ display: 'flex', gap: '35px', alignItems: 'center' }}
-      >
-        {/* DÖKNET LOGÓ ÉS NÉV */}
-        <a
-          href="/"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            textDecoration: 'none',
-          }}
-        >
-          <div style={{ position: 'relative', width: '42px', height: '42px' }}>
+    <nav className={`navbar ${isDark ? "dark" : ""}`}>
+      <div className="nav-left">
+        <a href="/" className="logo">
+          <div className="logo-img">
             <Image
-              src="/logo/doklogo2.png"
+              src="/logo/doklogo4.png"
               alt="DÖKnet Logo"
-              fill
-              style={{
-                objectFit: 'contain',
-                mixBlendMode: isDark ? 'normal' : 'multiply',
-              }}
+              width={42}
+              height={42}
+              className="logo-desktop"
             />
           </div>
-          <span
-            style={{
-              color: isDark ? '#fff' : '#000',
-              fontWeight: 800,
-              fontSize: '1.3rem',
-              letterSpacing: '-0.5px',
-            }}
-          >
-            DÖKnet
-          </span>
+          <span className="logo-text">DÖKnet</span>
         </a>
 
-        {/* MENÜPONTOK (Emoji nélkül) */}
-        <div style={{ display: 'flex', gap: '20px' }}>
-          <a
-            href="/calendar"
-            style={linkStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.7')}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-          >
-            Naptár
-          </a>
-          <a
-            href="/gallery"
-            style={linkStyle}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.7')}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-          >
-            Galéria
-          </a>
+        <div className="nav-links">
+          <a href="/calendar">Naptár</a>
+          <a href="/gallery">Galéria</a>
 
           {ctx?.user &&
-            ['admin', 'teacher', 'president'].includes(
+            ["admin", "teacher", "president"].includes(
               (ctx.user as any).role,
             ) && (
               <>
-                <a
-                  href="/news-editor"
-                  style={linkStyle}
-                  onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.7')}
-                  onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-                >
-                  Szerkesztő
-                </a>
-                <a
-                  href="/vote"
-                  style={linkStyle}
-                  onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.7')}
-                  onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-                >
-                  Szavazás
-                </a>
+                <a href="/news-editor">Hírszerkesztő</a>
               </>
             )}
-
-          {ctx?.user && (
-            <a
-              href="/chat"
-              style={linkStyle}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.7')}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-            >
-              Chat
-            </a>
-          )}
+          {ctx?.user &&
+            ["admin", "teacher", "president", "member"].includes(
+              (ctx.user as any).role,
+            ) && (
+              <>
+                <a href="/vote">Szavazás</a>
+                <a href="/chat">Chat</a>
+              </>
+            )}
         </div>
       </div>
 
-      {/* JOBB OLDAL: TÉMA ÉS USER */}
       <div
-        className="nav-right"
-        style={{ display: 'flex', alignItems: 'center', gap: '15px' }}
+        className="hamburger"
+        onClick={() => setHamburgerOpen(!hamburgerOpen)}
       >
-        <button
-          onClick={ctx?.toggleTheme}
-          style={{
-            background: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
-            border: 'none',
-            borderRadius: '50%',
-            width: '38px',
-            height: '38px',
-            cursor: 'pointer',
-            fontSize: '1.2rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
+        <svg
+          width="60"
+          height="60"
+          viewBox="0 0 16 16"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
         >
-          {isDark ? '☀️' : '🌙'}
+          <path d="m2.75 12.25h10.5m-10.5-4h10.5m-10.5-4h10.5" />
+        </svg>
+      </div>
+      {hamburgerOpen && (
+        <div className="mobile-menu">
+          <a href="/calendar">Naptár</a>
+          <a href="/gallery">Galéria</a>
+          {ctx?.user &&
+            ["admin", "teacher", "president"].includes(
+              (ctx.user as any).role,
+            ) && (
+              <>
+                <a href="/news-editor">Hírszerkesztő</a>
+              </>
+            )}
+          {ctx?.user &&
+            ["admin", "teacher", "president", "member"].includes(
+              (ctx.user as any).role,
+            ) && (
+              <>
+                <a href="/vote">Szavazás</a>
+                <a href="/chat">Chat</a>
+              </>
+            )}
+          {ctx?.user && (ctx.user as any).role === "admin" && (
+            <a href="/admin">Admin Panel</a>
+          )}
+          <button onClick={ctx?.toggleTheme} className="theme-toggle">
+            {isDark ? "☀️" : "🌙"}
+          </button>
+          {ctx?.user ? (
+            <button
+              onClick={() => {
+                ctx?.setUser(null);
+                localStorage.removeItem("user");
+                toast.info("Kijelentkeztél.", {
+                  style: { marginTop: "4.5rem" },
+                });
+              }}
+            >
+              Kijelentkezés
+            </button>
+          ) : (
+            <div className="login-register">
+              <a href="/login">Bejelentkezés</a>
+              <a href="/register">Regisztráció</a>
+            </div>
+          )}
+        </div>
+      )}
+
+      <div className="nav-right">
+        <button onClick={ctx?.toggleTheme} className="theme-toggle">
+          {isDark ? "☀️" : "🌙"}
         </button>
-        {ctx?.user && (ctx.user as any).role === 'admin' && (
-          <a href="/admin" style={linkStyle}>
-            Admin Panel
-          </a>
+        {ctx?.user && (ctx.user as any).role === "admin" && (
+          <a href="/admin">Admin Panel</a>
         )}
 
-        <span
-          style={{
-            fontSize: '0.9rem',
-            fontWeight: 600,
-            color: isDark ? '#ccc' : '#555',
-          }}
-        >
-          {ctx?.user?.username || 'Vendég'}
-        </span>
+        <span className="username">{ctx?.user?.username || "Vendég"}</span>
 
         {ctx?.user ? (
           <button
-            style={{
-              padding: '8px 18px',
-              borderRadius: '20px',
-              border: 'none',
-              backgroundColor: '#ff4d4d',
-              color: 'white',
-              fontWeight: 600,
-              cursor: 'pointer',
-              transition: 'transform 0.2s',
-            }}
             onClick={() => {
               ctx?.setUser(null);
-              localStorage.removeItem('user');
-              toast.info('Kijelentkeztél.');
+              localStorage.removeItem("user");
+              toast.info("Kijelentkeztél.", {
+                style: { marginTop: "4.5rem" },
+              });
             }}
           >
             Kijelentkezés
           </button>
         ) : (
-          <div style={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
-            <a href="/login" style={linkStyle}>
-              Bejelentkezés
-            </a>
+          <div className="login-register">
+            <a href="/login">Bejelentkezés</a>
             <a href="/register">Regisztráció</a>
           </div>
         )}

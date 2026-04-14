@@ -1,10 +1,9 @@
-/* Swiper navigation buttons */
 .swiper-button-next,
 .swiper-button-prev {
-  background: rgba(0, 0, 0, 0.5); /* semi-transparent black background */
-  color: white; /* arrow color */
-  padding: 10px; /* space around the arrow */
-  border-radius: 50%; /* circular button */
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 10px;
+  border-radius: 50%;
   width: 40px;
   height: 40px;
   display: flex;
@@ -13,7 +12,6 @@
   transition: background 0.3s;
 }
 
-/* Hover effect */
 .swiper-button-next:hover,
 .swiper-button-prev:hover {
   background: rgba(204, 47, 112, 0.45);
@@ -22,4 +20,10 @@
 :root {
   --swiper-navigation-color: white;
   --swiper-pagination-color: white;
+}
+
+@media (max-width: 768px) {
+  .CarouselImg {
+    display: none;
+  }
 }

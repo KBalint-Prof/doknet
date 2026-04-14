@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { GlobalContext } from "../../context/GlobalContext";
 import Options from "./Options";
+import Vote_close from "./VoteClose";
 
 export interface VotesType {
   id: number;
@@ -14,6 +15,7 @@ export interface VotesType {
   description: string;
   created_at: string;
   author_name: string;
+  is_active: number;
   modified_at: string | null;
   options: {
     vote_option_id: number;
@@ -28,6 +30,8 @@ export interface VoteOptionsType {
   vote_id: number;
 }
 
+const allowed_roles = ["admin", "teacher", "president", "member"];
+
 export default function VotePage() {
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
@@ -36,8 +40,6 @@ export default function VotePage() {
   const ctx = useContext(GlobalContext);
   const [vote, setVote] = useState<VotesType | null>(null);
   const [voteOptions, setVoteOptions] = useState<VoteOptionsType[]>([]);
-
-  const [notExists, setNotExists] = useState(false);
 
   const router = useRouter();
 
@@ -48,11 +50,6 @@ export default function VotePage() {
 
       console.log("VOTE BY ID:", data);
 
-      if (result.status === 404) {
-        setNotExists(true);
-        return;
-      }
-
       setVote(data.votes[0]);
 
       setVoteOptions(data.vote_options);
@@ -61,18 +58,40 @@ export default function VotePage() {
     }
   };
 
+  const handleClose = async () => {
+    try {
+      const res = await fetch(`/api/vote_close`, {
+        method: "PATCH",
+        body: JSON.stringify({ vote_id: id, is_active: 1 }),
+      });
+
+      if (!res.ok) throw new Error("Lezárás sikertelen");
+
+      toast.success("Sikeres lezárás!", {
+        style: { marginTop: "4.5rem" },
+      });
+
+      router.push("/vote");
+    } catch (err) {
+      console.error(err);
+      alert("Nem sikerült lezárni a szavazást.");
+    }
+  };
+
   useEffect(() => {
     getVoteById();
   }, [id]);
 
-  if (notExists) {
+  if (!ctx?.user || !allowed_roles.includes((ctx.user as any).role)) {
     return (
-      <main style={{ padding: "2rem" }}>
-        <div style={{ color: "red", marginBottom: "1rem" }}>
-          Ez a szavazás nem létezik vagy már törölve lett.
-        </div>
-        <button onClick={() => router.push("/")}>Vissza a főoldalra</button>
-      </main>
+      <div style={{ textAlign: "center", marginTop: "100px", padding: "20px" }}>
+        <h2 style={{ color: "#8b1e3f" }}>
+          🔒 Nincs jogosultságod a szavazáshoz.
+        </h2>
+        <button onClick={() => (window.location.href = "/")}>
+          Vissza a főoldalra
+        </button>
+      </div>
     );
   }
 
@@ -90,7 +109,11 @@ export default function VotePage() {
             }}
           >
             <img
-              src={"/covers/szavazas.png"}
+              src={
+                vote.is_active === 1
+                  ? "/covers/szavazas_lezart.png"
+                  : "/covers/szavazas.png"
+              }
               alt="Borítókép"
               style={{
                 width: "100%",
@@ -180,6 +203,14 @@ export default function VotePage() {
             votes={vote}
             voteOptions={voteOptions}
             getVotesById={getVoteById}
+          />
+
+          <Vote_close
+            isOpen={isOpen}
+            onClose={() => setIsOpen(false)}
+            onConfirm={handleClose}
+            title="Szavazás lezárása"
+            description="Biztosan lezárod ezt a szavazást? Ez nem visszavonható."
           />
         </>
       )}

@@ -1,5 +1,5 @@
 :root {
-  --accent: #800000;
+  --accent: #8b1e3f;
 }
 
 /* ALAP ELRENDEZÉS */
@@ -17,17 +17,35 @@
 .btn-bordo {
   padding: 10px 25px; border: 2px solid var(--accent); color: var(--accent);
   border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s;
-  background: white; display: inline-block;
+  background: white; display: inline-block;}
+
+.btn-bordo:hover {
+  background: var(--accent);
+  color: white;
 }
-.btn-bordo:hover { background: var(--accent); color: white; }
 
 .btn-trash-main {
-  background: white; border: 1px solid #ddd; padding: 10px 20px;
-  border-radius: 6px; cursor: pointer; font-size: 1.2rem; transition: 0.2s;
+  background: white;
+  border: 1px solid #ddd;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: 0.2s;
 }
-.btn-trash-main.active { background: var(--accent); color: white; border-color: var(--accent); }
+.btn-trash-main.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
 
-.btn-cancel { background: none; border: none; color: #666; cursor: pointer; text-decoration: underline; }
+.btn-cancel {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  text-decoration: underline;
+}
 
 /* KÉPRÁCS */
 .gallery-box {
@@ -36,23 +54,22 @@
   padding: 40px;
   border-radius: 12px;
   min-height: 450px;
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
   margin-top: 20px;
 }
 
 .image-grid { 
   display: grid; 
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
-  gap: 25px; 
-}
+  gap: 25px; }
 
 .img-box {
-  position: relative; 
-  padding: 8px; 
-  background: white; 
+  position: relative;
+  padding: 8px;
+  background: white;
   border: 1px solid #eee;
-  border-radius: 6px; 
-  cursor: pointer; 
+  border-radius: 6px;
+  cursor: pointer;
   transition: 0.3s;
 }
 

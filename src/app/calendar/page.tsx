@@ -1,5 +1,4 @@
-
-'use client';
+"use client";
 
 import React, { useEffect, useState, useContext } from "react";
 import FullCalendar from "@fullcalendar/react";
@@ -7,6 +6,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
 import { EventClickArg } from "@fullcalendar/core";
 import { GlobalContext } from "../context/GlobalContext";
+import { createPortal } from "react-dom";
 
 interface CalendarEvent {
   id: number;
@@ -26,12 +26,11 @@ export default function CalendarPage() {
   const [newEventTitle, setNewEventTitle] = useState("");
   const [newEventDescription, setNewEventDescription] = useState("");
 
-  
   const ctx = useContext(GlobalContext);
   const user = ctx?.user;
-  
-  
-  const canEdit = !!user && ['president', 'teacher', 'admin'].includes((user as any).role);
+
+  const canEdit =
+    !!user && ["president", "teacher", "admin"].includes((user as any).role);
 
   const fetchEvents = async () => {
     try {
@@ -48,8 +47,10 @@ export default function CalendarPage() {
   }, []);
 
   useEffect(() => {
-    const normalizedSelected = selectedDate.includes("T") ? selectedDate.split("T")[0] : selectedDate;
-    setDailyEvents(events.filter(e => e.date === normalizedSelected));
+    const normalizedSelected = selectedDate.includes("T")
+      ? selectedDate.split("T")[0]
+      : selectedDate;
+    setDailyEvents(events.filter((e) => e.date === normalizedSelected));
   }, [selectedDate, events]);
 
   const handleDateClick = (info: DateClickArg) => {
@@ -64,7 +65,7 @@ export default function CalendarPage() {
 
   const handleEventClick = (info: EventClickArg) => {
     const id = info.event.id;
-    const eventData = events.find(e => String(e.id) === id);
+    const eventData = events.find((e) => String(e.id) === id);
     if (eventData) {
       setSelectedDate(eventData.date);
       if (canEdit) {
@@ -89,7 +90,7 @@ export default function CalendarPage() {
           title: newEventTitle,
           date: selectedDate,
           description: newEventDescription,
-          userRole: (user as any).role
+          userRole: (user as any).role,
         }),
       });
       setIsModalOpen(false);
@@ -104,10 +105,10 @@ export default function CalendarPage() {
     if (!confirm("Biztosan törölni szeretnéd ezt az eseményt?")) return;
 
     try {
-      await fetch(`${API_URL}/${editingEventId}`, { 
+      await fetch(`${API_URL}/${editingEventId}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userRole: (user as any).role })
+        body: JSON.stringify({ userRole: (user as any).role }),
       });
       setIsModalOpen(false);
       fetchEvents();
@@ -116,81 +117,158 @@ export default function CalendarPage() {
     }
   };
 
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isModalOpen]);
+
   return (
-    <div style={{ maxWidth: 950, margin: "20px auto", fontFamily: "sans-serif", padding: "20px" }}>
+    <div
+      style={{
+        maxWidth: 950,
+        margin: "20px auto",
+        fontFamily: "sans-serif",
+        padding: "20px",
+      }}
+    >
       <FullCalendar
-          plugins={[dayGridPlugin, interactionPlugin]}
-          initialView="dayGridMonth"
-          locale="hu"
-          buttonText={{ today: "ma" }}
-          eventColor="#9a3b56" 
-          events={events.map(e => ({
-            id: String(e.id),
-            title: e.title,
-            start: e.date,
-            allDay: true,
-            backgroundColor: "#9a3b56",
-            borderColor: "#9a3b56",
-            textColor: "#ffffff"
-          }))}
-          dateClick={handleDateClick}
-          eventClick={handleEventClick}
-          height="auto"
-        />
+        plugins={[dayGridPlugin, interactionPlugin]}
+        initialView="dayGridMonth"
+        locale="hu"
+        buttonText={{ today: "ma" }}
+        eventColor="#9a3b56"
+        events={events.map((e) => ({
+          id: String(e.id),
+          title: e.title,
+          start: e.date,
+          allDay: true,
+          backgroundColor: "#9a3b56",
+          borderColor: "#9a3b56",
+          textColor: "#ffffff",
+        }))}
+        dateClick={handleDateClick}
+        eventClick={handleEventClick}
+        height="auto"
+      />
 
       {selectedDate && (
         <div style={dailyEventsContainerStyle}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <h3 style={{ margin: 0 }}>Események – {selectedDate}</h3>
             {canEdit && (
-              <button onClick={() => { setEditingEventId(null); setIsModalOpen(true); }} style={okButtonStyle}>
+              <button
+                onClick={() => {
+                  setEditingEventId(null);
+                  setIsModalOpen(true);
+                }}
+                style={okButtonStyle}
+              >
                 + Új esemény
               </button>
             )}
           </div>
           <div style={{ marginTop: 15 }}>
-            {dailyEvents.length === 0 ? <p>Nincs esemény.</p> : dailyEvents.map(e => (
-              <div key={e.id} style={eventListItemStyle}>
-                <strong>{e.title}</strong>
-                <p style={{ margin: "5px 0 0", fontSize: "14px", color: "#555" }}>{e.description}</p>
-              </div>
-            ))}
+            {dailyEvents.length === 0 ? (
+              <p>Nincs esemény.</p>
+            ) : (
+              dailyEvents.map((e) => (
+                <div key={e.id} style={eventListItemStyle}>
+                  <strong>{e.title}</strong>
+                  <p
+                    style={{
+                      margin: "5px 0 0",
+                      fontSize: "14px",
+                      color: "#555",
+                    }}
+                  >
+                    {e.description}
+                  </p>
+                </div>
+              ))
+            )}
           </div>
         </div>
       )}
 
-      {isModalOpen && canEdit && (
-        <div style={modalOverlayStyle}>
-          <div style={modalContentStyle}>
-            <h3 style={{ marginTop: 0 }}>{editingEventId ? "Szerkesztés" : "Új esemény"}</h3>
-            <input style={inputStyle} value={newEventTitle} onChange={e => setNewEventTitle(e.target.value)} placeholder="Esemény neve" />
-            <textarea style={{...inputStyle, marginTop: 10, minHeight: 80}} value={newEventDescription} onChange={e => setNewEventDescription(e.target.value)} placeholder="Leírás" />
-            <div style={{ marginTop: 20, display: "flex", gap: 10 }}>
-              {editingEventId && <button onClick={handleDeleteEvent} style={{...okButtonStyle, background: "#ff4d4d", marginRight: "auto"}}>Törlés</button>}
-              <button onClick={() => setIsModalOpen(false)} style={cancelButtonStyle}>Mégse</button>
-              <button onClick={handleSaveEvent} style={okButtonStyle}>Mentés</button>
+      {isModalOpen &&
+        canEdit &&
+        createPortal(
+          <div style={modalOverlayStyle} onClick={() => setIsModalOpen(false)}>
+            <div style={modalContentStyle} onClick={(e) => e.stopPropagation()}>
+              <h3 style={{ marginTop: 0 }}>
+                {editingEventId ? "Szerkesztés" : "Új esemény"}
+              </h3>
+              <input
+                style={inputStyle}
+                value={newEventTitle}
+                onChange={(e) => setNewEventTitle(e.target.value)}
+                placeholder="Esemény neve"
+              />
+              <textarea
+                style={{ ...inputStyle, marginTop: 10, minHeight: 80 }}
+                value={newEventDescription}
+                onChange={(e) => setNewEventDescription(e.target.value)}
+                placeholder="Leírás"
+              />
+              <div style={{ marginTop: 20, display: "flex", gap: 10 }}>
+                {editingEventId && (
+                  <button
+                    onClick={handleDeleteEvent}
+                    style={{
+                      ...okButtonStyle,
+                      background: "#d11a2a",
+                      marginRight: "auto",
+                    }}
+                  >
+                    Törlés
+                  </button>
+                )}
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  style={cancelButtonStyle}
+                >
+                  Mégse
+                </button>
+                <button onClick={handleSaveEvent} style={okButtonStyle}>
+                  Mentés
+                </button>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }
 /* ================= STYLES ================= */
 
-const modalOverlayStyle: React.CSSProperties = { 
-  position: "fixed", 
-  inset: 0, 
+const modalOverlayStyle: React.CSSProperties = {
+  position: "fixed",
+  inset: 0,
   backgroundColor: "rgba(0,0,0,0.25)",
-  backdropFilter: "blur(2px)",          
-  display: "flex", 
-  justifyContent: "center", 
-  alignItems: "center", 
-  zIndex: 9999 
+  backdropFilter: "blur(2px)",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  zIndex: 9999,
 };
 
 const modalContentStyle: React.CSSProperties = { 
-  background: "#fff", 
+  background: "var(--card-bg)",
+  color: "var(--text-color)", 
   padding: "1.5rem", 
   borderRadius: "12px", 
   width: "100%", 
@@ -203,23 +281,26 @@ const labelStyle: React.CSSProperties = {
   marginBottom: 8,
   fontWeight: "600",
   fontSize: "14px",
-  color: "#444"
+  color: "#444",
 };
 
 const inputStyle: React.CSSProperties = {
-  width: "100%",
+  width: "95%",
   padding: "12px",
   borderRadius: "10px",
-  border: "1px solid #ddd",
+  border: "1px solid var(--border-color)",
   fontSize: "15px",
   outline: "none",
+  backgroundColor: "var (--bg-card)",
+  color: "var(--text-color)"
 };
+
 
 const buttonGroupStyle: React.CSSProperties = {
   display: "flex",
   justifyContent: "flex-end",
   gap: "10px",
-  alignItems: "center"
+  alignItems: "center",
 };
 
 const buttonBaseStyle: React.CSSProperties = {
@@ -246,16 +327,18 @@ const okButtonStyle: React.CSSProperties = {
 const dailyEventsContainerStyle: React.CSSProperties = {
   marginTop: 30,
   padding: "20px",
-  backgroundColor: "#f9f9f9",
+  backgroundColor: "var(--card-bg)",
+  color: "var(--text-color)",
   borderRadius: "12px",
-  border: "1px solid #eee",
+  border: "1px solid var(--border-color)",
 };
 
 const eventListItemStyle: React.CSSProperties = {
   padding: "12px",
-  backgroundColor: "#fff",
+  backgroundColor: "var(--bg-color)",
+  color: "var(--text-color)",
   marginBottom: "10px",
   borderRadius: "8px",
   boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-  borderLeft: "4px solid #d1417a"
+  borderLeft: "4px solid #d1417a",
 };

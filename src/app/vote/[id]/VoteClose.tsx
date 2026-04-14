@@ -3,7 +3,7 @@
 import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
 
-interface DeleteModalProps {
+interface VoteCloseProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => Promise<void> | void;
@@ -11,26 +11,14 @@ interface DeleteModalProps {
   description?: string;
 }
 
-export default function Delete({
+export default function VoteClose({
   isOpen,
   onClose,
   onConfirm,
-  title = "Biztosan törlöd?",
+  title = "Biztosan lezárod a szavazást?",
   description = "Ez a művelet végleges.",
-}: DeleteModalProps) {
+}: VoteCloseProps) {
   const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [isOpen]);
 
   useEffect(() => {
     setMounted(true);
@@ -64,7 +52,7 @@ export default function Delete({
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 style={{ marginTop: 0, color: "#000" }}>{title}</h3>
+        <h3 style={{ marginTop: 0 }}>{title}</h3>
 
         <p style={{ color: "#555", marginTop: "0.5rem" }}>{description}</p>
 
@@ -76,12 +64,7 @@ export default function Delete({
             marginTop: "1.75rem",
           }}
         >
-          <button
-            style={{ background: "linear-gradient(135deg, #6a11cb, #2575fc)" }}
-            onClick={onClose}
-          >
-            Mégse
-          </button>
+          <button onClick={onClose}>Mégse</button>
 
           <button
             onClick={onConfirm}
@@ -94,7 +77,7 @@ export default function Delete({
               cursor: "pointer",
             }}
           >
-            Törlés
+            Lezárás
           </button>
         </div>
       </div>
