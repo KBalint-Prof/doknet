@@ -5,7 +5,7 @@ import { GlobalContext } from "../context/GlobalContext";
 import { useParams } from "next/navigation";
 import VoteList from "../components/VoteList";
 
-const allowed_roles = ["admin", "teacher", "president"];
+const allowed_roles = ["admin", "teacher", "president", "member"];
 
 interface VoteType {
   id: number;
