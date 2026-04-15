@@ -1,8 +1,8 @@
-"use client";
-import { useState, useEffect, useContext } from "react";
-import { GlobalContext } from "../context/GlobalContext";
-import "./gallery.css";
-import { createPortal } from "react-dom";
+'use client';
+import { useState, useEffect, useContext } from 'react';
+import { GlobalContext } from '../context/GlobalContext';
+import './gallery.css';
+import { createPortal } from 'react-dom';
 
 export default function GalleryPage() {
   const [images, setImages] = useState<any[]>([]);
@@ -12,25 +12,32 @@ export default function GalleryPage() {
   const [zoom, setZoom] = useState(1);
   const ctx = useContext(GlobalContext);
 
-  // --- SCROLL LOCK LOGIKA ---
+  // ✅ EGYETLEN helyes scroll lock
   useEffect(() => {
     if (selectedIndex !== null) {
-      document.body.style.overflow = 'hidden'; // Tiltás
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = 'unset'; // Visszaállítás
+      document.body.style.overflow = 'auto';
     }
-    return () => { document.body.style.overflow = 'unset'; };
+
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
   }, [selectedIndex]);
 
   const load = async () => {
     try {
-      const res = await fetch("/api/gallery");
+      const res = await fetch('/api/gallery');
       const data = await res.json();
       setImages(Array.isArray(data) ? data : []);
-    } catch (e) { console.error('Hiba:', e); }
+    } catch (e) {
+      console.error('Hiba:', e);
+    }
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+  }, []);
 
   const upload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -41,12 +48,17 @@ export default function GalleryPage() {
   };
 
   const deleteSelected = async () => {
-    if (selectedIds.length === 0) { setIsEditMode(false); return; }
-    if (!confirm(`Biztosan törlöd a kijelölt ${selectedIds.length} képet?`)) return;
+    if (selectedIds.length === 0) {
+      setIsEditMode(false);
+      return;
+    }
 
-    const res = await fetch("/api/gallery", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
+    if (!confirm(`Biztosan törlöd a kijelölt ${selectedIds.length} képet?`))
+      return;
+
+    const res = await fetch('/api/gallery', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ids: selectedIds }),
     });
 
@@ -64,33 +76,45 @@ export default function GalleryPage() {
     );
   };
 
-  useEffect(() => {
-    if (selectedIndex !== null) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-  }, [selectedIndex]);
-
   return (
     <div className="gallery-layout">
       <header className="gallery-header">
         <h1>Galéria</h1>
+
         <div className="top-controls">
           <input type="file" id="up" multiple onChange={upload} hidden />
-          {ctx?.user && ['admin', 'teacher', 'president'].includes((ctx.user as any).role) && (
-            <>
-              <label htmlFor="up" className="btn-bordo">Képek hozzáadása</label>
-              <button
-                className={`btn-trash-main ${isEditMode ? 'active' : ''}`}
-                onClick={() => isEditMode ? deleteSelected() : setIsEditMode(true)}
-              >
-                🗑️ {isEditMode && selectedIds.length > 0 ? `(${selectedIds.length})` : ''}
-              </button>
-            </>
-          )}
+
+          {ctx?.user &&
+            ['admin', 'teacher', 'president'].includes(
+              (ctx.user as any).role,
+            ) && (
+              <>
+                <label htmlFor="up" className="btn-bordo">
+                  Képek hozzáadása
+                </label>
+
+                <button
+                  className={`btn-trash-main ${isEditMode ? 'active' : ''}`}
+                  onClick={() =>
+                    isEditMode ? deleteSelected() : setIsEditMode(true)
+                  }
+                >
+                  🗑️{' '}
+                  {isEditMode && selectedIds.length > 0
+                    ? `(${selectedIds.length})`
+                    : ''}
+                </button>
+              </>
+            )}
+
           {isEditMode && (
-            <button className="btn-cancel" onClick={() => { setIsEditMode(false); setSelectedIds([]); }}>
+            <button
+              className="btn-cancel"
+              onClick={() => {
+                setIsEditMode(false);
+                setSelectedIds([]);
+              }}
+            >
               Mégse
             </button>
           )}
@@ -101,20 +125,32 @@ export default function GalleryPage() {
         <main className="image-grid">
           {images.map((img, idx) => {
             const isSelected = selectedIds.includes(img.id);
+
             return (
               <div
                 key={img.id}
-                className={`img-box ${isSelected ? "selected" : ""}`}
+                className={`img-box ${isSelected ? 'selected' : ''}`}
                 onClick={() => {
-                  if (isEditMode) toggleSelect(img.id, { stopPropagation: () => {} } as any);
-                  else { setSelectedIndex(idx); setZoom(1); }
+                  if (isEditMode) {
+                    toggleSelect(img.id, { stopPropagation: () => {} } as any);
+                  } else {
+                    setSelectedIndex(idx);
+                    setZoom(1);
+                  }
                 }}
               >
                 <img src={img.image_path} alt="galéria" />
-                {isEditMode && (
-                  <div className="checkbox-layer" onClick={(e) => toggleSelect(img.id, e)}>
-                    <div className={`check-circle ${isSelected ? 'checked' : ''}`}>{isSelected && '✓'}</div>
 
+                {isEditMode && (
+                  <div
+                    className="checkbox-layer"
+                    onClick={(e) => toggleSelect(img.id, e)}
+                  >
+                    <div
+                      className={`check-circle ${isSelected ? 'checked' : ''}`}
+                    >
+                      {isSelected && '✓'}
+                    </div>
                   </div>
                 )}
               </div>
@@ -122,43 +158,91 @@ export default function GalleryPage() {
           })}
         </main>
       </div>
-      {/* --- LIGHTBOX (FIXÁLT ÉS GÖRGETÉSMENTES) --- */}
-      {selectedIndex !== null && (
-        <div className="lightbox-overlay" onClick={() => setSelectedIndex(null)}>
-          <button className="l-nav prev" onClick={(e) => {
-            e.stopPropagation();
-            setSelectedIndex((selectedIndex - 1 + images.length) % images.length);
-            setZoom(1);
-          }}>❮</button>
 
-          <div className="l-main-container" onClick={(e) => e.stopPropagation()}>
-            <div className="l-viewer">
-              <img
-                src={images[selectedIndex].image_path}
-                style={{ transform: `scale(${zoom})` }}
-                alt="nagyított"
-              />
-            </div>
-            
-            <div className="l-controls-bar">
-              <div className="zoom-group">
-                <button className="btn-circle" onClick={(e) => { e.stopPropagation(); setZoom(z => Math.max(0.5, z - 0.2)); }}>−</button>
-                <span className="zoom-label">{Math.round(zoom * 100)}%</span>
-                <button className="btn-circle" onClick={(e) => { e.stopPropagation(); setZoom(z => Math.min(4, z + 0.2)); }}>+</button>
+      {/* ✅ LIGHTBOX PORTALBAN */}
+      {selectedIndex !== null &&
+        createPortal(
+          <div
+            className="lightbox-overlay"
+            onClick={() => setSelectedIndex(null)}
+          >
+            <button
+              className="l-nav prev"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedIndex(
+                  (selectedIndex - 1 + images.length) % images.length,
+                );
+                setZoom(1);
+              }}
+            >
+              ❮
+            </button>
+
+            <div
+              className="l-main-container"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="l-viewer">
+                <img
+                  src={images[selectedIndex].image_path}
+                  style={{ transform: `scale(${zoom})` }}
+                  alt="nagyított"
+                />
               </div>
-              <a href={images[selectedIndex].image_path} download className="btn-dl">📥 Mentés</a>
-            </div>
-          </div>
 
-          <button className="l-nav next" onClick={(e) => {
-            e.stopPropagation();
-            setSelectedIndex((selectedIndex + 1) % images.length);
-            setZoom(1);
-          }}>❯</button>
-          
-          <span className="close-x" onClick={() => setSelectedIndex(null)}>&times;</span>
-        </div>
-      )}
+              <div className="l-controls-bar">
+                <div className="zoom-group">
+                  <button
+                    className="btn-circle"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setZoom((z) => Math.max(0.5, z - 0.2));
+                    }}
+                  >
+                    −
+                  </button>
+
+                  <span className="zoom-label">{Math.round(zoom * 100)}%</span>
+
+                  <button
+                    className="btn-circle"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setZoom((z) => Math.min(4, z + 0.2));
+                    }}
+                  >
+                    +
+                  </button>
+                </div>
+
+                <a
+                  href={images[selectedIndex].image_path}
+                  download
+                  className="btn-dl"
+                >
+                  📥 Mentés
+                </a>
+              </div>
+            </div>
+
+            <button
+              className="l-nav next"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedIndex((selectedIndex + 1) % images.length);
+                setZoom(1);
+              }}
+            >
+              ❯
+            </button>
+
+            <span className="close-x" onClick={() => setSelectedIndex(null)}>
+              &times;
+            </span>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }

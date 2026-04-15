@@ -23,7 +23,7 @@
 }
 
 @media (max-width: 768px) {
-  .CarouselImg {
-    display: none;
+  .desktop-logo {
+    display: none !important;
   }
 }
