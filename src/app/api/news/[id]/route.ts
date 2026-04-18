@@ -56,7 +56,6 @@ export async function GET(
         news_reactions.user_id,
         reaction_types.id AS reaction_type_id,
         reaction_types.key,
-        reaction_types.label,
         reaction_types.icon
        FROM news_reactions
        INNER JOIN reaction_types ON reaction_types.id = news_reactions.reaction_type_id

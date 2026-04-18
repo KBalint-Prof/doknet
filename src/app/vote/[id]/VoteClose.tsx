@@ -64,7 +64,12 @@ export default function VoteClose({
             marginTop: "1.75rem",
           }}
         >
-          <button onClick={onClose}>Mégse</button>
+          <button
+            style={{ background: "linear-gradient(135deg, #6a11cb, #2575fc)" }}
+            onClick={onClose}
+          >
+            Mégse
+          </button>
 
           <button
             onClick={onConfirm}

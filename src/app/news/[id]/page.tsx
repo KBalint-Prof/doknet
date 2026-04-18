@@ -35,7 +35,6 @@ export interface NewsType {
 export interface ReactionTypeType {
   id: number;
   key: string;
-  label: string;
   icon: string;
   sort_order: number;
 }
