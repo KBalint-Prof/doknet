@@ -3,6 +3,7 @@
 import { useContext, useState } from "react";
 import { useRouter } from "next/navigation";
 import { GlobalContext } from "../context/GlobalContext";
+import { toast } from "react-toastify";
 
 export default function VoteEditor() {
   const [saving, setSaving] = useState(false);
@@ -53,9 +54,14 @@ export default function VoteEditor() {
         throw new Error(data.error || "Hiba történt a mentés során.");
 
       router.push("/vote/");
+      toast.success("Sikeres mentés!", {
+        style: { marginTop: "4.5rem" },
+      });
     } catch (err) {
       console.error(err);
-      setMessage("Hiba a mentés során!");
+      toast.error("Hiba a mentés során!", {
+        style: { marginTop: "4.5rem" },
+      });
     } finally {
       setSaving(false);
     }

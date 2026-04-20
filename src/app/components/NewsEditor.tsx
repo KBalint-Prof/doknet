@@ -52,13 +52,13 @@ export default function NewsEditor({ id }: { id?: number }) {
 
       setMessage(`Sikeres mentés! (ID: ${data.id})`);
       router.push("/news/" + data.id);
-      toast.success("Sikeres mentés!", {
+      toast.success(id ? "Sikeres módosítás!" : "Sikeres mentés!", {
         style: { marginTop: "4.5rem" },
       });
     } catch (err: any) {
       console.error(err);
       setMessage("Hiba a mentés során!");
-      toast.error("Hiba a mentés során!", {
+      toast.error(id ? "Hiba a módosítás során!" : "Hiba a mentés során!", {
         style: { marginTop: "4.5rem" },
       });
     } finally {
