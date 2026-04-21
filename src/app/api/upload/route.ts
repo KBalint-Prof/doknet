@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     if (!file) {
       return NextResponse.json(
         { error: "Nincs feltöltött fájl" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
