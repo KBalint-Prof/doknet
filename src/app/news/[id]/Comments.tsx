@@ -54,7 +54,7 @@ export default function Comments({
       });
     } catch (err: any) {
       console.error(err);
-      toast.error("Kommenteléshez írj a mezőbe!", {
+      toast.error(err.message || "Hiba a kommentelés során!", {
         style: { marginTop: "4.5rem" },
       });
     } finally {
@@ -64,29 +64,48 @@ export default function Comments({
 
   return (
     <form onSubmit={handleSubmit} style={{ padding: "2rem" }}>
-      <h3>Komment:</h3>
+      {ctx?.user ? (
+        <>
+          <h3>Komment:</h3>
 
-      <input
-        style={{ width: "30%" }}
-        type="text"
-        placeholder="Írd be a kommentet..."
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-      />
+          <input
+            style={{ width: "30%" }}
+            type="text"
+            placeholder="Írd be a kommentet..."
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
 
-      <button style={{ marginLeft: "1rem" }} type="submit" disabled={saving}>
-        {saving ? "Kommentelés folyamatban..." : "Komment"}
-      </button>
-
-      {news.comments.map((comment) => (
-        <div key={comment.id} style={{ marginBottom: "1rem" }}>
-          <p>{comment.content}</p>
-          <small style={{ color: "#666" }}>
-            {comment.author_name} -{" "}
-            {new Date(comment.created_at).toLocaleString("hu-HU")}
-          </small>
-        </div>
-      ))}
+          <button
+            style={{ marginLeft: "1rem" }}
+            type="submit"
+            disabled={saving}
+          >
+            {saving ? "Kommentelés folyamatban..." : "Komment"}
+          </button>
+        </>
+      ) : (
+        <p
+          style={{
+            color: "#777",
+            fontStyle: "italic",
+            marginBottom: "2rem",
+          }}
+        >
+          Kommenteléshez be kell jelentkezned.
+        </p>
+      )}
+      <div style={{ marginTop: "2rem" }}>
+        {news.comments.map((comment) => (
+          <div key={comment.id} style={{ marginBottom: "1rem" }}>
+            <p>{comment.content}</p>
+            <small style={{ color: "#666" }}>
+              {comment.author_name} -{" "}
+              {new Date(comment.created_at).toLocaleString("hu-HU")}
+            </small>
+          </div>
+        ))}
+      </div>
     </form>
   );
 }

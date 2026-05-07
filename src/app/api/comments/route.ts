@@ -7,16 +7,23 @@ export async function POST(req: Request) {
   try {
     const { news_id, content, user_id } = await req.json();
 
-    if (!content) {
+    if (!user_id) {
+      return NextResponse.json(
+        { error: "Kommenteléshez be kell jelentkezni!" },
+        { status: 401 },
+      );
+    }
+
+    if (!content || content.trim() === "") {
       return NextResponse.json(
         { error: "A komment küldéséhez kötelező a tartalom!" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const [result] = await db.query<ResultSetHeader>(
       "INSERT INTO comments (news_id, content, user_id) VALUES (?, ?, ?)",
-      [news_id, content, user_id]
+      [news_id, content, user_id],
     );
 
     return NextResponse.json({
